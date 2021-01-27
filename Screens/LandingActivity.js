@@ -31,7 +31,7 @@ export default function LandingActivity({ navigation }) {
 
             <View>
                 <Button style={styles.signIn} title="Get Started"
-                    color="black" onPress={() => navigation.navigate('Login')} />
+                    color="black" onPress={() => navigation.navigate('GettingStarted')} />
             </View>
 
             <View style={styles.register}>

@@ -29,7 +29,7 @@ function HomeScreen() {
   );
 }
 
-function Login() {
+function GettingStarted() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <LoginActivity />
@@ -44,7 +44,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="GettingStarted" component={GettingStarted} />
       </Stack.Navigator>
     </NavigationContainer>
 
