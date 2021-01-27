@@ -6,6 +6,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import LandingActivity from './Screens/LandingActivity'
 // import Getting Started Page
 import LoginActivity from './Screens/LoginActivity'
+import RegisterActivity from './Screens/RegisterActivity'
 
 
 import 'react-native-gesture-handler';
@@ -30,9 +31,10 @@ function HomeScreen() {
 }
 
 function GettingStarted() {
+  const navigation = useNavigation()
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFDD02' }}>
-      <LoginActivity />
+      <LoginActivity navigation={navigation} />
 
     </View>
   );
@@ -48,6 +50,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="GettingStarted" component={GettingStarted} />
+        <Stack.Screen name="Register" component={RegisterActivity} />
       </Stack.Navigator>
     </ NavigationContainer >
 

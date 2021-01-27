@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, Button, Image } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-export default function LoginActivity() {
+export default function LoginActivity({ navigation }) {
     return (
         <View style={{ flexDirection: 'column' }}>
 
@@ -19,7 +19,7 @@ export default function LoginActivity() {
             </View>
 
             <View style={styles.register}>
-                <Button title='Register' color='black' />
+                <Button title='Register' color='black' onPress={() => navigation.navigate('Register')} />
             </View>
             {/* <Button onPress={() => { console.log('onpress') }} title='Manage Elections' color='white' /> */}
         </View >
