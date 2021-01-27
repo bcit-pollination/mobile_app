@@ -1,0 +1,12 @@
+{
+  "name": "expo_pollination",
+  "displayName": "expo_pollination",
+  "expo": {
+    "name": "expo_pollination",
+    "slug": "expo_pollination",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
