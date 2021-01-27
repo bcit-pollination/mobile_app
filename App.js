@@ -19,7 +19,7 @@ const Stack = createStackNavigator();
 function HomeScreen() {
   const navigation = useNavigation()
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFDD02' }}>
       <LandingActivity navigation={navigation} />
       {/* <Button
         title="Go to Login"
@@ -31,7 +31,7 @@ function HomeScreen() {
 
 function GettingStarted() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFDD02' }}>
       <LoginActivity />
 
     </View>
@@ -41,12 +41,15 @@ function GettingStarted() {
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer style={{
+      backgroundColor: 'yellow'
+    }}
+    >
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="GettingStarted" component={GettingStarted} />
       </Stack.Navigator>
-    </NavigationContainer>
+    </ NavigationContainer >
 
   );
 }
