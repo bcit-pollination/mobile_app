@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, Button, Image, Linking } from 'react-native'
+import { StyleSheet, View, Text, Button, image, Linking } from 'react-native'
 import { color } from 'react-native-reanimated'
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -25,7 +25,7 @@ export default function LandingActivity({ navigation }) {
         <View style={{ flexDirection: 'column' }}>
 
             <View classname='logo_large'>
-                <Image source={require('../Assets/Image/logo_pollination.jpg')}></Image>
+                <image source={require('../assets/image/logo_pollination.jpg')}></image>
             </View>
 
 

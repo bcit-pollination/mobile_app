@@ -3,10 +3,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 // import Landing Page
-import LandingActivity from './Screens/LandingActivity'
+import LandingActivity from './screens/LandingActivity'
 // import Getting Started Page
-import LoginActivity from './Screens/LoginActivity'
-import RegisterActivity from './Screens/RegisterActivity'
+import LoginActivity from './screens/LoginActivity'
+import RegisterActivity from './screens/RegisterActivity'
 
 
 import 'react-native-gesture-handler';

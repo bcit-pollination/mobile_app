@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, Button, Image } from 'react-native'
+import { StyleSheet, View, Text, Button, image } from 'react-native'
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -9,7 +9,7 @@ export default function LoginActivity({ navigation }) {
         <View style={{ flexDirection: 'column' }}>
 
             <View classname='logo_large'>
-                <Image source={require('../Assets/Image/logo_pollination.jpg')}></Image>
+                <image source={require('../assets/image/logo_pollination.jpg')}></image>
             </View>
 
 
