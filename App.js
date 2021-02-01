@@ -7,6 +7,7 @@ import LandingActivity from "./screens/LandingActivity";
 // import Getting Started Page
 import LoginActivity from "./screens/LoginActivity";
 import RegisterActivity from "./screens/RegisterActivity";
+import HomeActivity from "./screens/HomeActivity";
 
 import "react-native-gesture-handler";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
@@ -14,7 +15,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
 
-function HomeScreen() {
+function LandingScreen() {
   const navigation = useNavigation();
   return (
     <View
@@ -59,9 +60,10 @@ export default function App() {
     >
       {/* Set page names here for navigation to access */}
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Landing" component={LandingScreen} />
         <Stack.Screen name="GettingStarted" component={GettingStarted} />
         <Stack.Screen name="Register" component={RegisterActivity} />
+        <Stack.Screen name="Home" component={HomeActivity} />
       </Stack.Navigator>
     </NavigationContainer>
   );
