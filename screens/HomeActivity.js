@@ -32,8 +32,6 @@ const HomeActivity = () => {
 const styles = StyleSheet.create({
   headingContainer: {
     flex: 1,
-    // borderWidth: 1,
-    // borderColor: "black",
   },
   headingText: {
     fontSize: 24,
