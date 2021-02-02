@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, Button, Image, Linking } from "react-native";
+import { StyleSheet, View, Text, Button, Image, Linking, Pressable } from "react-native";
 import { color } from "react-native-reanimated";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -7,7 +7,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import LoginActivity from "./LoginActivity";
 
-import AppLogo from '../components/AppLogo';
+import AppLogo from "../components/AppLogo";
+
+import GlobalStyles from "../constants/GlobalStyles";
 
 export default function LandingActivity({ navigation }) {
   // Leads to the management website.
@@ -21,24 +23,36 @@ export default function LandingActivity({ navigation }) {
   return (
     <View style={{ flexDirection: "column" }}>
       <View classname="logo_large">
-          <AppLogo />
+        <AppLogo />
       </View>
 
-      <View>
-        <Button
+      <View style={styles.register}>
+        <Pressable
+          style={[GlobalStyles.center, styles.signIn]}
+          onPress={() => navigation.navigate("GettingStarted")}
+        >
+          <Text style={styles.text}>Get Started</Text>
+        </Pressable>
+        {/* <Button
           style={styles.signIn}
           title="Get Started"
           color="black"
           onPress={() => navigation.navigate("GettingStarted")}
-        />
+        /> */}
       </View>
 
       <View style={styles.register}>
-        <Button
+        <Pressable
+          style={[GlobalStyles.center, styles.signIn]}
+          onPress={manageElections}
+        >
+          <Text style={styles.text}>Manage Elections</Text>
+        </Pressable>
+        {/* <Button
           onPress={manageElections}
           title="Manage Elections"
           color="black"
-        />
+        /> */}
       </View>
       {/* <Button onPress={() => { console.log('onpress') }} title='Manage Elections' color='white' /> */}
     </View>
@@ -47,9 +61,13 @@ export default function LandingActivity({ navigation }) {
 
 const styles = StyleSheet.create({
   signIn: {
-    // marginTop: 60
+    backgroundColor: "black",
+    padding: 10,
   },
   register: {
     marginTop: 25,
+  },
+  text: {
+    color: "white",
   },
 });
