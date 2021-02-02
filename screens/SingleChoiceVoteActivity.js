@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Button, Image, Linking } from 'react-native'
 import { color } from 'react-native-reanimated'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import RadioButtonRN from 'radio-buttons-react-native';
 
 const data = [
   {
@@ -29,15 +28,7 @@ export default function SingleChoiceVoteActivity({ navigation }) {
     return (
         <View style={styles.container}>
           <Text>Select only 1: </Text>
-          <RadioButtonRN style={styles.radio}
-            data={data}
-            selectedBtn={handleChoice}
-            boxDeactiveBgColor= '#E5E5E5'	
-            textColor='black'
-            activeColor='black'
-            boxActiveBgColor= '#FFDD02'	
-            boxStyle={styles.radioBox}
-          />
+
           <Button title="Submit"/>
         </View >
     )
