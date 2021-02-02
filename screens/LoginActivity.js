@@ -18,7 +18,8 @@ export default function LoginActivity({ navigation }) {
           style={styles.signIn}
           title="Sign In"
           color="black"
-          onPress={() => navigation.navigate("Login")}
+          // onPress={() => navigation.navigate("Login")}
+          onPress={() => navigation.navigate("Home")}
         />
       </View>
 
