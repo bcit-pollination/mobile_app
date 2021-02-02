@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import AppLogo from "../components/AppLogo";
+import BlackButton from "../components/BlackButton";
 
 export default function LoginActivity({ navigation }) {
   return (
@@ -13,32 +14,24 @@ export default function LoginActivity({ navigation }) {
         <AppLogo />
       </View>
 
-      <View>
-        <Button
-          style={styles.signIn}
+      <View style={styles.register}>
+        <BlackButton
           title="Sign In"
-          color="black"
-          // onPress={() => navigation.navigate("Login")}
           onPress={() => navigation.navigate("Home")}
         />
       </View>
 
       <View style={styles.register}>
-        <Button
+        <BlackButton
           title="Register"
-          color="black"
           onPress={() => navigation.navigate("Register")}
         />
       </View>
-      {/* <Button onPress={() => { console.log('onpress') }} title='Manage Elections' color='white' /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  signIn: {
-    // marginTop: 60
-  },
   register: {
     marginTop: 25,
   },
