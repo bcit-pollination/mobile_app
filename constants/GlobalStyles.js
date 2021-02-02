@@ -12,4 +12,8 @@ export default StyleSheet.create({
   whiteBackground: {
     backgroundColor: "white",
   },
+  center: {
+      alignItems: "center",
+      justifyContent: "center",
+  },
 });
