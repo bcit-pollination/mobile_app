@@ -2,28 +2,32 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Modal, Pressable } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
 
-const DetailsModal = ({ info }) => {
-  // modal is not shown at first
-  const [show, setShow] = useState(false);
 
-  const changeState = () => {
+// TODO: make show and onPress mandatory props
+const DetailsModal = ({ info, show, setShow, changeVisibility }) => {
+  const closeModal = () => {
     setShow(!show);
   }
 
   return (
-    <Modal animationType="fade" transparent={true} visible={show}>
+    <Modal animationType="fade" transparent={false} visible={show}>
       <View style={GlobalStyles.center}>
         <Text>{info}</Text>
       </View>
-      <Pressable onPress={changeState}>
-        <Text>Close</Text>
+      <Pressable onPress={closeModal} style={[GlobalStyles.center, styles.button]}>
+        <Text style={styles.text}>Close</Text>
       </Pressable>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  
+  button: {
+    backgroundColor: "black",
+  },
+  text: {
+    color: "white",
+  }
 })
 
 export default DetailsModal;

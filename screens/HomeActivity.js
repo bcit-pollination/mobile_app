@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { StyleSheet, View, Text, Button, Image, Linking } from "react-native";
 import DetailsModal from "../components/DetailsModal";
 import ElectionItem from "../components/ElectionItem";
@@ -6,16 +6,24 @@ import ElectionItem from "../components/ElectionItem";
 import GlobalStyles from "../constants/GlobalStyles";
 
 const HomeActivity = () => {
+   // modal is not shown at first
+   const [show, setShow] = useState(false);
+
+  const changeShowModal = () => {
+    setShow(!show);
+  };
+
+  // TODO: dynamically load info to the modal from database
   return (
     <View style={GlobalStyles.genericPage}>
-      <DetailsModal info="this is modal" />
+      <DetailsModal info="this is modal" visible={show} show={show} setShow={setShow} />
       <View style={[styles.headingContainer, GlobalStyles.center]}>
         <Text style={styles.headingText}>Active Elections</Text>
       </View>
       <View style={styles.electionsListContainer}>
-        <ElectionItem title="Election 1" />
-        <ElectionItem title="Election 2" />
-        <ElectionItem title="Election 3" />
+        <ElectionItem title="Election 1" onLongPress={changeShowModal} />
+        <ElectionItem title="Election 2" onLongPress={changeShowModal} />
+        <ElectionItem title="Election 3" onLongPress={changeShowModal} />
       </View>
     </View>
   );
