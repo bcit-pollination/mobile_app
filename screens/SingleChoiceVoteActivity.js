@@ -3,49 +3,45 @@ import { StyleSheet, View, Text, Button, Image, Linking } from 'react-native'
 import { color } from 'react-native-reanimated'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import RadioButton from '../components/RadioButton';
+import GlobalStyles from "../constants/GlobalStyles";
+import AppLogo from '../components/AppLogo';
 
-const data = [
-  {
-    label: 'Choice 1'
-  }, 
-  {
-    label: 'Choice 2'
+const items = [
+  { key: 'Pizza',
+    text: 'Pizza',
   },
-  {
-    label: 'Choice 3'
+  { key: 'Lasagna',
+    text: 'Lasagna',
   },
-  {
-    label: 'Choice 4'
+  { key: 'Gnocchi',
+    text: 'Gnocchi',
   },
 ];
-  
+
 const handleChoice = event => {
-  console.log(event);
+  console.log("Submit Button");
 }
 
 export default function SingleChoiceVoteActivity({ navigation }) {
 
     return (
-        <View style={styles.container}>
-          <Text>Select only 1: </Text>
-
-          <AppButton
-            style={GlobalStyles.center}
-            text="Submit"
-          />
-        </View >
+      <View style={[
+        styles.container, 
+        GlobalStyles.offWhiteBackground,
+      ]}>
+        {/* <AppLogo /> */}
+        <Text>Select only 1: </Text>
+        <RadioButton ITEMS={items} />
+        <Button color="rgba(0,0,0,0.8)" title="Submit" onPress={handleChoice}/>
+      </View >
     )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    margin: 20,
-  },
-  radio: {
-    margin: 15,
-  },
-  radioBox: {
-    borderRadius: 20,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });

@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Button } from "react-native";
 
 // import Landing Page
 import LandingActivity from "./screens/LandingActivity";
+import GlobalStyles from "./constants/GlobalStyles";
 // import Getting Started Page
 import LoginActivity from "./screens/LoginActivity";
 import RegisterActivity from "./screens/RegisterActivity";
@@ -40,12 +41,12 @@ function GettingStarted() {
   const navigation = useNavigation();
   return (
     <View
-      style={{
+      style={[{
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#FFDD02",
-      }}
+      }, GlobalStyles.yellowBackground
+      ]}
     >
       <LoginActivity navigation={navigation} />
     </View>
