@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import RadioButton from '../components/RadioButton';
 import GlobalStyles from "../constants/GlobalStyles";
 import AppLogo from '../components/AppLogo';
+import AppButton from '../components/AppButton';
 
 const items = [
   { key: 'Pizza',
@@ -34,12 +35,11 @@ export default function SingleChoiceVoteActivity({ navigation }) {
     return (
       <View style={[
         styles.container, 
-        GlobalStyles.yellowBackground,
       ]}>
         {/* <AppLogo /> */}
         <Text>Select only 1: </Text>
         <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)'/>
-        <Button color="rgba(0,0,0,0.8)" title="Submit" onPress={() => handleChoice(items)}/>
+        <AppButton text="Submit" onPress={() => handleChoice(items)}/>
       </View >
     )
 }
