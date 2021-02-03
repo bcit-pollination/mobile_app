@@ -28,7 +28,7 @@ export default function SingleChoiceVoteActivity({ navigation }) {
     return (
       <View style={[
         styles.container, 
-        GlobalStyles.offWhiteBackground,
+        GlobalStyles.yellowBackground,
       ]}>
         {/* <AppLogo /> */}
         <Text>Select only 1: </Text>
