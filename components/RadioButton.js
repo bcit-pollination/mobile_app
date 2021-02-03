@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableWithoutFeedback , Text, StyleSheet } from "react-native";
+import { View , Text, StyleSheet, Pressable } from "react-native";
 
 // Instruction:
 // 1. Import
@@ -92,7 +92,7 @@ class RadioButton extends Component {
       <View style={[ this.styles.groupContainter ]}>
         {ITEMS.map((res) => {
           return (
-            <TouchableWithoutFeedback 
+            <Pressable 
               onPress={() => {
                 this.setState({value: res.key});
                 ITEMS.forEach(element => {
@@ -109,7 +109,7 @@ class RadioButton extends Component {
                 </View>
                 <Text style={ [this.styles.radioText ]}>{res.text}</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           );
         })}
       </View>
