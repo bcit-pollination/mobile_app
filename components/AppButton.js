@@ -1,14 +1,14 @@
 import React from "react";
-import { View, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, Pressable, Text } from "react-native";
 
 import GlobalStyles from "../constants/GlobalStyles";
 
-TouchableOpacity.defaultProps = { activeOpacity: 0.8 };
+Pressable.defaultProps = { activeOpacity: 0.5 };
 
 const AppButton = ({ onPress, text, style }) => (
-  <TouchableOpacity onPress={onPress} style={[GlobalStyles.center, styles.buttonContainer, style]}>
+  <Pressable onPress={onPress} style={[GlobalStyles.center, styles.buttonContainer, style]}>
     <Text style={styles.buttonText}>{text}</Text>
-  </TouchableOpacity>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
