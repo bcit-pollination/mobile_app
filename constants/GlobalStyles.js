@@ -12,6 +12,9 @@ export default StyleSheet.create({
   whiteBackground: {
     backgroundColor: "white",
   },
+  offWhiteBackground: {
+    backgroundColor: "#ffffe2",
+  },
   center: {
       alignItems: "center",
       justifyContent: "center",
