@@ -30,12 +30,10 @@ export default function LandingActivity({ navigation }) {
   }
 
   return (
-    <View style={{ flexDirection: "column" }}>
-      <View classname="logo_large">
+    <View style={styles.container}>
         <AppLogo />
-      </View>
 
-      <View style={styles.register}>
+      <View style={styles.landingBtns}>
         <AppButton
           style={[GlobalStyles.whiteBackground, styles.register]}
           onPress={() => navigation.navigate("GettingStarted")}  
@@ -43,11 +41,18 @@ export default function LandingActivity({ navigation }) {
         />
       </View>
 
-      <View style={styles.register}>
+      <View style={styles.landingBtns}>
         <AppButton
           style={[GlobalStyles.whiteBackground]}
           onPress={() => navigation.navigate("GettingStarted")}  
           text="Manage Elections"
+        />
+      </View>
+      <View style={styles.landingBtns}>
+        <AppButton
+          style={[GlobalStyles.whiteBackground]}
+          onPress={() => navigation.navigate("SingleChoiceVote")}  
+          text="Single Choice Vote"
         />
       </View>
     </View>
@@ -55,7 +60,14 @@ export default function LandingActivity({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  register: {
+  landingBtns: {
     marginTop: 25,
+        minWidth: 170,
+
   },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
