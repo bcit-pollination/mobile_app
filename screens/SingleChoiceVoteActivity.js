@@ -29,7 +29,10 @@ export default function SingleChoiceVoteActivity({ navigation }) {
         <View style={styles.container}>
           <Text>Select only 1: </Text>
 
-          <Button title="Submit"/>
+          <AppButton
+            style={GlobalStyles.center}
+            text="Submit"
+          />
         </View >
     )
 }

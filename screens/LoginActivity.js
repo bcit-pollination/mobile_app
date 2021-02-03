@@ -5,6 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import AppLogo from "../components/AppLogo";
+import AppButton from "../components/AppButton";
+import GlobalStyles from "../constants/GlobalStyles";
 
 export default function LoginActivity({ navigation }) {
   return (
@@ -14,20 +16,18 @@ export default function LoginActivity({ navigation }) {
       </View>
 
       <View>
-        <Button
-          style={styles.signIn}
-          title="Sign In"
-          color="black"
-          // onPress={() => navigation.navigate("Login")}
+        <AppButton
+          style={[GlobalStyles.center, GlobalStyles.whiteBackground, styles.signIn]}
           onPress={() => navigation.navigate("Home")}
+          text="Sign In"
         />
       </View>
 
       <View style={styles.register}>
-        <Button
-          title="Register"
-          color="black"
+        <AppButton
+          style={[GlobalStyles.center, GlobalStyles.whiteBackground]}
           onPress={() => navigation.navigate("Register")}
+          text="Register"
         />
       </View>
       {/* <Button onPress={() => { console.log('onpress') }} title='Manage Elections' color='white' /> */}
@@ -37,7 +37,7 @@ export default function LoginActivity({ navigation }) {
 
 const styles = StyleSheet.create({
   signIn: {
-    // marginTop: 60
+    marginTop: 60
   },
   register: {
     marginTop: 25,

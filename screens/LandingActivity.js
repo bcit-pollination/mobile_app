@@ -6,10 +6,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import LoginActivity from "./LoginActivity";
-
 import AppLogo from "../components/AppLogo";
+import AppButton from "../components/AppButton";
 
 import GlobalStyles from "../constants/GlobalStyles";
+
 
 export default function LandingActivity({ navigation }) {
   // Leads to the management website.
@@ -27,34 +28,20 @@ export default function LandingActivity({ navigation }) {
       </View>
 
       <View style={styles.register}>
-        <Pressable
-          style={[GlobalStyles.center, styles.signIn]}
-          onPress={() => navigation.navigate("GettingStarted")}
-        >
-          <Text style={styles.text}>Get Started</Text>
-        </Pressable>
-        {/* <Button
-          style={styles.signIn}
-          title="Get Started"
-          color="black"
-          onPress={() => navigation.navigate("GettingStarted")}
-        /> */}
+        <AppButton
+          style={[GlobalStyles.center, GlobalStyles.whiteBackground, styles.register]}
+          onPress={() => navigation.navigate("GettingStarted")}  
+          text="Get Started"
+        />
       </View>
 
       <View style={styles.register}>
-        <Pressable
-          style={[GlobalStyles.center, styles.signIn]}
-          onPress={manageElections}
-        >
-          <Text style={styles.text}>Manage Elections</Text>
-        </Pressable>
-        {/* <Button
-          onPress={manageElections}
-          title="Manage Elections"
-          color="black"
-        /> */}
+        <AppButton
+          style={[GlobalStyles.center, GlobalStyles.whiteBackground]}
+          onPress={() => navigation.navigate("GettingStarted")}  
+          text="Manage Elections"
+        />
       </View>
-      {/* <Button onPress={() => { console.log('onpress') }} title='Manage Elections' color='white' /> */}
     </View>
   );
 }
