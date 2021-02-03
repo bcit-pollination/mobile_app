@@ -1,5 +1,13 @@
 import React from "react";
-import { StyleSheet, View, Text, Button, Image, Linking, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  Image,
+  Linking,
+  Pressable,
+} from "react-native";
 import { color } from "react-native-reanimated";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -29,7 +37,7 @@ export default function LandingActivity({ navigation }) {
 
       <View style={styles.register}>
         <AppButton
-          style={[GlobalStyles.center, GlobalStyles.whiteBackground, styles.register]}
+          style={[GlobalStyles.whiteBackground, styles.register]}
           onPress={() => navigation.navigate("GettingStarted")}  
           text="Get Started"
         />
@@ -37,7 +45,7 @@ export default function LandingActivity({ navigation }) {
 
       <View style={styles.register}>
         <AppButton
-          style={[GlobalStyles.center, GlobalStyles.whiteBackground]}
+          style={[GlobalStyles.whiteBackground]}
           onPress={() => navigation.navigate("GettingStarted")}  
           text="Manage Elections"
         />
@@ -47,14 +55,7 @@ export default function LandingActivity({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  signIn: {
-    backgroundColor: "black",
-    padding: 10,
-  },
   register: {
     marginTop: 25,
-  },
-  text: {
-    color: "white",
   },
 });

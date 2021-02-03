@@ -17,7 +17,7 @@ export default function LoginActivity({ navigation }) {
 
       <View>
         <AppButton
-          style={[GlobalStyles.center, GlobalStyles.whiteBackground, styles.signIn]}
+          style={[GlobalStyles.whiteBackground, styles.signIn]}
           onPress={() => navigation.navigate("Home")}
           text="Sign In"
         />
@@ -25,12 +25,11 @@ export default function LoginActivity({ navigation }) {
 
       <View style={styles.register}>
         <AppButton
-          style={[GlobalStyles.center, GlobalStyles.whiteBackground]}
+          style={GlobalStyles.whiteBackground}
           onPress={() => navigation.navigate("Register")}
           text="Register"
         />
       </View>
-      {/* <Button onPress={() => { console.log('onpress') }} title='Manage Elections' color='white' /> */}
     </View>
   );
 }
