@@ -42,27 +42,25 @@ class RadioButton extends Component {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        border:'0px solid black',
+        // border:'0px solid black',
       },
       singleButtonContainer: {
         flexDirection: "row",
-        borderWidth: "2px",
+        borderWidth: 2,
         borderColor: buttonColor ? buttonColor : defaultButtonColor,
-        boxShadow: "2px 2px 1px #333",
+        // boxShadow: "2px 2px 1px #333",
         borderRadius: borderRadius ? borderRadius : 50,
         padding: 6,
         margin: 12,
         alignItems: "center",
-        cursor:'pointer',
       },
       radioText: {
-        userSelect: "none",
         marginRight: 15,
         marginLeft: 15,
         fontSize: 20,
         color: textColor ? textColor : defaultTextColor,
         fontWeight: "700",
-        border: "0px solid black",  // for test purpose only
+        // border: "0px solid black",  // for test purpose only
       },
       radioCircle: {
         // margin: 5,
@@ -70,7 +68,7 @@ class RadioButton extends Component {
         width: 30,
         borderRadius: borderRadius ? borderRadius : 50,
         borderRadius: 50,
-        borderWidth: "2px",
+        borderWidth: 2,
         borderColor: buttonColor ? buttonColor : defaultButtonColor,
         alignItems: "center",
         justifyContent: "center"

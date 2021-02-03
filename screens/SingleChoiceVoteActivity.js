@@ -38,7 +38,7 @@ export default function SingleChoiceVoteActivity({ navigation }) {
       ]}>
         {/* <AppLogo /> */}
         <Text>Select only 1: </Text>
-        <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)' borderRadius='50px'/>
+        <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)'/>
         <Button color="rgba(0,0,0,0.8)" title="Submit" onPress={() => handleChoice(items)}/>
       </View >
     )
