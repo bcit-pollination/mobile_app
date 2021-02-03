@@ -10,21 +10,27 @@ import AppLogo from '../components/AppLogo';
 const items = [
   { key: 'Pizza',
     text: 'Pizza',
+    selected: false,
   },
   { key: 'Lasagna',
     text: 'Lasagna',
+    selected: false,
   },
   { key: 'Gnocchi',
     text: 'Gnocchi',
+    selected: false,
   },
 ];
 
-const handleChoice = event => {
-  console.log("Submit Button");
+const handleChoice = (items) => {
+  console.log("Submit Button Pressed! ");
+  console.log(items);
+  items.forEach(element => {
+    element.selected ? console.log("Submitting option: ", element.text):null;
+  });
 }
 
 export default function SingleChoiceVoteActivity({ navigation }) {
-
     return (
       <View style={[
         styles.container, 
@@ -32,8 +38,8 @@ export default function SingleChoiceVoteActivity({ navigation }) {
       ]}>
         {/* <AppLogo /> */}
         <Text>Select only 1: </Text>
-        <RadioButton ITEMS={items} />
-        <Button color="rgba(0,0,0,0.8)" title="Submit" onPress={handleChoice}/>
+        <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)' borderRadius='50px'/>
+        <Button color="rgba(0,0,0,0.8)" title="Submit" onPress={() => handleChoice(items)}/>
       </View >
     )
 }
