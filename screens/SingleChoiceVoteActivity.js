@@ -6,34 +6,40 @@ import { createStackNavigator } from '@react-navigation/stack';
 import RadioButton from '../components/RadioButton';
 import GlobalStyles from "../constants/GlobalStyles";
 import AppLogo from '../components/AppLogo';
+import AppButton from '../components/AppButton';
 
 const items = [
   { key: 'Pizza',
     text: 'Pizza',
+    selected: false,
   },
   { key: 'Lasagna',
     text: 'Lasagna',
+    selected: false,
   },
   { key: 'Gnocchi',
     text: 'Gnocchi',
+    selected: false,
   },
 ];
 
-const handleChoice = event => {
-  console.log("Submit Button");
+const handleChoice = (items) => {
+  console.log("Submit Button Pressed! ");
+  console.log(items);
+  items.forEach(element => {
+    element.selected ? console.log("Submitting option: ", element.text):null;
+  });
 }
 
 export default function SingleChoiceVoteActivity({ navigation }) {
-
     return (
       <View style={[
         styles.container, 
-        GlobalStyles.yellowBackground,
       ]}>
         {/* <AppLogo /> */}
         <Text>Select only 1: </Text>
-        <RadioButton ITEMS={items} />
-        <Button color="rgba(0,0,0,0.8)" title="Submit" onPress={handleChoice}/>
+        <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)'/>
+        <AppButton text="Submit" onPress={() => handleChoice(items)}/>
       </View >
     )
 }
