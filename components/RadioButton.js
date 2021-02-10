@@ -38,12 +38,13 @@ class RadioButton extends Component {
       <View style={styles.groupContainter}>
         {ITEMS.map((res) => {
           return (
-            <TouchableWithoutFeedback 
+            <TouchableWithoutFeedback  
+              key={res.key} 
               onPress={() => {
                 this.setState({ value: res.key });
                 console.log('Selected: ' + res.key);
               }}>
-              <View key={res.key} style={styles.singleButtonContainer}>
+              <View style={styles.singleButtonContainer}>
                 <View style={styles.radioCircle}>
                   {value === res.key ? <View style={styles.selectedRb}/> : <View style={styles.notSelectedRb}/> }
                 </View>

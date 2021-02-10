@@ -55,6 +55,13 @@ export default function LandingActivity({ navigation }) {
           text="Single Choice Vote"
         />
       </View>
+      <View style={styles.landingBtns}>
+        <AppButton
+          style={[GlobalStyles.whiteBackground]}
+          onPress={() => navigation.navigate("YesNoVote")}  
+          text="Yes-No Vote"
+        />
+      </View>
     </View>
   );
 }
