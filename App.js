@@ -7,6 +7,7 @@ import LandingActivity from "./screens/LandingActivity";
 import GlobalStyles from "./constants/GlobalStyles";
 // import Getting Started Page
 import LoginActivity from "./screens/LoginActivity";
+import SignInActivity from "./screens/SignInActivity";
 import RegisterActivity from "./screens/RegisterActivity";
 import HomeActivity from "./screens/HomeActivity";
 import SingleChoiceVoteActivity from "./screens/SingleChoiceVoteActivity";
@@ -17,6 +18,8 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
+
+// TODO: move View styles to StyleSheet or use GlobalStyles instead
 
 function LandingScreen() {
   const navigation = useNavigation();
@@ -65,6 +68,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Landing" component={LandingScreen} />
         <Stack.Screen name="GettingStarted" component={GettingStarted} />
+        <Stack.Screen name="SignIn" component={SignInActivity} />
         <Stack.Screen name="Register" component={RegisterActivity} />
         <Stack.Screen name="Home" component={HomeActivity} />
         <Stack.Screen name="SingleChoiceVote" component={SingleChoiceVoteActivity} />
