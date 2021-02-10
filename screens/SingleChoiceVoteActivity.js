@@ -1,11 +1,6 @@
 import React from 'react'
-import { StyleSheet, View, Text, Button, Image, Linking } from 'react-native'
-import { color } from 'react-native-reanimated'
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { StyleSheet, View, Text } from 'react-native'
 import RadioButton from '../components/RadioButton';
-import GlobalStyles from "../constants/GlobalStyles";
-import AppLogo from '../components/AppLogo';
 import AppButton from '../components/AppButton';
 
 const items = [
@@ -31,12 +26,11 @@ const handleChoice = (items) => {
   });
 }
 
-export default function SingleChoiceVoteActivity({ navigation }) {
+export default function SingleChoiceVoteActivity() {
     return (
       <View style={[
         styles.container, 
       ]}>
-        {/* <AppLogo /> */}
         <Text>Select only 1: </Text>
         <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)'/>
         <AppButton text="Submit" onPress={() => handleChoice(items)}/>

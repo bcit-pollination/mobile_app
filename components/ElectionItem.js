@@ -7,9 +7,13 @@ import GlobalStyles from "../constants/GlobalStyles";
 // }
 
 // TODO: make onLongPress mandatory props
-const ElectionItem = ({ title, endDate, onLongPress }) => {
+const ElectionItem = ({ title, endDate, onLongPress, onPress }) => {
   return (
-    <TouchableOpacity style={[GlobalStyles.yellowBackground, styles.electionContainer]} onLongPress={onLongPress}>
+    <TouchableOpacity 
+      style={[GlobalStyles.yellowBackground, styles.electionContainer]} 
+      onLongPress={onLongPress}
+      onPress={onPress}
+    >
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

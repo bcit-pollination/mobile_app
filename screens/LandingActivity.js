@@ -48,13 +48,6 @@ export default function LandingActivity({ navigation }) {
           text="Manage Elections"
         />
       </View>
-      <View style={styles.landingBtns}>
-        <AppButton
-          style={[GlobalStyles.whiteBackground]}
-          onPress={() => navigation.navigate("SingleChoiceVote")}  
-          text="Single Choice Vote"
-        />
-      </View>
     </View>
   );
 }

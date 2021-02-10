@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Portal, Provider } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 import DetailsModal from "../components/DetailsModal";
 import ElectionItem from "../components/ElectionItem";
 
 import GlobalStyles from "../constants/GlobalStyles";
 
 const HomeActivity = () => {
+  const navigation = useNavigation();
   // modal is not shown at first
   const [show, setShow] = useState(false);
 
@@ -32,9 +34,12 @@ const HomeActivity = () => {
           <Text style={styles.headingText}>Active Elections</Text>
         </View>
         <View style={styles.electionsListContainer}>
-          <ElectionItem title="Election 1" onLongPress={showModal} />
-          <ElectionItem title="Election 2" onLongPress={showModal} />
-          <ElectionItem title="Election 3" onLongPress={showModal} />
+          <ElectionItem title="Single Choice Vote" 
+            onPress={()=> navigation.navigate("SingleChoiceVote")}
+            onLongPress={showModal} 
+          />
+          <ElectionItem title="Multiple Choice Vote" onLongPress={showModal} />
+          <ElectionItem title="Yes/No Vote" onLongPress={showModal} />
         </View>
       </View>
     </Provider>
