@@ -1,16 +1,9 @@
 import React from 'react'
 import { StyleSheet, View, Text, ToastAndroid, Platform, Alert } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
+import { Snackbar } from 'react-native-paper'
 import RadioButton from '../components/RadioButton';
 import AppButton from '../components/AppButton';
-
-function showFail(text) {
-  if (Platform.OS === 'android') {
-    ToastAndroid.show(text, ToastAndroid.SHORT)
-  } else {
-    Alert.alert(text);
-  }
-}
 
 const items = [
   { key: 'Pizza',
@@ -27,24 +20,48 @@ const items = [
   },
 ];
 
-const handleChoice = (items) => {
-  console.log("Submit Button Pressed! ");
-  console.log(items);
-  items.forEach(element => {
-    element.selected ? console.log("Submitting option: ", element.text):null;
-  });
-  showFail("Vote failed. Please try again.");
-}
-
 export default function SingleChoiceVoteActivity() {
   const navigation = useNavigation();
+  const [visible, setVisible] = React.useState(false);
+
+    const handleChoice = (items) => {
+      console.log("Submit Button Pressed! ");
+      console.log(items);
+      items.forEach(element => {
+        element.selected ? console.log("Submitting option: ", element.text):null;
+      });
+
+      // Call this if vote has failed
+      // onFailure();
+    }
+
+    const onFailure = () => {
+      setVisible(!visible);
+    }
+
+    const onDismissSnackBar = () => {
+      setVisible(false);
+    }
+
     return (
       <View style={[
         styles.container, 
       ]}>
         <Text>Select only 1: </Text>
         <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)'/>
-        <AppButton text="Submit" onPress={() => {handleChoice(items); navigation.navigate("VoteSuccess");}}/>
+        <AppButton text="Submit" onPress={
+          () => {
+            handleChoice(items); 
+            navigation.navigate("VoteSuccess");
+          }
+        }/>
+        <Snackbar
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          duration="3000"
+        >
+          Vote failed. Please try again.
+      </Snackbar>
       </View >
     )
 }

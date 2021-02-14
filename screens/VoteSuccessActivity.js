@@ -9,7 +9,7 @@ export default function SingleChoiceVoteActivity() {
     <View style={[
       styles.container, 
     ]}>
-      <Text>Your vote has been submitted.{"\n"}Thank you for participating. </Text>
+      <Text>Your vote has been submitted.{"\n\n"}Thank you for participating. </Text>
       <AppButton text="Return to Home" onPress={() => navigation.navigate("Home")}/>
     </View >
   )
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 2,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'column'
   }
 });
