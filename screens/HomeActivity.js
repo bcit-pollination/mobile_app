@@ -41,7 +41,10 @@ const HomeActivity = () => {
             onPress={()=> navigation.navigate("SingleChoiceVote")}
             onLongPress={showModal} 
           />
-          <ElectionItem title="Multiple Choice Vote" onLongPress={showModal} />
+          <ElectionItem title="Multiple Choice Vote" 
+            onPress={()=> navigation.navigate("MultiChoiceVote")}
+            onLongPress={showModal} 
+          />
           <ElectionItem title="Yes/No Vote" onLongPress={showModal} />
         </View>
       </View>

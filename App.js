@@ -11,6 +11,7 @@ import SignInActivity from "./screens/SignInActivity";
 import RegisterActivity from "./screens/RegisterActivity";
 import HomeActivity from "./screens/HomeActivity";
 import SingleChoiceVoteActivity from "./screens/SingleChoiceVoteActivity";
+import MultiChoiceVoteActivity from "./screens/MultiChoiceVoteActivity";
 import VoteSuccessActivity from "./screens/VoteSuccessActivity";
 
 import "react-native-gesture-handler";
@@ -72,6 +73,7 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterActivity} />
         <Stack.Screen name="Home" component={HomeActivity} />
         <Stack.Screen name="SingleChoiceVote" component={SingleChoiceVoteActivity} />
+        <Stack.Screen name="MultiChoiceVote" component={MultiChoiceVoteActivity} />
         <Stack.Screen name="VoteSuccess" component={VoteSuccessActivity} />
       </Stack.Navigator>
     </NavigationContainer>
