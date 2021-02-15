@@ -2,17 +2,17 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Modal, Button } from "react-native-paper";
 
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../../constants/GlobalStyles";
 
 // TODO: make show and hideModal required props
-const DetailsModal = ({ show, hideModal }) => {
+const BluetoothFailModal = ({ show, hideModal }) => {
   return (
     <Modal
       visible={show}
       onDismiss={hideModal}
       contentContainerStyle={[GlobalStyles.center, styles.modalStyle]}
     >
-      <Text>Thisss is modal</Text>
+      <Text>Failed to connect with Bluetooth. <br/>Please try again.</Text>
       <Button
         mode="contained"
         onPress={hideModal}
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailsModal;
+export default BluetoothFailModal;
