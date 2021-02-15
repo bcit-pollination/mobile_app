@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Portal, Provider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import DetailsModal from "../components/DetailsModal";
+
+import { AntDesign } from "@expo/vector-icons";
+
+import DetailsModal from "../components/old/DetailsModal";
 import ElectionItem from "../components/ElectionItem";
 
 import GlobalStyles from "../constants/GlobalStyles";
 import BluetoothFailModal from "../components/old/BluetoothFailModal";
 import AppModal from "../components/AppModal";
+import { abs } from "react-native-reanimated";
 
 const HomeActivity = () => {
   const navigation = useNavigation();
@@ -36,10 +40,17 @@ const HomeActivity = () => {
   const sampleTip =
     "Long press one of the election items to show further details about an election.";
 
+  const onTipPress = () => {
+    showTipModal();
+  }
+
   // TODO: dynamically load info to the modal from database
   return (
     <Provider>
       <View style={[GlobalStyles.genericPage, styles.container]}>
+        <Pressable style={styles.tipContainer} onPress={onTipPress}>
+          <AntDesign name="question" size={24} color="black" />
+        </Pressable>
         <Portal>
           {/* <DetailsModal info="this is modal" visible={show} show={show} setShow={setShow} /> */}
           <AppModal
@@ -63,7 +74,7 @@ const HomeActivity = () => {
           />
           <ElectionItem
             title="Multiple Choice Vote"
-            onLongPress={showTipModal}
+            onLongPress={showDetailsModal}
           />
           <ElectionItem title="Yes/No Vote" onLongPress={showDetailsModal} />
         </View>
@@ -73,6 +84,11 @@ const HomeActivity = () => {
 };
 
 const styles = StyleSheet.create({
+  tipContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
   headingContainer: {
     flex: 1,
   },
