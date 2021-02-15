@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, Dimensions } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { Snackbar, Checkbox } from 'react-native-paper'
 
@@ -9,9 +9,11 @@ export default function MultiChoiceVoteActivity() {
 
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
-  
-  const [choice1, setChoice1] = React.useState(false);
-  const [choice2, setChoice2] = React.useState(false);
+
+  const [checked, setChecked] = React.useState({
+    choice1: false,
+    choice2: false,
+  });
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
@@ -29,42 +31,45 @@ export default function MultiChoiceVoteActivity() {
   }
 
     return (
-      <View style={[
-        styles.container, 
-      ]}>
-        <Text>Select multiple: </Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>Select multiple: </Text>
 
         <View style={styles.checkboxContainer}>
           <Checkbox.Item
-            status={choice1 ? 'checked' : 'unchecked'}
+            style={styles.item}
+            status={checked.choice1 ? 'checked' : 'unchecked'}
             onPress={() => {
-              setChoice1(!choice1);
+              setChecked(checked => ({...checked, choice1: !checked.choice1}));
             }}
+            color="#000"
             label="Item 1"
           />
           <Checkbox.Item
-            status={choice2 ? 'checked' : 'unchecked'}
+            style={styles.item}
+            status={checked.choice2 ? 'checked' : 'unchecked'}
             onPress={() => {
-              setChoice2(!choice2);
+              setChecked(checked => ({...checked, choice2: !checked.choice2}));
             }}
+            color="#000"
             label="Item 2"
           />
         </View>
 
-        <AppButton text="Submit" onPress={
+        <AppButton style={styles.buttonStyle} text="Submit" onPress={
           () => {
             handleChoice(); 
             navigation.navigate("VoteSuccess");
           }
         }/>
         <Snackbar
+          style={styles.snackBar}
           visible={visible}
           onDismiss={onDismissSnackBar}
           duration="3000"
         >
           Vote failed. Please try again.
-      </Snackbar>
-      </View >
+        </Snackbar>
+      </View>
     )
 }
 
@@ -72,13 +77,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center'
   },
-  item:{
-    width:"80%",
-    backgroundColor:"#fff",
-    borderRadius:20,
-    padding:10,
-    marginBottom:10,
-    flexDirection:"row",
+  title: {
+    margin: 20
   },
+  item: {
+    borderRadius: 20,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    margin: 10,
+  },
+  checkboxContainer: {
+    width: 250,
+  },
+  buttonStyle: {
+    margin: 10,
+  },
+  snackBar: {
+    alignSelf: 'flex-end'
+  }
 });
