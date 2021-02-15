@@ -6,6 +6,7 @@ import DetailsModal from "../components/DetailsModal";
 import ElectionItem from "../components/ElectionItem";
 
 import GlobalStyles from "../constants/GlobalStyles";
+import BluetoothFailModal from "../components/BluetoothFailModal";
 
 const HomeActivity = () => {
   const navigation = useNavigation();
@@ -29,6 +30,8 @@ const HomeActivity = () => {
         {/* <DetailsModal info="this is modal" visible={show} show={show} setShow={setShow} /> */}
         <Portal>
           <DetailsModal show={show} hideModal={hideModal} />
+          {/* for testing purposes */}
+          {/* <BluetoothFailModal show={show} hideModal={hideModal} /> */}
         </Portal>
         <View style={[styles.headingContainer, GlobalStyles.center]}>
           <Text style={styles.headingText}>Active Elections</Text>
