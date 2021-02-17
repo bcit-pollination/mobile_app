@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View , Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 // Instruction:
 // 1. Import
@@ -35,7 +35,7 @@ class RadioButton extends Component {
   };
 
   render() {
-    const { ITEMS, onPressAction, textColor, buttonColor, borderRadius  } = this.props;
+    const { ITEMS, onPressAction, textColor, buttonColor, borderRadius } = this.props;
     const { value } = this.state;
     this.styles = StyleSheet.create({
       groupContainer: {
@@ -87,27 +87,28 @@ class RadioButton extends Component {
         backgroundColor: "rgba(0,0,0,0.0)"
       }
     });
-    
+
     return (
-      <View style={[ this.styles.groupContainter ]}>
+      <View style={[this.styles.groupContainter]}>
         {ITEMS.map((res) => {
           return (
-            <Pressable 
+            <Pressable
               onPress={() => {
-                this.setState({value: res.key});
+                this.setState({ value: res.key });
                 ITEMS.forEach(element => {
                   element.selected = (element.key === res.key);
                 });
+
                 console.log('Selected: ' + res.key);
                 if (onPressAction) {
-                  return onPressAction();
+                  return onPressAction(res.key);
                 }
               }}>
-              <View key={res.key} style={[ this.styles.singleButtonContainer ]}>
-                <View style={[ this.styles.radioCircle ]}>
-                  {value === res.key ? <View style={[ this.styles.selectedRb ]}/> : <View style={[ this.styles.notSelectedRb ]}/> }
+              <View key={res.key} style={[this.styles.singleButtonContainer]}>
+                <View style={[this.styles.radioCircle]}>
+                  {value === res.key ? <View style={[this.styles.selectedRb]} /> : <View style={[this.styles.notSelectedRb]} />}
                 </View>
-                <Text style={ [this.styles.radioText ]}>{res.text}</Text>
+                <Text style={[this.styles.radioText]}>{res.text}</Text>
               </View>
             </Pressable>
           );

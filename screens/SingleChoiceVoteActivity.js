@@ -5,6 +5,10 @@ import { Snackbar } from 'react-native-paper'
 import RadioButton from '../components/RadioButton';
 import AppButton from '../components/AppButton';
 
+// formatter
+import { stringToBytes } from "convert-string";
+
+
 const items = [
   {
     key: 'Pizza',
@@ -23,13 +27,19 @@ const items = [
   },
 ];
 
-export default function SingleChoiceVoteActivity() {
-  const navigation = useNavigation();
+
+import BleManager from 'react-native-ble-manager';
+
+
+export default function SingleChoiceVoteActivity({ route, navigation }) {
+  const { connected_peripheral } = route.params;
+
   const [visible, setVisible] = React.useState(false);
 
   // bleConnected
   const [bleConnected, setBleConnected] = React.useState(false)
 
+  const [singleChoiceSelected, setSelectedSingleChoice] = React.useState("null")
 
   // writing for single choice
   const bleWriteSingleChoice = (text_to_send) => {
@@ -71,20 +81,42 @@ export default function SingleChoiceVoteActivity() {
     })
   }
 
-  const handleChoice = (items) => {
-    console.log("Submit Button Pressed! ");
-    console.log(items);
-    items.forEach(element => {
-      element.selected ? console.log("Submitting option: ", element.text) : null;
-    });
+  // const handleChoice = (items) => {
+  //   console.log("Submit Button Pressed! ");
+  //   console.log(items);
 
-    // bleWriteSingleChoice()
+  //   items.forEach(element => {
+  //     if (element.selected) {
+  //       console.log("Submitting option: ", element.text)
+  //       setSelectedSingleChoice(element.text)
+
+  //       setTimeout(() => {
+  //         console.log(singleChoiceSelected)
+  //         bleWriteSingleChoice(singleChoiceSelected)
+  //       }, 2000);
+
+  //     }
+  //   });
 
 
 
-    // Call this if vote has failed
-    onFailure();
+
+  // Call this if vote has failed
+  // onFailure();
+  // }
+
+  //passed in as onPressAction; 
+  const handleChoice = (choice) => {
+    setSelectedSingleChoice(choice);
+    console.log(choice)
   }
+
+  // submit via BLE
+  const handleSubmit = () => {
+    console.log(singleChoiceSelected)
+    bleWriteSingleChoice(singleChoiceSelected)
+  }
+
 
   const onFailure = () => {
     setVisible(!visible);
@@ -99,11 +131,11 @@ export default function SingleChoiceVoteActivity() {
       styles.container,
     ]}>
       <Text>Select only 1: </Text>
-      <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)' />
+      <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)' onPressAction={handleChoice} />
 
       < AppButton text="Submit" onPress={
         () => {
-          handleChoice(items);
+          handleSubmit();
           // navigation.navigate("VoteSuccess");
         }
       } />

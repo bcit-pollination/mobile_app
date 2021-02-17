@@ -453,7 +453,7 @@ const App = ({ route, navigation }) => {
                     console.log('---------Proceed to the next screen---------------')
                     console.log(ELECTION_TYPES[electionType])
                     console.log(electionType)
-                    navigation.navigate(ELECTION_TYPES[electionType]);
+                    navigation.navigate(ELECTION_TYPES[electionType], { connected_peripheral: connected_peripheral });
                 }} />}
 
 
