@@ -67,7 +67,7 @@ export default function MultiChoiceVoteActivity() {
       {!bleConnected && <AppButton style={styles.buttonStyle} text="Connect to Bluetooth" onPress={
         () => {
           handleChoice();
-          navigation.navigate("VoteSuccess");
+          navigation.navigate("BleConnection");
         }
       } />}
 

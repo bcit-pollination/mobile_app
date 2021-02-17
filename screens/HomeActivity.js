@@ -14,9 +14,17 @@ import AppModal from "../components/AppModal";
 import { abs } from "react-native-reanimated";
 
 const HomeActivity = () => {
+  //BLE connected?
+  const [showBleConnection, setShowBleConnection] = useState(false);
+
   const navigation = useNavigation();
+
   // modal is not shown at first
   const [showElectionDetails, setShowElectionDetails] = useState(false);
+
+
+
+
   const [showTip, setShowTip] = useState(false);
 
   // const changeShowDetailsModal = () => {
@@ -26,6 +34,8 @@ const HomeActivity = () => {
   // const changeShowTipModal = () => {
   //   setShowElectionDetails(!showElectionDetails);
   // };
+
+  const showBleSettings = () => setShowBleConnection(true)
 
   const showDetailsModal = () => setShowElectionDetails(true);
   const hideDetailsModal = () => setShowElectionDetails(false);
@@ -69,13 +79,14 @@ const HomeActivity = () => {
         <View style={styles.electionsListContainer}>
           <ElectionItem
             title="Single Choice Vote"
-            onPress={() => navigation.navigate("SingleChoiceVote")}
+            //parameter is passed in for later redirection, after bluetooth is connected!
+            onPress={() => navigation.navigate("BleConnection", { electionType: 'Single Choice Vote' })}
             onLongPress={showDetailsModal}
           />
           <ElectionItem
             title="Multiple Choice Vote"
             onLongPress={showDetailsModal}
-            onPress={()=> navigation.navigate("MultiChoiceVote")}
+            onPress={() => navigation.navigate("BleConnection", { electionType: 'Single Choice Vote' })}
           />
           <ElectionItem title="Yes/No Vote" onLongPress={showDetailsModal} />
         </View>

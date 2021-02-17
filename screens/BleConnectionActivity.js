@@ -6,11 +6,14 @@
  */
 import { stringToBytes } from "convert-string";
 
+import { useNavigation } from "@react-navigation/native";
+
 import React, {
     useState,
     useEffect,
     Fragment,
 } from 'react';
+
 import {
     SafeAreaView,
     StyleSheet,
@@ -25,8 +28,10 @@ import {
     PermissionsAndroid,
     FlatList,
     TouchableHighlight,
-    TextInput
+    TextInput,
+
 } from 'react-native';
+
 
 import {
     Colors,
@@ -37,7 +42,24 @@ const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 
-const App = () => {
+
+const ELECTION_TYPES = {
+    'Single Choice Vote': 'SingleChoiceVote',
+    'Multiple Choice Vote': 'MultiChoiceVote',
+    'Yes/No Vote': ''
+}
+
+// pass in a prop to notify the app which 
+const App = ({ route, navigation }) => {
+    const { electionType } = route.params;
+
+    useEffect(() => {
+        console.log('electionType')
+        console.log(electionType)
+
+    }, [electionType])
+
+
 
     const [isScanning, setIsScanning] = useState(false);
     const peripherals = new Map();
@@ -49,7 +71,8 @@ const App = () => {
 
     const [peripheral_info, renderPeripheral] = useState();
 
-    const [connected_peripheral, set_to_connected] = useState();
+
+    const [connected_peripheral, set_to_connected] = useState(null);
 
 
     const startScan = () => {
@@ -115,6 +138,10 @@ const App = () => {
         }
         peripherals.set(peripheral.id, peripheral);
         setList(Array.from(peripherals.values()));
+    }
+
+    const handleRedirectionToVote = (electionType) => {
+
     }
 
     // Click on the device
@@ -385,7 +412,10 @@ const App = () => {
                     )}
                     <View style={styles.body}>
 
+
                         <View style={{ margin: 10 }}>
+                            <Text>Scan for "Pollination" </Text>
+                            <Text>Connect by tapping the device ID</Text>
                             <Button
                                 title={'Scan Bluetooth (' + (isScanning ? 'on' : 'off') + ')'}
                                 onPress={() => startScan()}
@@ -405,7 +435,9 @@ const App = () => {
                             <View>
 
                                 <Text>{connected_peripheral && <Text>
-                                    Connected!!!</Text>}</Text>
+                                    Connected!!!</Text>}
+                                </Text>
+
                             </View>}
 
                     </View>
@@ -415,6 +447,16 @@ const App = () => {
                     renderItem={({ item }) => renderItem(item)}
                     keyExtractor={item => item.id}
                 />
+
+
+                {connected_peripheral && <Button title='Proceed to the vote!' onPress={() => {
+                    console.log('---------Proceed to the next screen---------------')
+                    console.log(ELECTION_TYPES[electionType])
+                    console.log(electionType)
+                    navigation.navigate(ELECTION_TYPES[electionType]);
+                }} />}
+
+
             </SafeAreaView>
         </>
     );

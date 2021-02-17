@@ -14,6 +14,8 @@ import SingleChoiceVoteActivity from "./screens/SingleChoiceVoteActivity";
 import MultiChoiceVoteActivity from "./screens/MultiChoiceVoteActivity";
 import VoteSuccessActivity from "./screens/VoteSuccessActivity";
 
+import BleConnectionActivity from './screens/BleConnectionActivity'
+
 import "react-native-gesture-handler";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -75,7 +77,9 @@ export default function App() {
         <Stack.Screen name="SingleChoiceVote" component={SingleChoiceVoteActivity} />
         <Stack.Screen name="MultiChoiceVote" component={MultiChoiceVoteActivity} />
         <Stack.Screen name="VoteSuccess" component={VoteSuccessActivity} />
+        <Stack.Screen name="BleConnection" component={BleConnectionActivity} />
       </Stack.Navigator>
+
     </NavigationContainer>
   );
 }
