@@ -18,7 +18,7 @@ export default function LoginActivity({ navigation }) {
       <View>
         <AppButton
           style={[GlobalStyles.whiteBackground, styles.signIn]}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("SignIn")}
           text="Sign In"
         />
       </View>

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Modal, Button } from "react-native-paper";
 
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../../constants/GlobalStyles";
 
 // TODO: make show and hideModal required props
 const DetailsModal = ({ show, hideModal }) => {
