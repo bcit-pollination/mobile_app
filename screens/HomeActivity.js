@@ -86,11 +86,13 @@ const HomeActivity = () => {
           <ElectionItem
             title="Multiple Choice Vote"
             onLongPress={showDetailsModal}
-            onPress={() => navigation.navigate("BleConnection", { electionType: 'Single Choice Vote' })}
+            onPress={() => navigation.navigate("BleConnection", { electionType: 'Multiple Choice Vote' })}
           />
-          <ElectionItem title="Yes/No Vote" onLongPress={showDetailsModal} />
+          <ElectionItem title="Yes/No Vote" onLongPress={showDetailsModal}
+            onPress={() => navigation.navigate("BleConnection", { electionType: 'Yes No Vote' })} />
         </View>
       </View>
+
     </Provider>
   );
 };

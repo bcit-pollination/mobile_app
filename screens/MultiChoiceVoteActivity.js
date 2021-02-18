@@ -3,11 +3,20 @@ import { StyleSheet, View, Text, Dimensions } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { Snackbar, Checkbox } from 'react-native-paper'
 
+//Bluetooth Connection
+import BleManager from 'react-native-ble-manager';
+
+
 import AppButton from '../components/AppButton';
 
-export default function MultiChoiceVoteActivity() {
+// formatter
+import { stringToBytes } from "convert-string";
 
-  const navigation = useNavigation();
+export default function MultiChoiceVoteActivity({ route, navigation }) {
+
+  // This is needed for the write functions
+  const { connected_peripheral } = route.params;
+
   const [visible, setVisible] = React.useState(false);
 
   const [bleConnected, setBleConnected] = React.useState(false)
@@ -24,12 +33,95 @@ export default function MultiChoiceVoteActivity() {
     // onFailure();
   }
 
+  const handleSubmit = () => {
+    console.log("Submit Button Pressed! ");
+    bleWriteMultiChoice(checked)
+    // Call this if vote has failed
+    // onFailure();
+  }
+
   const onFailure = () => {
     setVisible(!visible);
   }
 
   const onDismissSnackBar = () => {
     setVisible(false);
+  }
+
+  // writing for single choice
+  const bleWriteMultiChoice = (text_to_send) => {
+
+    BleManager.connect(connected_peripheral).then((res) => {
+
+      BleManager.retrieveServices(connected_peripheral).then((peripheralInfo) => {
+
+        console.log('peripheralInfo', peripheralInfo.services);
+        console.log('---------- text to send--------')
+        console.log(`string: ${JSON.stringify(text_to_send)}`);
+        console.log('---------- text to send --------')
+
+        // service uuid for: Writing vote-info to rPi 
+        var service = '13333333-3333-3333-3333-333333333337';
+        // character uuid for: doing single votes
+        var voteCharacteristic = '13333333-3333-3333-3333-333333330009';
+
+        BleManager.startNotification(connected_peripheral, service, voteCharacteristic).then(() => {
+          // 
+          let text_to_send_buffer = JSON.stringify(text_to_send) +
+            "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
+          let splice_index = 0
+
+          console.log(text_to_send_buffer)
+
+          //While it still have some data to send:
+
+          //
+          setTimeout(() => {
+            BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
+              console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+              this.alert("message sent!");
+
+              while (text_to_send_buffer.length > 20) {
+                splice_index += 20
+                text_to_send_buffer = text_to_send_buffer.slice(splice_index, splice_index + 20)
+
+                console.log('text_to_send_buffer: ' + text_to_send_buffer)
+
+                console.log('splice_index: ' + splice_index)
+                BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
+                  console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+                  // this.alert("message sent!");
+
+                })
+
+              }
+
+            })
+          }, 500)
+
+          // .catch((err) => {
+          //   console.log('failed to send')
+          //   console.log(err)
+          //   this.alert("failed to send");
+          // });
+
+
+
+
+          // if (text_to_send_buffer.length <= 20) {
+          //   text_to_send_buffer = text_to_send_buffer.slice(splice_index, -1)
+          //   BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
+          //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+          //     this.alert("message sent!");
+          //   }).catch((err) => {
+          //     console.log('failed to send')
+          //     console.log(err)
+          //     this.alert("failed to send");
+          //   });
+          // }
+        })
+      })
+    })
   }
 
   return (
@@ -57,19 +149,13 @@ export default function MultiChoiceVoteActivity() {
         />
       </View>
 
-      {bleConnected && <AppButton style={styles.buttonStyle} text="Submit" onPress={
+      <AppButton style={styles.buttonStyle} text="Submit" onPress={
         () => {
-          handleChoice();
-          navigation.navigate("VoteSuccess");
+          handleSubmit();
+          // navigation.navigate("VoteSuccess");
         }
-      } />}
+      } />
 
-      {!bleConnected && <AppButton style={styles.buttonStyle} text="Connect to Bluetooth" onPress={
-        () => {
-          handleChoice();
-          navigation.navigate("BleConnection");
-        }
-      } />}
 
 
       <Snackbar

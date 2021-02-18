@@ -13,6 +13,7 @@ import HomeActivity from "./screens/HomeActivity";
 import SingleChoiceVoteActivity from "./screens/SingleChoiceVoteActivity";
 import MultiChoiceVoteActivity from "./screens/MultiChoiceVoteActivity";
 import VoteSuccessActivity from "./screens/VoteSuccessActivity";
+import YesNoActivity from './screens/YesNoVoteActivity'
 
 import BleConnectionActivity from './screens/BleConnectionActivity'
 
@@ -78,6 +79,7 @@ export default function App() {
         <Stack.Screen name="MultiChoiceVote" component={MultiChoiceVoteActivity} />
         <Stack.Screen name="VoteSuccess" component={VoteSuccessActivity} />
         <Stack.Screen name="BleConnection" component={BleConnectionActivity} />
+        <Stack.Screen name='YesNoVote' component={YesNoActivity} />
       </Stack.Navigator>
 
     </NavigationContainer>
