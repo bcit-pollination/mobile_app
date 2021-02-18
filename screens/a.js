@@ -20,3 +20,12 @@
 // SingleChoice: 12 
 // MultiChoice : 12,13,15 
 // Yes/No      : YNYNYYYNNYY 
+let text_to_send_buffer = '1234567890abcdefghijk-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z'
+text_to_send_buffer = text_to_send_buffer.slice(0, 20)
+console.log(text_to_send_buffer)
+text_to_send_buffer.slice(0, 20)
+console.log(text_to_send_buffer)
+text_to_send_buffer.slice(0, 20)
+text_to_send_buffer.slice(0, 20)
+text_to_send_buffer.slice(0, 20)
+console.log(text_to_send_buffer)

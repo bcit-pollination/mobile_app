@@ -67,9 +67,9 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
 
         BleManager.startNotification(connected_peripheral, service, voteCharacteristic).then(() => {
           // 
-          let text_to_send_buffer = JSON.stringify(text_to_send) +
-            "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
-          let splice_index = 0
+          let text_to_send_buffer = JSON.stringify(text_to_send) + ' END'
+          // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
+          let slice_index = 0
 
           console.log(text_to_send_buffer)
 
@@ -81,17 +81,17 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
               console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
               this.alert("message sent!");
 
-              while (text_to_send_buffer.length > 20) {
-                splice_index += 20
-                text_to_send_buffer = text_to_send_buffer.slice(splice_index, splice_index + 20)
+              while (text_to_send_buffer.length - 20 >= 20) {
 
-                console.log('text_to_send_buffer: ' + text_to_send_buffer)
+                slice_index += 20
+                to_send_buffer = text_to_send_buffer.slice(slice_index, slice_index + 20)
 
-                console.log('splice_index: ' + splice_index)
-                BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
-                  console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+                console.log('text_to_send_buffer: ' + to_send_buffer)
+
+                console.log('splice_index: ' + slice_index)
+                BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(to_send_buffer)).then(() => {
+                  console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
                   // this.alert("message sent!");
-
                 })
 
               }
