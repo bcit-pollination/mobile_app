@@ -203,20 +203,18 @@ const App = ({ route, navigation }) => {
                                 BleManager.startNotification(peripheral.id, service, bakeCharacteristic).then(() => {
                                     console.log('Started notification on ' + peripheral.id);
                                     setTimeout(() => {
-                                        BleManager.write(peripheral.id, service, crustCharacteristic, [0]).then(() => {
-                                            console.log('Writed NORMAL crust');
-                                            BleManager.write(peripheral.id, service, bakeCharacteristic, [1, 95]).then(() => {
-                                                console.log('Writed 351 temperature, the pizza should be BAKED');
-
-                                                //var PizzaBakeResult = {
-                                                //  HALF_BAKED: 0,
-                                                //  BAKED:      1,
-                                                //  CRISPY:     2,
-                                                //  BURNT:      3,
-                                                //  ON_FIRE:    4
-                                                //};
-                                            });
+                                        BleManager.write(peripheral.id, service, bakeCharacteristic, [1, 95]).then(() => {
+                                            console.log('Connected to RPI Polling Device.');
+                                            console.log('UUID is: ')
+                                            //var PizzaBakeResult = {
+                                            //  HALF_BAKED: 0,
+                                            //  BAKED:      1,
+                                            //  CRISPY:     2,
+                                            //  BURNT:      3,
+                                            //  ON_FIRE:    4
+                                            //};
                                         });
+
 
                                     }, 500);
                                 }).catch((error) => {

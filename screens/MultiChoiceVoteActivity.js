@@ -62,12 +62,17 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
 
         // service uuid for: Writing vote-info to rPi 
         var service = '13333333-3333-3333-3333-333333333337';
+
         // character uuid for: doing single votes
         var voteCharacteristic = '13333333-3333-3333-3333-333333330009';
 
         BleManager.startNotification(connected_peripheral, service, voteCharacteristic).then(() => {
-          // 
-          let text_to_send_buffer = JSON.stringify(text_to_send) + ' END'
+          // (1223)  
+          text_to_send2 = JSON.stringify(text_to_send)
+
+          console.log('text_to_send.length()' + text_to_send2.length)
+          let text_to_send_buffer = `${text_to_send2.length} ${JSON.stringify(text_to_send)}`
+
           // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
           let slice_index = 0
 
