@@ -60,24 +60,25 @@ const App = ({ route, navigation }) => {
     }, [electionType])
 
 
-
+    // Bool, is scanning?
     const [isScanning, setIsScanning] = useState(false);
+
     const peripherals = new Map();
     const [list, setList] = useState([]);
 
-
+    // The string you wanna send
     const [text_to_send, setTextToSend] = useState('');
 
-
+    // The 
     const [peripheral_info, renderPeripheral] = useState();
 
-
+    // The UUID / MAC of the connected device
     const [connected_peripheral, set_to_connected] = useState(null);
 
 
     const startScan = () => {
         if (!isScanning) {
-            BleManager.scan([], 3, true).then(() => {
+            BleManager.scan(['13333333-3333-3333-3333-333333333337'], 3, true).then(() => {
                 console.log('Scanning...');
                 setIsScanning(true);
             }).catch(err => {
@@ -420,9 +421,9 @@ const App = ({ route, navigation }) => {
                             />
                         </View>
 
-                        <View style={{ margin: 10 }}>
+                        {/* <View style={{ margin: 10 }}>
                             <Button title="Retrieve connected peripherals" onPress={() => retrieveConnected()} />
-                        </View>
+                        </View> */}
 
                         {(list.length == 0) &&
                             <View style={{ flex: 1, margin: 20 }}>
@@ -430,10 +431,10 @@ const App = ({ route, navigation }) => {
                             </View>
                         }
                         {
-                            <View>
+                            <View style={{ margin: 20 }}>
 
-                                <Text>{connected_peripheral && <Text>
-                                    Connected!!!</Text>}
+                                <Text style={{ textAlign: 'center', color: 'red', fontWeight: 'bolder' }}>{connected_peripheral && <Text>
+                                    ↓↓↓Connected to device↓↓↓:</Text>}
                                 </Text>
 
                             </View>}
