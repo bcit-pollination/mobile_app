@@ -8,6 +8,9 @@ import { stringToBytes } from "convert-string";
 
 import { useNavigation } from "@react-navigation/native";
 
+//characteristics uuids:
+import { readSingleVote, readMultiVote, readYesNoVote } from '../constants/BleServiceCharacteristics'
+
 import React, {
     useState,
     useEffect,
@@ -43,10 +46,11 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 
 
+// Three types of elections
 const ELECTION_TYPES = {
     'Single Choice Vote': 'SingleChoiceVote',
     'Multiple Choice Vote': 'MultiChoiceVote',
-    'Yes/No Vote': ''
+    'Yes/No Vote': 'YesNoVote'
 }
 
 // pass in a prop to notify the app which 
@@ -59,6 +63,12 @@ const App = ({ route, navigation }) => {
 
     }, [electionType])
 
+
+    //
+    // const [characteristicUUID, setCharacteristicUUID] = useState('')
+
+
+    const [question_json, setJsonObject] = useState(null)
 
     // Bool, is scanning?
     const [isScanning, setIsScanning] = useState(false);
@@ -75,6 +85,8 @@ const App = ({ route, navigation }) => {
     // The UUID / MAC of the connected device
     const [connected_peripheral, set_to_connected] = useState(null);
 
+    // The Voting Token needs to be added
+    const [voting_token, setVotingToken] = useState(null);
 
 
 
@@ -177,6 +189,8 @@ const App = ({ route, navigation }) => {
                         BleManager.retrieveServices(peripheral.id).then((peripheralData) => {
                             console.log('Retrieved peripheral services', peripheralData);
 
+
+
                             BleManager.readRSSI(peripheral.id).then((rssi) => {
 
 
@@ -187,6 +201,12 @@ const App = ({ route, navigation }) => {
                                 // var service = '13333333-3333-3333-3333-333333333337';
 
                                 var readMultiVote = '13333333-3333-3333-3333-333333330009';
+                                var readSingleVote = '13333333-3333-3333-3333-333333330009';
+                                var readYesNoVote = '13333333-3333-3333-3333-333333330009';
+
+
+
+
 
                                 console.log('Retrieved actual RSSI value', rssi);
                                 let p = peripherals.get(peripheral.id);
@@ -211,16 +231,35 @@ const App = ({ route, navigation }) => {
                             console.log('---------------- peripheralInfo ------------------------\n');
 
                             var service = '13333333-3333-3333-3333-333333333337';
-                            var bakeCharacteristic = '13333333-3333-3333-3333-333333330003';
-                            var crustCharacteristic = '13333333-3333-3333-3333-333333330001';
 
                             // var service = '13333333-3333-3333-3333-333333333337';
 
-                            var readMultiVote = '13333333-3333-3333-3333-333333330009';
+                            // var readMultiVote = '13333333-3333-3333-3333-333333330009';
+
+                            // check which kind of vote the user has chosen:
+                            if (ELECTION_TYPES[electionType] == 'SingleChoiceVote') {
+                                // setCharacteristicUUID(readSingleVote)
+                                characteristicUUID = readSingleVote
+                            } else if (ELECTION_TYPES[electionType] == 'MultiChoiceVote') {
+                                // setCharacteristicUUID(readMultiVote)
+                                characteristicUUID = readMultiVote
+                            }
+                            else if (ELECTION_TYPES[electionType] == 'YesNoVote') {
+                                // setCharacteristicUUID(readYesNoVote)
+                                characteristicUUID = readYesNoVote
+                            }
 
                             setTimeout(() => {
-                                BleManager.startNotification(peripheral.id, service, readMultiVote).then(() => {
+                                // changed readMulti to characteristicUUID
+                                BleManager.startNotification(peripheral.id, service, characteristicUUID).then(() => {
+
                                     console.log('Started notification on ' + peripheral.id);
+                                    console.log('characteristicUUID' + characteristicUUID)
+
+                                    // console.log('readSingleVote' + readSingleVote)
+                                    // console.log('readMultiVote' + readMultiVote)
+                                    // console.log('readYesNoVote' + readYesNoVote)
+
                                     BleManager.read(
                                         peripheral.id,
                                         service,
@@ -258,8 +297,12 @@ const App = ({ route, navigation }) => {
                                                             console.log(error);
                                                         });
                                                 }
+
                                                 console.log('json_string:')
                                                 console.log(json_string)
+                                                setJsonObject(JSON.parse(json_string))
+                                                console.log(JSON.parse(json_string))
+
                                             })
 
                                         })
@@ -275,7 +318,7 @@ const App = ({ route, navigation }) => {
                                 }).catch((error) => {
                                     console.log('Notification error', error);
                                 });
-                            }, 200);
+                            }, 350);
                         });
 
 
@@ -361,14 +404,7 @@ const App = ({ route, navigation }) => {
                                 });
                             }}></Button>
 
-                            <TextInput
-                                style={[styles.textInput]}
-                                value={text_to_send}
-                                placeholder="input"
-                                onChangeText={(text) => {
-                                    setTextToSend(text)
-                                }}
-                            />
+
 
                             <Button title='send message' onPress={() => {
 
@@ -480,6 +516,7 @@ const App = ({ route, navigation }) => {
 
                     </View>
                 </ScrollView>
+
                 <FlatList
                     data={list}
                     renderItem={({ item }) => renderItem(item)}
@@ -487,11 +524,30 @@ const App = ({ route, navigation }) => {
                 />
 
 
-                {connected_peripheral && <Button title='Proceed to the vote!' onPress={() => {
+                {/* Connected Peripheral -> set text to send */}
+                {connected_peripheral && < TextInput
+                    style={[styles.uuidInput]}
+                    value={text_to_send}
+                    placeholder="Enter the voting UUID here"
+                    onChangeText={(text) => {
+                        setVotingToken(text)
+                    }}
+                />}
+
+                {/*Got the voting token and then proceed to vote */}
+                {voting_token && <Button title='Proceed to the vote!' onPress={() => {
                     console.log('---------Proceed to the next screen---------------')
                     console.log(ELECTION_TYPES[electionType])
                     console.log(electionType)
-                    navigation.navigate(ELECTION_TYPES[electionType], { connected_peripheral: connected_peripheral });
+
+                    //pass those json into the new component
+                    navigation.navigate(ELECTION_TYPES[electionType],
+                        {
+                            connected_peripheral: connected_peripheral, // the ID of the connected peripheral is needed to do write() operations
+                            question_json: question_json, //the question to be rendered is passed into the next component
+                            voting_token: voting_token   //voting token is also passed into the next component
+                        });
+
                 }} />}
 
 
@@ -499,6 +555,15 @@ const App = ({ route, navigation }) => {
         </>
     );
 };
+
+
+
+
+
+
+
+
+
 
 const styles = StyleSheet.create({
     scrollView: {
@@ -537,6 +602,9 @@ const styles = StyleSheet.create({
         paddingRight: 12,
         textAlign: 'right',
     },
+    uuidInput: {
+        backgroundColor: 'gray'
+    }
 });
 
 export default App;

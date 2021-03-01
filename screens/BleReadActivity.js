@@ -32,6 +32,9 @@ import {
 
 } from 'react-native';
 
+//characteristics uuids:
+import { readSingleVote, readMultiVote, readYesNoVote } from '../constants/BleServiceCharacteristics'
+
 
 import {
     Colors,
@@ -202,9 +205,9 @@ const App = ({ route, navigation }) => {
                             var crustCharacteristic = '13333333-3333-3333-3333-333333330001';
 
 
-                            var readSingleVote = '13333333-3333-3333-3333-333333330011';
-                            var readMultiVote = '13333333-3333-3333-3333-333333330009';
-                            var readYesNoVote = '13333333-3333-3333-3333-333333330013';
+                            // var readSingleVote = '13333333-3333-3333-3333-333333330011';
+                            // var readMultiVote = '13333333-3333-3333-3333-333333330009';
+                            // var readYesNoVote = '13333333-3333-3333-3333-333333330013';
 
                             // var service = '13333333-3333-3333-3333-333333333337';
 
