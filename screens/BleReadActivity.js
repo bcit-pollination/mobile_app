@@ -203,26 +203,44 @@ const App = ({ route, navigation }) => {
 
 
                             var readSingleVote = '13333333-3333-3333-3333-333333330011';
-                            var readMultiVote = '13333333-3333-3333-3333-333333330012';
+                            var readMultiVote = '13333333-3333-3333-3333-333333330009';
                             var readYesNoVote = '13333333-3333-3333-3333-333333330013';
 
                             // var service = '13333333-3333-3333-3333-333333333337';
 
                             setTimeout(() => {
-                                BleManager.startNotification(peripheral.id, service, bakeCharacteristic).then(() => {
+                                BleManager.startNotification(peripheral.id, service, readMultiVote).then(() => {
                                     console.log('Started notification on ' + peripheral.id);
                                     setTimeout(() => {
-                                        BleManager.write(peripheral.id, service, bakeCharacteristic, [1, 95]).then(() => {
-                                            console.log('Connected to RPI Polling Device.');
-                                            console.log('UUID is: ')
-                                            //var PizzaBakeResult = {
-                                            //  HALF_BAKED: 0,
-                                            //  BAKED:      1,
-                                            //  CRISPY:     2,
-                                            //  BURNT:      3,
-                                            //  ON_FIRE:    4
-                                            //};
-                                        });
+
+                                        BleManager.read(
+                                            peripheral_info,
+                                            service,
+                                            readMultiVote
+                                        )
+                                            .then((readData) => {
+                                                // Success code
+                                                console.log("Read: " + readData);
+
+                                                const buffer = Buffer.Buffer.from(readData); //https://github.com/feross/buffer#convert-arraybuffer-to-buffer
+                                                const sensorData = buffer.readUInt8(1, true);
+                                            })
+                                            .catch((error) => {
+                                                // Failure code
+                                                console.log(error);
+                                            });
+
+                                        // BleManager.write(peripheral.id, service, bakeCharacteristic, [1, 95]).then(() => {
+                                        //     console.log('Connected to RPI Polling Device.');
+                                        //     console.log('UUID is: ')
+                                        //     //var PizzaBakeResult = {
+                                        //     //  HALF_BAKED: 0,
+                                        //     //  BAKED:      1,
+                                        //     //  CRISPY:     2,
+                                        //     //  BURNT:      3,
+                                        //     //  ON_FIRE:    4
+                                        //     //};
+                                        // });
 
 
                                     }, 500);

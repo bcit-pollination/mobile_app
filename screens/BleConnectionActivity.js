@@ -76,6 +76,9 @@ const App = ({ route, navigation }) => {
     const [connected_peripheral, set_to_connected] = useState(null);
 
 
+
+
+
     const startScan = () => {
         if (!isScanning) {
             BleManager.scan(['13333333-3333-3333-3333-333333333337'], 3, true).then(() => {
@@ -175,6 +178,16 @@ const App = ({ route, navigation }) => {
                             console.log('Retrieved peripheral services', peripheralData);
 
                             BleManager.readRSSI(peripheral.id).then((rssi) => {
+
+
+                                var service = '13333333-3333-3333-3333-333333333337';
+                                var bakeCharacteristic = '13333333-3333-3333-3333-333333330003';
+                                var crustCharacteristic = '13333333-3333-3333-3333-333333330001';
+
+                                // var service = '13333333-3333-3333-3333-333333333337';
+
+                                var readMultiVote = '13333333-3333-3333-3333-333333330009';
+
                                 console.log('Retrieved actual RSSI value', rssi);
                                 let p = peripherals.get(peripheral.id);
                                 if (p) {
@@ -183,6 +196,9 @@ const App = ({ route, navigation }) => {
                                     setList(Array.from(peripherals.values()));
                                 }
                             });
+
+
+
                         });
 
                         // Test using bleno's pizza example
@@ -200,24 +216,62 @@ const App = ({ route, navigation }) => {
 
                             // var service = '13333333-3333-3333-3333-333333333337';
 
+                            var readMultiVote = '13333333-3333-3333-3333-333333330009';
+
                             setTimeout(() => {
-                                BleManager.startNotification(peripheral.id, service, bakeCharacteristic).then(() => {
+                                BleManager.startNotification(peripheral.id, service, readMultiVote).then(() => {
                                     console.log('Started notification on ' + peripheral.id);
-                                    setTimeout(() => {
-                                        BleManager.write(peripheral.id, service, bakeCharacteristic, [1, 95]).then(() => {
-                                            console.log('Connected to RPI Polling Device.');
-                                            console.log('UUID is: ')
-                                            //var PizzaBakeResult = {
-                                            //  HALF_BAKED: 0,
-                                            //  BAKED:      1,
-                                            //  CRISPY:     2,
-                                            //  BURNT:      3,
-                                            //  ON_FIRE:    4
-                                            //};
+                                    BleManager.read(
+                                        peripheral.id,
+                                        service,
+                                        readMultiVote
+                                    )
+                                        .then((readData) => {
+                                            // get the length of the json data sent from the first read.
+                                            let json_string_len = parseInt(String.fromCharCode.apply(null, readData))
+                                            let json_read_len = 0
+                                            let json_string = ''
+
+                                            // console.log("typeof: " + typeof (readData));
+                                            console.log("Read: " + String.fromCharCode.apply(null, readData));
+                                            console.log('json_string_len: ' + json_string_len)
+
+                                            // while (json_read_len < json_string_len) {
+                                            console.log('in while()')
+
+                                            new Promise(async function (resolve, reject) {
+                                                // This while loop and Promise is really handy in doing things like this.
+                                                while (json_read_len < json_string_len) {
+                                                    await BleManager.read(peripheral.id, service, readMultiVote)
+                                                        .then((readData) => {
+                                                            console.log("This Read: " + String.fromCharCode.apply(null, readData));
+
+                                                            // Appends new data from each read
+                                                            json_string += String.fromCharCode.apply(null, readData)
+                                                            json_read_len += 20
+
+                                                            console.log(json_read_len)
+                                                        })
+                                                        .catch((error) => {
+                                                            console.log(json_read_len)
+                                                            // Failure code
+                                                            console.log(error);
+                                                        });
+                                                }
+                                                console.log('json_string:')
+                                                console.log(json_string)
+                                            })
+
+                                        })
+                                        .catch((error) => {
+                                            // Failure code
+                                            console.log(error);
                                         });
 
 
-                                    }, 500);
+
+
+
                                 }).catch((error) => {
                                     console.log('Notification error', error);
                                 });
@@ -236,22 +290,7 @@ const App = ({ route, navigation }) => {
 
     }
 
-    //   async function getBluetoothScanPermission() {
-    //   const granted = await PermissionsAndroid.request(
-    //     PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-    //     {
-    //       title: 'Bluetooth Permission',
-    //       message: 
-    //         'In the next dialogue, Android will ask for permission for this ' +
-    //         'App to access your location. This is needed for being able to ' +
-    //         'use Bluetooth to scan your environment for peripherals.',
-    //       buttonPositive: 'OK'
-    //       },
-    //   )
-    //   if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-    //     console.log('BleManager.scan will *NOT* detect any peripherals!')
-    //   }
-    // }
+
 
     useEffect(() => {
         BleManager.start({ showAlert: false });
@@ -433,7 +472,7 @@ const App = ({ route, navigation }) => {
                         {
                             <View style={{ margin: 20 }}>
 
-                                <Text style={{ textAlign: 'center', color: 'red', fontWeight: 'bolder' }}>{connected_peripheral && <Text>
+                                <Text style={{ textAlign: 'center', color: 'red', fontWeight: 'bold' }}>{connected_peripheral && <Text>
                                     ↓↓↓Connected to device↓↓↓:</Text>}
                                 </Text>
 
