@@ -5,6 +5,53 @@ import { Snackbar, Checkbox } from "react-native-paper";
 
 import AppButton from "../components/AppButton";
 
+const test_json_obj = [
+  {
+    question_num: 1,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
+  },
+  {
+    question_num: 2,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
+  },
+];
+
 export default function MultiChoiceVoteActivity({ questions }) {
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
@@ -50,9 +97,11 @@ export default function MultiChoiceVoteActivity({ questions }) {
     arr = questions.map((curQuestion, index) => {
       return (
         <View key={index}>
-          <Text style={styles.title}>Question {curQuestion.question_num}: </Text>
+          <Text style={styles.title}>
+            Question {curQuestion.question_num}:{" "}
+          </Text>
           <Text style={styles.title}>{curQuestion.description} </Text>
-          
+
           {/* <Text style={styles.title}>Select: </Text> */}
           <View style={styles.checkboxContainer}>
             {renderCheckBoxes(curQuestion.opts)}
@@ -91,35 +140,7 @@ export default function MultiChoiceVoteActivity({ questions }) {
 
   return (
     <View style={styles.container}>
-      
-      {/* <Text style={styles.title}>Select multiple: </Text>
-
-      <View style={styles.checkboxContainer}>
-        <Checkbox.Item
-          style={styles.item}
-          status={checked.choice1 ? "checked" : "unchecked"}
-          onPress={() => {
-            setChecked((checked) => ({
-              ...checked,
-              choice1: !checked.choice1,
-            }));
-          }}
-          color="#000"
-          label="Item 1"
-        />
-        <Checkbox.Item
-          style={styles.item}
-          status={checked.choice2 ? "checked" : "unchecked"}
-          onPress={() => {
-            setChecked((checked) => ({
-              ...checked,
-              choice2: !checked.choice2,
-            }));
-          }}
-          color="#000"
-          label="Item 2"
-        />
-      </View> */}
+      {renderQuestions(test_json_obj)}
 
       <AppButton
         style={styles.buttonStyle}
