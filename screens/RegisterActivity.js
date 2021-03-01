@@ -64,6 +64,8 @@ export default class RegisterActivity extends Component {
         this.setState({ date_of_birth });
         console.log(date_of_birth);
     }
+
+    // TODO: turn these form groups into components
     render() {
         const { handleSubmit, submitting } = this.props
         return (
