@@ -1,50 +1,92 @@
-import React from 'react'
-import { StyleSheet, View, Text, Dimensions } from 'react-native'
+import React from "react";
+import { StyleSheet, View, Text, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Snackbar, Checkbox } from 'react-native-paper'
+import { Snackbar, Checkbox } from "react-native-paper";
 
 //Bluetooth Connection
-import BleManager from 'react-native-ble-manager';
+import BleManager from "react-native-ble-manager";
 
-
-import AppButton from '../components/AppButton';
+import AppButton from "../components/AppButton";
 
 // formatter
 import { stringToBytes } from "convert-string";
 
+// question array structure
+// "questions": [
+//   {
+//     "description": "",
+//     "choice_limit": 1,
+//     "question_num": 1,
+//     "opts": [
+//       {
+//         "description": "",
+//         "option_num": 1,
+//         "count": 0
+//       }
+//     ]
+//   }
+// ]
 
-const test_json_obj = {
-  question_num: 1,
-  description: "Quel est votre plat préféré ?",
-  selection_limit: 1,
-  opts: [
-    {
-      option_num: 1,
-      description: "Sandwich",
-      count: 0,
-    },
-    {
-      option_num: 2,
-      description: "Pizza",
-      count: 0,
-    },
-    {
-      option_num: 3,
-      description: "SuShi",
-      count: 0,
-    }
-  ]
-}
+const test_json_obj = [
+  {
+    question_num: 1,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
+  },
+  {
+    question_num: 2,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
+  },
+];
 
-export default function MultiChoiceVoteActivity({ route, navigation }) {
-
+export default function MultiChoiceVoteActivity({
+  route,
+  navigation,
+  questions,
+}) {
   // This is needed for the write functions
   // const { connected_peripheral } = route.params;
-  const { connected_peripheral } = '13333333-3333-3333-3333-333333333337';
+  const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
 
+  const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
 
-  const [bleConnected, setBleConnected] = React.useState(false)
+  const [bleConnected, setBleConnected] = React.useState(false);
 
   const [checked, setChecked] = React.useState({
     choice1: false,
@@ -56,140 +98,177 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
 
     // Call this if vote has failed
     // onFailure();
-  }
+  };
 
   const handleSubmit = () => {
     console.log("Submit Button Pressed! ");
-    bleWriteMultiChoice(checked)
+    bleWriteMultiChoice(checked);
     // Call this if vote has failed
     // onFailure();
-  }
+  };
 
   const onFailure = () => {
     setVisible(!visible);
-  }
+  };
 
   const onDismissSnackBar = () => {
     setVisible(false);
-  }
+  };
 
   // writing for single choice
   const bleWriteMultiChoice = (text_to_send) => {
-
     BleManager.connect(connected_peripheral).then((res) => {
+      BleManager.retrieveServices(connected_peripheral).then(
+        (peripheralInfo) => {
+          console.log("peripheralInfo", peripheralInfo.services);
+          console.log("---------- text to send--------");
+          console.log(`string: ${JSON.stringify(text_to_send)}`);
+          console.log("---------- text to send --------");
 
-      BleManager.retrieveServices(connected_peripheral).then((peripheralInfo) => {
+          // service uuid for: Writing vote-info to rPi
+          var service = "13333333-3333-3333-3333-333333333337";
 
-        console.log('peripheralInfo', peripheralInfo.services);
-        console.log('---------- text to send--------')
-        console.log(`string: ${JSON.stringify(text_to_send)}`);
-        console.log('---------- text to send --------')
+          // character uuid for: doing single votes
+          var voteCharacteristic = "13333333-3333-3333-3333-333333330009";
 
-        // service uuid for: Writing vote-info to rPi 
-        var service = '13333333-3333-3333-3333-333333333337';
+          BleManager.startNotification(
+            connected_peripheral,
+            service,
+            voteCharacteristic
+          ).then(() => {
+            // (1223)
+            text_to_send2 = JSON.stringify(text_to_send);
 
-        // character uuid for: doing single votes
-        var voteCharacteristic = '13333333-3333-3333-3333-333333330009';
+            console.log("text_to_send.length()" + text_to_send2.length);
+            let text_to_send_buffer = `${text_to_send2.length} ${JSON.stringify(
+              text_to_send
+            )}`;
 
-        BleManager.startNotification(connected_peripheral, service, voteCharacteristic).then(() => {
-          // (1223)  
-          text_to_send2 = JSON.stringify(text_to_send)
+            // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
+            let slice_index = 0;
 
-          console.log('text_to_send.length()' + text_to_send2.length)
-          let text_to_send_buffer = `${text_to_send2.length} ${JSON.stringify(text_to_send)}`
+            console.log(text_to_send_buffer);
 
-          // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
-          let slice_index = 0
+            //While it still have some data to send:
 
-          console.log(text_to_send_buffer)
+            //
+            setTimeout(() => {
+              BleManager.write(
+                connected_peripheral,
+                service,
+                voteCharacteristic,
+                stringToBytes(text_to_send_buffer)
+              ).then(() => {
+                console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+                this.alert("message sent!");
 
-          //While it still have some data to send:
+                while (text_to_send_buffer.length - 20 >= 20) {
+                  slice_index += 20;
+                  to_send_buffer = text_to_send_buffer.slice(
+                    slice_index,
+                    slice_index + 20
+                  );
 
-          //
-          setTimeout(() => {
-            BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
-              console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
-              this.alert("message sent!");
+                  console.log("text_to_send_buffer: " + to_send_buffer);
 
-              while (text_to_send_buffer.length - 20 >= 20) {
+                  console.log("splice_index: " + slice_index);
 
-                slice_index += 20
-                to_send_buffer = text_to_send_buffer.slice(slice_index, slice_index + 20)
+                  BleManager.write(
+                    connected_peripheral,
+                    service,
+                    voteCharacteristic,
+                    stringToBytes(to_send_buffer)
+                  ).then(() => {
+                    console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
+                    // this.alert("message sent!");
+                  });
+                }
+              });
+            }, 500);
 
-                console.log('text_to_send_buffer: ' + to_send_buffer)
+            // .catch((err) => {
+            //   console.log('failed to send')
+            //   console.log(err)
+            //   this.alert("failed to send");
+            // });
 
-                console.log('splice_index: ' + slice_index)
+            // if (text_to_send_buffer.length <= 20) {
+            //   text_to_send_buffer = text_to_send_buffer.slice(splice_index, -1)
+            //   BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
+            //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+            //     this.alert("message sent!");
+            //   }).catch((err) => {
+            //     console.log('failed to send')
+            //     console.log(err)
+            //     this.alert("failed to send");
+            //   });
+            // }
+          });
+        }
+      );
+    });
+  };
 
-                BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(to_send_buffer)).then(() => {
-                  console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
-                  // this.alert("message sent!");
-                })
+  const renderQuestions = (questions) => {
+    let arr = [];
 
-              }
+    arr = questions.map((curQuestion, index) => {
+      return (
+        <View key={index}>
+          <Text style={styles.title}>
+            Question {curQuestion.question_num}:{" "}
+          </Text>
+          <Text style={styles.title}>{curQuestion.description} </Text>
 
-            })
-          }, 500)
+          {/* <Text style={styles.title}>Select: </Text> */}
+          <View style={styles.checkboxContainer}>
+            {renderCheckBoxes(curQuestion.opts)}
+          </View>
+        </View>
+      );
+    });
 
-          // .catch((err) => {
-          //   console.log('failed to send')
-          //   console.log(err)
-          //   this.alert("failed to send");
-          // });
+    return arr;
+  };
 
+  const renderCheckBoxes = (options) => {
+    // array to hold dynamically rendered items
+    let arr = [];
 
+    arr = options.map((curOption, index) => {
+      return (
+        <Checkbox.Item
+          key={index}
+          style={styles.item}
+          status={checked.choice1 ? "checked" : "unchecked"}
+          onPress={() => {
+            setChecked((checked) => ({
+              ...checked,
+              choice1: !checked.choice1,
+            }));
+          }}
+          color="#000"
+          label={curOption.description}
+        />
+      );
+    });
 
-
-          // if (text_to_send_buffer.length <= 20) {
-          //   text_to_send_buffer = text_to_send_buffer.slice(splice_index, -1)
-          //   BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
-          //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
-          //     this.alert("message sent!");
-          //   }).catch((err) => {
-          //     console.log('failed to send')
-          //     console.log(err)
-          //     this.alert("failed to send");
-          //   });
-          // }
-        })
-      })
-    })
-  }
+    return arr;
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Select multiple: </Text>
+      {renderQuestions(test_json_obj)}
 
-      <View style={styles.checkboxContainer}>
-        {/* Need to change this part: */}
-        <Checkbox.Item
-          style={styles.item}
-          status={checked.choice1 ? 'checked' : 'unchecked'}
-          onPress={() => {
-            setChecked(checked => ({ ...checked, choice1: !checked.choice1 }));
-          }}
-          color="#000"
-          label="Item 1"
-        />
-        <Checkbox.Item
-          style={styles.item}
-          status={checked.choice2 ? 'checked' : 'unchecked'}
-          onPress={() => {
-            setChecked(checked => ({ ...checked, choice2: !checked.choice2 }));
-          }}
-          color="#000"
-          label="Item 2"
-        />
-      </View>
-
-      <AppButton style={styles.buttonStyle} text="Submit" onPress={
-        () => {
-          handleSubmit();
-          // navigation.navigate("VoteSuccess");
-        }
-      } />
-
-
-
+      {/* onSubmit should increment count in DB after validating choices */}
+      <AppButton
+        style={styles.buttonStyle}
+        text="Submit"
+        onPress={() => {
+          handleChoice();
+          navigation.navigate("VoteSuccess");
+        }}
+      />
       <Snackbar
         style={styles.snackBar}
         visible={visible}
@@ -197,24 +276,24 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
         duration="3000"
       >
         Vote failed. Please try again.
-        </Snackbar>
+      </Snackbar>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
-    margin: 20
+    margin: 20,
   },
   item: {
     borderRadius: 20,
-    flexDirection: 'row',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    backgroundColor: "#fff",
     margin: 10,
   },
   checkboxContainer: {
@@ -224,6 +303,6 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   snackBar: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: "flex-end",
+  },
 });
