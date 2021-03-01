@@ -1,12 +1,11 @@
-import React from 'react'
-import { StyleSheet, View, Text, Dimensions } from 'react-native'
+import React from "react";
+import { StyleSheet, View, Text, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Snackbar, Checkbox } from 'react-native-paper'
+import { Snackbar, Checkbox } from "react-native-paper";
 
-import AppButton from '../components/AppButton';
+import AppButton from "../components/AppButton";
 
-export default function MultiChoiceVoteActivity() {
-
+export default function MultiChoiceVoteActivity({ questions }) {
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
 
@@ -20,72 +19,141 @@ export default function MultiChoiceVoteActivity() {
 
     // Call this if vote has failed
     // onFailure();
-  }
+  };
 
   const onFailure = () => {
     setVisible(!visible);
-  }
+  };
 
   const onDismissSnackBar = () => {
     setVisible(false);
-  }
+  };
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Select multiple: </Text>
+  // "questions": [
+  //   {
+  //     "description": "",
+  //     "choice_limit": 1,
+  //     "question_num": 1,
+  //     "opts": [
+  //       {
+  //         "description": "",
+  //         "option_num": 1,
+  //         "count": 0
+  //       }
+  //     ]
+  //   }
+  // ]
 
-        <View style={styles.checkboxContainer}>
-          <Checkbox.Item
-            style={styles.item}
-            status={checked.choice1 ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setChecked(checked => ({...checked, choice1: !checked.choice1}));
-            }}
-            color="#000"
-            label="Item 1"
-          />
-          <Checkbox.Item
-            style={styles.item}
-            status={checked.choice2 ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setChecked(checked => ({...checked, choice2: !checked.choice2}));
-            }}
-            color="#000"
-            label="Item 2"
-          />
+  const renderQuestions = (questions) => {
+    let arr = [];
+
+    arr = questions.map((curQuestion, index) => {
+      return (
+        <View key={index}>
+          <Text style={styles.title}>Question {curQuestion.question_num}: </Text>
+          <Text style={styles.title}>{curQuestion.description} </Text>
+          
+          {/* <Text style={styles.title}>Select: </Text> */}
+          <View style={styles.checkboxContainer}>
+            {renderCheckBoxes(curQuestion.opts)}
+          </View>
         </View>
+      );
+    });
 
-        <AppButton style={styles.buttonStyle} text="Submit" onPress={
-          () => {
-            handleChoice(); 
-            navigation.navigate("VoteSuccess");
-          }
-        }/>
-        <Snackbar
-          style={styles.snackBar}
-          visible={visible}
-          onDismiss={onDismissSnackBar}
-          duration="3000"
-        >
-          Vote failed. Please try again.
-        </Snackbar>
-      </View>
-    )
+    return arr;
+  };
+
+  const renderCheckBoxes = (options) => {
+    // array to hold dynamically rendered items
+    let arr = [];
+
+    arr = options.map((curOption, index) => {
+      return (
+        <Checkbox.Item
+          key={index}
+          style={styles.item}
+          status={checked.choice1 ? "checked" : "unchecked"}
+          onPress={() => {
+            setChecked((checked) => ({
+              ...checked,
+              choice1: !checked.choice1,
+            }));
+          }}
+          color="#000"
+          label={curOption.description}
+        />
+      );
+    });
+
+    return arr;
+  };
+
+  return (
+    <View style={styles.container}>
+      
+      {/* <Text style={styles.title}>Select multiple: </Text>
+
+      <View style={styles.checkboxContainer}>
+        <Checkbox.Item
+          style={styles.item}
+          status={checked.choice1 ? "checked" : "unchecked"}
+          onPress={() => {
+            setChecked((checked) => ({
+              ...checked,
+              choice1: !checked.choice1,
+            }));
+          }}
+          color="#000"
+          label="Item 1"
+        />
+        <Checkbox.Item
+          style={styles.item}
+          status={checked.choice2 ? "checked" : "unchecked"}
+          onPress={() => {
+            setChecked((checked) => ({
+              ...checked,
+              choice2: !checked.choice2,
+            }));
+          }}
+          color="#000"
+          label="Item 2"
+        />
+      </View> */}
+
+      <AppButton
+        style={styles.buttonStyle}
+        text="Submit"
+        onPress={() => {
+          handleChoice();
+          navigation.navigate("VoteSuccess");
+        }}
+      />
+      <Snackbar
+        style={styles.snackBar}
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        duration="3000"
+      >
+        Vote failed. Please try again.
+      </Snackbar>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
-    margin: 20
+    margin: 20,
   },
   item: {
     borderRadius: 20,
-    flexDirection: 'row',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    backgroundColor: "#fff",
     margin: 10,
   },
   checkboxContainer: {
@@ -95,6 +163,6 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   snackBar: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: "flex-end",
+  },
 });
