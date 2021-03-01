@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Snackbar, Checkbox } from "react-native-paper";
 
 import AppButton from "../components/AppButton";
+import QuestionCheckboxes from "../components/QuestionCheckboxes";
 
 const test_json_obj = [
   {
@@ -54,12 +55,12 @@ const test_json_obj = [
 
 export default function MultiChoiceVoteActivity({ questions }) {
   const navigation = useNavigation();
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
 
-  const [checked, setChecked] = React.useState({
-    choice1: false,
-    choice2: false,
-  });
+  // const [checked, setChecked] = React.useState({
+  //   choice1: false,
+  //   choice2: false,
+  // });
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
@@ -76,23 +77,24 @@ export default function MultiChoiceVoteActivity({ questions }) {
     setVisible(false);
   };
 
-  // "questions": [
-  //   {
-  //     "description": "",
-  //     "choice_limit": 1,
-  //     "question_num": 1,
-  //     "opts": [
-  //       {
-  //         "description": "",
-  //         "option_num": 1,
-  //         "count": 0
-  //       }
-  //     ]
-  //   }
-  // ]
+  const renderCheckedStates = (numItems) => {
+    let obj = {};
+
+    for (let i = 0; i < numItems; i++) {
+      obj[i] = false;
+    }
+
+    return obj;
+  };
+
+  const setStatus = (status) => {
+    return status === "checked" ? false : true;
+  };
 
   const renderQuestions = (questions) => {
     let arr = [];
+
+    // renderCheckedStates(questions.length);
 
     arr = questions.map((curQuestion, index) => {
       return (
@@ -102,39 +104,14 @@ export default function MultiChoiceVoteActivity({ questions }) {
           </Text>
           <Text style={styles.title}>{curQuestion.description} </Text>
 
-          {/* <Text style={styles.title}>Select: </Text> */}
           <View style={styles.checkboxContainer}>
-            {renderCheckBoxes(curQuestion.opts)}
+            {/* {renderCheckBoxes(curQuestion.opts, index)} */}
+            <QuestionCheckboxes options={curQuestion.opts} />
           </View>
         </View>
       );
     });
-
-    return arr;
-  };
-
-  const renderCheckBoxes = (options) => {
-    // array to hold dynamically rendered items
-    let arr = [];
-
-    arr = options.map((curOption, index) => {
-      return (
-        <Checkbox.Item
-          key={index}
-          style={styles.item}
-          status={checked.choice1 ? "checked" : "unchecked"}
-          onPress={() => {
-            setChecked((checked) => ({
-              ...checked,
-              choice1: !checked.choice1,
-            }));
-          }}
-          color="#000"
-          label={curOption.description}
-        />
-      );
-    });
-
+    
     return arr;
   };
 
