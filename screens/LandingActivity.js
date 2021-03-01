@@ -31,12 +31,12 @@ export default function LandingActivity({ navigation }) {
 
   return (
     <View style={styles.container}>
-        <AppLogo />
+      <AppLogo />
 
       <View style={styles.landingBtns}>
         <AppButton
           style={[GlobalStyles.whiteBackground, styles.register]}
-          onPress={() => navigation.navigate("GettingStarted")}  
+          onPress={() => navigation.navigate("GettingStarted")}
           text="Get Started"
         />
       </View>
@@ -44,8 +44,16 @@ export default function LandingActivity({ navigation }) {
       <View style={styles.landingBtns}>
         <AppButton
           style={[GlobalStyles.whiteBackground]}
-          onPress={() => navigation.navigate("GettingStarted")}  
+          onPress={() => navigation.navigate("GettingStarted")}
           text="Manage Elections"
+        />
+      </View>
+
+      <View style={styles.landingBtns}>
+        <AppButton
+          style={[GlobalStyles.whiteBackground]}
+          onPress={() => navigation.navigate("MultiChoiceVote")}
+          text="[MultiChoice testing]"
         />
       </View>
     </View>
@@ -55,7 +63,7 @@ export default function LandingActivity({ navigation }) {
 const styles = StyleSheet.create({
   landingBtns: {
     marginTop: 25,
-        minWidth: 170,
+    minWidth: 170,
 
   },
   container: {

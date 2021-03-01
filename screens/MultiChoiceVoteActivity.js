@@ -12,10 +12,35 @@ import AppButton from '../components/AppButton';
 // formatter
 import { stringToBytes } from "convert-string";
 
+
+const test_json_obj = {
+  question_num: 1,
+  description: "Quel est votre plat préféré ?",
+  selection_limit: 1,
+  opts: [
+    {
+      option_num: 1,
+      description: "Sandwich",
+      count: 0,
+    },
+    {
+      option_num: 2,
+      description: "Pizza",
+      count: 0,
+    },
+    {
+      option_num: 3,
+      description: "SuShi",
+      count: 0,
+    }
+  ]
+}
+
 export default function MultiChoiceVoteActivity({ route, navigation }) {
 
   // This is needed for the write functions
-  const { connected_peripheral } = route.params;
+  // const { connected_peripheral } = route.params;
+  const { connected_peripheral } = '13333333-3333-3333-3333-333333333337';
 
   const [visible, setVisible] = React.useState(false);
 
@@ -94,6 +119,7 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
                 console.log('text_to_send_buffer: ' + to_send_buffer)
 
                 console.log('splice_index: ' + slice_index)
+
                 BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(to_send_buffer)).then(() => {
                   console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
                   // this.alert("message sent!");
@@ -134,6 +160,7 @@ export default function MultiChoiceVoteActivity({ route, navigation }) {
       <Text style={styles.title}>Select multiple: </Text>
 
       <View style={styles.checkboxContainer}>
+        {/* Need to change this part: */}
         <Checkbox.Item
           style={styles.item}
           status={checked.choice1 ? 'checked' : 'unchecked'}

@@ -527,7 +527,7 @@ const App = ({ route, navigation }) => {
                 {/* Connected Peripheral -> set text to send */}
                 {connected_peripheral && < TextInput
                     style={[styles.uuidInput]}
-                    value={text_to_send}
+                    value={voting_token}
                     placeholder="Enter the voting UUID here"
                     onChangeText={(text) => {
                         setVotingToken(text)
