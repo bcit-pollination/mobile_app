@@ -28,18 +28,7 @@ const Stack = createStackNavigator();
 function LandingScreen() {
   const navigation = useNavigation();
   return (
-<<<<<<< HEAD
     <View style={styles.container}>
-=======
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#FFDD02",
-      }}
-    >
->>>>>>> bb42787b4684eb345bb3c3808d0b4bb1ba69040b
       <LandingActivity navigation={navigation} />
       {/* <Button
         title="Go to Login"
@@ -52,18 +41,7 @@ function LandingScreen() {
 function GettingStarted() {
   const navigation = useNavigation();
   return (
-<<<<<<< HEAD
     <View style={styles.container}>
-=======
-    <View
-      style={[{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }, GlobalStyles.yellowBackground
-      ]}
-    >
->>>>>>> bb42787b4684eb345bb3c3808d0b4bb1ba69040b
       <LoginActivity navigation={navigation} />
     </View>
   );
@@ -97,14 +75,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< HEAD
     alignItems: 'center', 
     justifyContent: 'center', 
     backgroundColor: '#FFDD02'
-=======
-    backgroundColor: "#FFDD02",
-    alignItems: "center",
-    justifyContent: "center",
->>>>>>> bb42787b4684eb345bb3c3808d0b4bb1ba69040b
   },
 });
