@@ -83,7 +83,7 @@ export default function MultiChoiceVoteActivity({
   // const { connected_peripheral } = route.params;
   const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
 
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
 
   const [bleConnected, setBleConnected] = React.useState(false);
