@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Snackbar, Checkbox } from "react-native-paper";
@@ -7,6 +7,7 @@ import { Snackbar, Checkbox } from "react-native-paper";
 import BleManager from "react-native-ble-manager";
 
 import AppButton from "../components/AppButton";
+import QuestionCheckboxes from "../components/QuestionCheckboxes";
 
 // formatter
 import { stringToBytes } from "convert-string";
@@ -84,14 +85,16 @@ export default function MultiChoiceVoteActivity({
   const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
 
   // const navigation = useNavigation();
+
   const [visible, setVisible] = React.useState(false);
+
 
   const [bleConnected, setBleConnected] = React.useState(false);
 
-  const [checked, setChecked] = React.useState({
-    choice1: false,
-    choice2: false,
-  });
+  // const [checked, setChecked] = React.useState({
+  //   choice1: false,
+  //   choice2: false,
+  // });
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
@@ -220,36 +223,11 @@ export default function MultiChoiceVoteActivity({
           </Text>
           <Text style={styles.title}>{curQuestion.description} </Text>
 
-          {/* <Text style={styles.title}>Select: </Text> */}
           <View style={styles.checkboxContainer}>
-            {renderCheckBoxes(curQuestion.opts)}
+            {/* {renderCheckBoxes(curQuestion.opts, index)} */}
+            <QuestionCheckboxes options={curQuestion.opts} />
           </View>
         </View>
-      );
-    });
-
-    return arr;
-  };
-
-  const renderCheckBoxes = (options) => {
-    // array to hold dynamically rendered items
-    let arr = [];
-
-    arr = options.map((curOption, index) => {
-      return (
-        <Checkbox.Item
-          key={index}
-          style={styles.item}
-          status={checked.choice1 ? "checked" : "unchecked"}
-          onPress={() => {
-            setChecked((checked) => ({
-              ...checked,
-              choice1: !checked.choice1,
-            }));
-          }}
-          color="#000"
-          label={curOption.description}
-        />
       );
     });
 
