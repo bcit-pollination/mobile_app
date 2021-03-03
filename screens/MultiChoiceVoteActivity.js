@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Dimensions } from "react-native";
+import { StyleSheet, View, Text, Dimensions, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Snackbar, Checkbox } from "react-native-paper";
 
@@ -53,22 +53,22 @@ const test_json_obj = [
   },
   {
     question_num: 2,
-    description: "Quel est votre plat préféré ?",
+    description: "Quel genre de boisson détestes-tu le plus ?",
     selection_limit: 1,
     opts: [
       {
         option_num: 1,
-        description: "Sandwich",
+        description: "Long Island Iced Tea",
         count: 0,
       },
       {
         option_num: 2,
-        description: "Pizza",
+        description: "Matcha",
         count: 0,
       },
       {
         option_num: 3,
-        description: "SuShi",
+        description: "Coffee",
         count: 0,
       },
     ],
@@ -81,9 +81,9 @@ export default function MultiChoiceVoteActivity({
   questions,
 }) {
   // This is needed for the write functions
-  // const { connected_peripheral } = route.params;
-  const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
-
+  const { connected_peripheral } = route.params;
+  // const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
+  console.log(connected_peripheral)
   // const navigation = useNavigation();
 
   const [visible, setVisible] = React.useState(false);
@@ -91,10 +91,10 @@ export default function MultiChoiceVoteActivity({
 
   const [bleConnected, setBleConnected] = React.useState(false);
 
-  // const [checked, setChecked] = React.useState({
-  //   choice1: false,
-  //   choice2: false,
-  // });
+  const [checked, setChecked] = React.useState({
+    choice1: 'Pizza',
+    choice2: 'Coffee',
+  });
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
@@ -147,6 +147,8 @@ export default function MultiChoiceVoteActivity({
               text_to_send
             )}`;
 
+            let remaining_msg = text_to_send_buffer;
+
             // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
             let slice_index = 0;
 
@@ -165,12 +167,14 @@ export default function MultiChoiceVoteActivity({
                 console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
                 this.alert("message sent!");
 
-                while (text_to_send_buffer.length - 20 >= 20) {
+                while (remaining_msg.length - 20 >= 20) {
                   slice_index += 20;
                   to_send_buffer = text_to_send_buffer.slice(
                     slice_index,
                     slice_index + 20
                   );
+
+                  remaining_msg = remaining_msg.slice(slice_index, -1);
 
                   console.log("text_to_send_buffer: " + to_send_buffer);
 
@@ -217,11 +221,12 @@ export default function MultiChoiceVoteActivity({
 
     arr = questions.map((curQuestion, index) => {
       return (
-        <View key={index}>
+        <View key={index} style={styles.questionContainerView}>
           <Text style={styles.title}>
             Question {curQuestion.question_num}:{" "}
           </Text>
-          <Text style={styles.title}>{curQuestion.description} </Text>
+
+          <Text style={styles.description}>{curQuestion.description} </Text>
 
           <View style={styles.checkboxContainer}>
             {/* {renderCheckBoxes(curQuestion.opts, index)} */}
@@ -235,27 +240,29 @@ export default function MultiChoiceVoteActivity({
   };
 
   return (
-    <View style={styles.container}>
-      {renderQuestions(test_json_obj)}
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        {renderQuestions(test_json_obj)}
 
-      {/* onSubmit should increment count in DB after validating choices */}
-      <AppButton
-        style={styles.buttonStyle}
-        text="Submit"
-        onPress={() => {
-          handleChoice();
-          navigation.navigate("VoteSuccess");
-        }}
-      />
-      <Snackbar
-        style={styles.snackBar}
-        visible={visible}
-        onDismiss={onDismissSnackBar}
-        duration="3000"
-      >
-        Vote failed. Please try again.
+        {/* onSubmit should increment count in DB after validating choices */}
+        <AppButton
+          style={styles.buttonStyle}
+          text="Submit"
+          onPress={() => {
+            handleSubmit();
+            navigation.navigate("VoteSuccess");
+          }}
+        />
+        <Snackbar
+          style={styles.snackBar}
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          duration="3000"
+        >
+          Vote failed. Please try again.
       </Snackbar>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -264,10 +271,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+
+  },
+  questionContainerView: {
+    justifyContent: "center",
+    alignItems: "center",
+    // borderWidth: 1,
+    // borderStyle: 'solid'
+    margin: 2,
+    marginBottom: 15
+
   },
   title: {
-    margin: 20,
+    margin: 15,
+    color: 'red',
+    fontSize: 20,
+    // backgroundColor: 'yellow'
   },
+  description: {
+    margin: 15,
+    color: 'black',
+    fontSize: 20,
+    // backgroundColor: 'rgb(242, 214, 75)'
+  },
+
   item: {
     borderRadius: 20,
     flexDirection: "row",

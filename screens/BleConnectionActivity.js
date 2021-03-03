@@ -525,17 +525,17 @@ const App = ({ route, navigation }) => {
 
 
                 {/* Connected Peripheral -> set text to send */}
-                {connected_peripheral && < TextInput
+                {/* {connected_peripheral && < TextInput
                     style={[styles.uuidInput]}
                     value={voting_token}
                     placeholder="Enter the voting UUID here"
                     onChangeText={(text) => {
                         setVotingToken(text)
                     }}
-                />}
+                />} */}
 
                 {/*Got the voting token and then proceed to vote */}
-                {voting_token && <Button title='Proceed to the vote!' onPress={() => {
+                {connected_peripheral && <Button title='Proceed to the vote!' onPress={() => {
                     console.log('---------Proceed to the next screen---------------')
                     console.log(ELECTION_TYPES[electionType])
                     console.log(electionType)
