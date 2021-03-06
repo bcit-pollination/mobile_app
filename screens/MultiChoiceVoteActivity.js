@@ -12,76 +12,60 @@ import QuestionCheckboxes from "../components/QuestionCheckboxes";
 // formatter
 import { stringToBytes } from "convert-string";
 
-// question array structure
-// "questions": [
+// const test_json_obj = [
 //   {
-//     "description": "",
-//     "choice_limit": 1,
-//     "question_num": 1,
-//     "opts": [
+//     question_num: 1,
+//     description: "Quel est votre plat préféré ?",
+//     selection_limit: 1,
+//     opts: [
 //       {
-//         "description": "",
-//         "option_num": 1,
-//         "count": 0
-//       }
-//     ]
-//   }
-// ]
-
-const test_json_obj = [
-  {
-    question_num: 1,
-    description: "Quel est votre plat préféré ?",
-    selection_limit: 1,
-    opts: [
-      {
-        option_num: 1,
-        description: "Sandwich",
-        count: 0,
-      },
-      {
-        option_num: 2,
-        description: "Pizza",
-        count: 0,
-      },
-      {
-        option_num: 3,
-        description: "SuShi",
-        count: 0,
-      },
-    ],
-  },
-  {
-    question_num: 2,
-    description: "Quel genre de boisson détestes-tu le plus ?",
-    selection_limit: 1,
-    opts: [
-      {
-        option_num: 1,
-        description: "Long Island Iced Tea",
-        count: 0,
-      },
-      {
-        option_num: 2,
-        description: "Matcha",
-        count: 0,
-      },
-      {
-        option_num: 3,
-        description: "Coffee",
-        count: 0,
-      },
-    ],
-  },
-];
+//         option_num: 1,
+//         description: "Sandwich",
+//         count: 0,
+//       },
+//       {
+//         option_num: 2,
+//         description: "Pizza",
+//         count: 0,
+//       },
+//       {
+//         option_num: 3,
+//         description: "SuShi",
+//         count: 0,
+//       },
+//     ],
+//   },
+//   {
+//     question_num: 2,
+//     description: "Quel genre de boisson détestes-tu le plus ?",
+//     selection_limit: 1,
+//     opts: [
+//       {
+//         option_num: 1,
+//         description: "Long Island Iced Tea",
+//         count: 0,
+//       },
+//       {
+//         option_num: 2,
+//         description: "Matcha",
+//         count: 0,
+//       },
+//       {
+//         option_num: 3,
+//         description: "Coffee",
+//         count: 0,
+//       },
+//     ],
+//   },
+// ];
 
 export default function MultiChoiceVoteActivity({
   route,
   navigation,
-  questions,
+  // questions,
 }) {
   // This is needed for the write functions
-  const { connected_peripheral } = route.params;
+  const { connected_peripheral, question_json } = route.params;
   // const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
   console.log(connected_peripheral)
   // const navigation = useNavigation();
@@ -242,7 +226,7 @@ export default function MultiChoiceVoteActivity({
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
-        {renderQuestions(test_json_obj)}
+        {renderQuestions(question_json)}
 
         {/* onSubmit should increment count in DB after validating choices */}
         <AppButton

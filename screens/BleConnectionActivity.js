@@ -85,6 +85,8 @@ const App = ({ route, navigation }) => {
     // The UUID / MAC of the connected device
     const [connected_peripheral, set_to_connected] = useState(null);
 
+    // const [questions_loaded, set_mounted_question]
+
     // The Voting Token needs to be added
     const [voting_token, setVotingToken] = useState(null);
 
@@ -535,7 +537,7 @@ const App = ({ route, navigation }) => {
                 />} */}
 
                 {/*Got the voting token and then proceed to vote */}
-                {connected_peripheral && <Button title='Proceed to the vote!' onPress={() => {
+                {(connected_peripheral && question_json) && <Button title='Proceed to the vote!' onPress={() => {
                     console.log('---------Proceed to the next screen---------------')
                     console.log(ELECTION_TYPES[electionType])
                     console.log(electionType)
