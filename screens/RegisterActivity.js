@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AppButton from "../components/AppButton";
 import AppLogo from "../components/AppLogo";
@@ -8,6 +9,7 @@ import TextInput from "../components/TextInput";
 import GlobalStyles from "../constants/GlobalStyles";
 
 const RegisterActivity = ({ navigation }) => {
+  const STORAGE_KEY = 'jwt_token';
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [DOB, setDOB] = useState("");
@@ -34,6 +36,14 @@ const RegisterActivity = ({ navigation }) => {
     navigation.navigate("Home");
   }
 
+  const onValueChange = async (item, selectedValue) => {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
+
   const handleSubmit = () => {
     fetch('http://pollination.live/api/user', {
       method: 'POST',
@@ -49,8 +59,11 @@ const RegisterActivity = ({ navigation }) => {
         password: password
       })
     }).then((response) => {
-      console.log("Response received")
-      console.log(JSON.stringify(response));
+      console.log(response.status);
+      return response.json();
+    }).then((responseData) => {
+      // responseData contains jwt_token
+      onValueChange(STORAGE_KEY, responseData);
     }).catch((error) => {
       console.log("Error")
       console.error(error);

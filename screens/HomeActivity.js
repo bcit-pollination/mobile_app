@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Portal, Provider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AntDesign } from "@expo/vector-icons";
 
@@ -14,6 +15,11 @@ import AppModal from "../components/AppModal";
 import { abs } from "react-native-reanimated";
 
 const HomeActivity = () => {
+  // Gets user's jwt_token from AsyncStorage
+  const getUserToken = async() => {
+    let USER_TOKEN = await AsyncStorage.getItem('jwt_token');
+  }
+  
   const navigation = useNavigation();
   // modal is not shown at first
   const [showElectionDetails, setShowElectionDetails] = useState(false);
