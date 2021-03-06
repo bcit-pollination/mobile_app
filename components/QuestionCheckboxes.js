@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 
 // TODO: clean up comments after people have confirmed that
 // bug has really been fixed
-const QuestionCheckboxes = ({ options }) => {
+const QuestionCheckboxes = ({ options, fetchChoiceFunction }) => {
+
+  useEffect(() => {
+    fetchChoiceFunction(localOptions)
+  }, [localOptions])
+
   const localOptions = options.map((curOption) => {
     const modifiedOption = curOption;
     modifiedOption.isChecked = false;
@@ -13,6 +18,9 @@ const QuestionCheckboxes = ({ options }) => {
   console.log(localOptions);
 
   const [checkedItems, setCheckedItems] = useState(localOptions);
+
+  const [selected_items, set_selected_items] = useState();
+
 
   // const handleChange = (event) => {
   //   setState({ ...state, [event.target.name]: event.target.checked });
@@ -34,17 +42,18 @@ const QuestionCheckboxes = ({ options }) => {
 
     let items = [...checkedItems];
 
-    console.log(items[index]);
+    // console.log(items[index]);
+
     // console.log(items[index].isChecked);
     // let items = [...checkedItems];
     // console.log("itemsssss");
     // console.log(items);
-    
+
     // let item = checkedItems[index];
     // console.log("item");
     // console.log(item);
-    
-    let item = {...items[index]};
+
+    let item = { ...items[index] };
     console.log(item.isChecked);
 
     item.isChecked = !item.isChecked;
@@ -73,9 +82,10 @@ const QuestionCheckboxes = ({ options }) => {
     // }
 
     console.log("checkedItems:");
-    console.log(checkedItems);
+    // console.log(checkedItems);
 
     setCheckedItems(items);
+    fetchChoiceFunction(items)
 
     // only uncomment for event prop
     // console.log("event target:");
@@ -94,7 +104,15 @@ const QuestionCheckboxes = ({ options }) => {
           key={index}
           style={styles.item}
           status={checkedItems[index].isChecked ? "checked" : "unchecked"}
-          onPress={() => {handleChange(index)}}
+          onPress={() => {
+            console.log('checkedItems');
+            handleChange(index);
+            console.log()
+            console.log('checkedItems')
+            console.log(checkedItems)
+            console.log()
+
+          }}
           // onPress={handleChange(localQuestions[questionIndex][index])}
           color="#000"
           label={curOption.description}

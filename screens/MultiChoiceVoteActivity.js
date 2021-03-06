@@ -70,7 +70,22 @@ export default function MultiChoiceVoteActivity({
   console.log(connected_peripheral)
   // const navigation = useNavigation();
 
+  const [checkedItems, setCheckedItems] = useState(null);
+
+  let obj = {}
+  const fetchChoiceFunction = async (choices) => {
+    let p = new Promise(async (resolve, reject) => {
+      // await setCheckedItems(choices)
+      console.log('checkedItems in MultiChoice')
+      console.log(choices)
+      resolve(choices)
+    })
+    p.then(r => { obj = r })
+
+  }
+
   const [visible, setVisible] = React.useState(false);
+
 
 
   const [bleConnected, setBleConnected] = React.useState(false);
@@ -89,6 +104,8 @@ export default function MultiChoiceVoteActivity({
 
   const handleSubmit = () => {
     console.log("Submit Button Pressed! ");
+    console.log("THE OBJ IS: ");
+    console.log(obj)
     bleWriteMultiChoice(checked);
     // Call this if vote has failed
     // onFailure();
@@ -124,11 +141,11 @@ export default function MultiChoiceVoteActivity({
             voteCharacteristic
           ).then(() => {
             // (1223)
-            text_to_send2 = JSON.stringify(text_to_send);
+            let text_to_send2 = JSON.stringify(obj);
 
             console.log("text_to_send.length()" + text_to_send2.length);
             let text_to_send_buffer = `${text_to_send2.length} ${JSON.stringify(
-              text_to_send
+              obj
             )}`;
 
             let remaining_msg = text_to_send_buffer;
@@ -214,7 +231,8 @@ export default function MultiChoiceVoteActivity({
 
           <View style={styles.checkboxContainer}>
             {/* {renderCheckBoxes(curQuestion.opts, index)} */}
-            <QuestionCheckboxes options={curQuestion.opts} />
+            <QuestionCheckboxes options={curQuestion.opts}
+              fetchChoiceFunction={fetchChoiceFunction} />
           </View>
         </View>
       );
