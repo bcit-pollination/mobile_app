@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Provider, Portal } from "react-native-paper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AppButton from "../components/AppButton";
 import AppLogo from "../components/AppLogo";
@@ -9,6 +9,7 @@ import TextInput from "../components/TextInput";
 import GlobalStyles from "../constants/GlobalStyles";
 
 const SignInActivity = ({ navigation }) => {
+  const STORAGE_KEY = 'jwt_token';
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,8 +20,43 @@ const SignInActivity = ({ navigation }) => {
     setPassword(text);
   }
 
+  const redirectToHome = () => {
+    navigation.navigate("Home");
+  }
+
+  const onValueChange = async (item, selectedValue) => {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
+
+  const handleSubmit = () => {
+    fetch('http://pollination.live/api/user/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    }).then((response) => {
+      console.log(response.status);
+      return response.json();
+    }).then((responseData) => {
+      // responseData contains jwt_token
+      onValueChange(STORAGE_KEY, responseData);
+    }).catch((error) => {
+      console.log("Error");
+      console.error(error);
+    });
+    redirectToHome();
+  }
+
   return (
-    // <Provider>
     <View
       style={[
         GlobalStyles.genericPage,
@@ -29,37 +65,29 @@ const SignInActivity = ({ navigation }) => {
       ]}
     >
       <View style={[GlobalStyles.center, styles.topContainer]}>
-        {/* <Text>This is the sign in screen</Text> */}
         <AppLogo />
       </View>
-      {/* <Portal> */}
       <View style={[GlobalStyles.center, styles.textInputContainer]}>
-        <TextInput label="Email" value={email} onChangeText={onChangeEmail} />
-        <TextInput label="Password" secureTextEntry={true} value={password} onChangeText={onChangePassword} />
-        {/* <TextInput
-              label="Email"
-              mode="outlined"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-            />
-            <TextInput
-              label="Password"
-              mode="outlined"
-              value={password}
-              onChangeText={(password) => setPassword(password)}
-            /> */}
+        <TextInput 
+          label="Email" 
+          value={email} 
+          onChangeText={onChangeEmail} 
+        />
+        <TextInput 
+          label="Password" 
+          secureTextEntry={true} 
+          value={password} 
+          onChangeText={onChangePassword} 
+        />
       </View>
       <View style={[GlobalStyles.center, styles.buttonContainer]}>
         <AppButton
           style={[GlobalStyles.whiteBackground, styles.button]}
-          // TODO: validate using authentication before sending to Home
-          onPress={() => navigation.navigate("Home")}
+          onPress={handleSubmit}
           text="Sign In"
         />
       </View>
-      {/* </Portal> */}
     </View>
-    // </Provider>
   );
 };
 
