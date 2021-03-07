@@ -4,7 +4,7 @@ Front-end of Pollination app using expo
 
 ## Installation
 
-1. Rename your `Screens, Assets, and Images` TO `screens, assets, and images`.
+1. Rename your `Screens, Assets, and Image` TO `screens, assets, and image`.
 2. `npm install` everytime you clone
 3. `expo start`, then follow the description on the Metro Bundle
 4. Either use your mobile devices to scan the QR code to run the app, or
