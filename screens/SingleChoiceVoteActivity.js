@@ -110,8 +110,6 @@ const test_json_obj = [
 const SingleChoiceVoteActivity = ({ question, route, navigation }) => {
   const { connected_peripheral } = route.params;
 
-  const [visible, setVisible] = React.useState(false);
-
   // bleConnected
   const [bleConnected, setBleConnected] = React.useState(false);
 
@@ -205,48 +203,24 @@ const SingleChoiceVoteActivity = ({ question, route, navigation }) => {
   const onDismissSnackBar = () => {
     setVisible(false);
   };
-
-  // return (
-  //   <View style={[
-  //     styles.container,
-  //   ]}>
-  //     <Text>Select only 1: </Text>
-  //     <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)' onPressAction={handleChoice} />
-
-  //     < AppButton text="Submit" onPress={
-  //       () => {
-  //         handleSubmit();
-  //         // navigation.navigate("VoteSuccess");
-  //       }
-  //     } />
-
-  //     <Snackbar
-  //       visible={visible}
-  //       onDismiss={onDismissSnackBar}
-  //       duration="3000"
-  //     >
-  //       Vote failed. Please try again.
-  //     </Snackbar>
-  //   </View >
-  // )
   
 
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
 
-  const handleChoice = (items) => {
-    console.log("Submit Button Pressed! ");
-    console.log(items);
+  // const handleChoice = (items) => {
+  //   console.log("Submit Button Pressed! ");
+  //   console.log(items);
 
-    // items.forEach((element) => {
-    //   element.selected
-    //     ? console.log("Submitting option: ", element.text)
-    //     : null;
-    // });
+  //   // items.forEach((element) => {
+  //   //   element.selected
+  //   //     ? console.log("Submitting option: ", element.text)
+  //   //     : null;
+  //   // });
 
-    // Call this if vote has failed
-    // onFailure();
-  };
+  //   // Call this if vote has failed
+  //   // onFailure();
+  // };
 
   const onFailure = () => {
     setVisible(!visible);
