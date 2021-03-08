@@ -8,7 +8,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import { Snackbar } from "react-native-paper";
 import RadioButton from "../components/RadioButton";
 import AppButton from "../components/AppButton";
@@ -203,9 +203,8 @@ const SingleChoiceVoteActivity = ({ question, route, navigation }) => {
   const onDismissSnackBar = () => {
     setVisible(false);
   };
-  
 
-  const navigation = useNavigation();
+
   const [visible, setVisible] = useState(false);
 
   // const handleChoice = (items) => {
@@ -222,13 +221,6 @@ const SingleChoiceVoteActivity = ({ question, route, navigation }) => {
   //   // onFailure();
   // };
 
-  const onFailure = () => {
-    setVisible(!visible);
-  };
-
-  const onDismissSnackBar = () => {
-    setVisible(false);
-  };
 
   const renderQuestions = (questions) => {
     let arr = [];
