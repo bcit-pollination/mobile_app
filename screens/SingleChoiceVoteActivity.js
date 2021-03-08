@@ -1,75 +1,164 @@
-import React from 'react'
-import { StyleSheet, View, Text, ToastAndroid, Platform, Alert } from 'react-native'
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  ToastAndroid,
+  Platform,
+  Alert,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Snackbar } from 'react-native-paper'
-import RadioButton from '../components/RadioButton';
-import AppButton from '../components/AppButton';
+import { Snackbar } from "react-native-paper";
+import RadioButton from "../components/RadioButton";
+import AppButton from "../components/AppButton";
+// import { ScrollView } from "react-native-gesture-handler";
 
-const items = [
-  { key: 'Pizza',
-    text: 'Pizza',
-    selected: false,
+const test_json_obj = [
+  {
+    question_num: 1,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
   },
-  { key: 'Lasagna',
-    text: 'Lasagna',
-    selected: false,
+  {
+    question_num: 2,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
   },
-  { key: 'Gnocchi',
-    text: 'Gnocchi',
-    selected: false,
+  {
+    question_num: 3,
+    description: "Quel est votre plat préféré ?",
+    selection_limit: 1,
+    opts: [
+      {
+        option_num: 1,
+        description: "Sandwich",
+        count: 0,
+      },
+      {
+        option_num: 2,
+        description: "Pizza",
+        count: 0,
+      },
+      {
+        option_num: 3,
+        description: "SuShi",
+        count: 0,
+      },
+    ],
   },
 ];
 
-export default function SingleChoiceVoteActivity() {
+export default function SingleChoiceVoteActivity({ questions }) {
   const navigation = useNavigation();
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
 
-    const handleChoice = (items) => {
-      console.log("Submit Button Pressed! ");
-      console.log(items);
-      items.forEach(element => {
-        element.selected ? console.log("Submitting option: ", element.text):null;
-      });
+  const handleChoice = (items) => {
+    console.log("Submit Button Pressed! ");
+    console.log(items);
 
-      // Call this if vote has failed
-      // onFailure();
-    }
+    // items.forEach((element) => {
+    //   element.selected
+    //     ? console.log("Submitting option: ", element.text)
+    //     : null;
+    // });
 
-    const onFailure = () => {
-      setVisible(!visible);
-    }
+    // Call this if vote has failed
+    // onFailure();
+  };
 
-    const onDismissSnackBar = () => {
-      setVisible(false);
-    }
+  const onFailure = () => {
+    setVisible(!visible);
+  };
 
-    return (
-      <View style={[
-        styles.container, 
-      ]}>
-        <Text>Select only 1: </Text>
-        <RadioButton ITEMS={items} textColor='black' buttonColor='rgb(0,0,100)'/>
-        <AppButton text="Submit" onPress={
-          () => {
-            handleChoice(items); 
+  const onDismissSnackBar = () => {
+    setVisible(false);
+  };
+
+  const renderQuestions = (questions) => {
+    let arr = [];
+
+    arr = questions.map((curQuestion, index) => {
+      return (
+        <View key={index} style={styles.questionContainer}>
+          <Text>{curQuestion.description}</Text>
+          <RadioButton
+            options={curQuestion.opts}
+            textColor="black"
+            buttonColor="rgb(0,0,100)"
+          />
+        </View>
+      );
+    });
+
+    return arr;
+  };
+
+  return (
+    // <View style={{flex: 1}}>
+      <ScrollView contentContainerStyle={[styles.container]}>
+        {renderQuestions(test_json_obj)}
+        <AppButton
+          text="Submit"
+          onPress={() => {
+            // handleChoice();
             navigation.navigate("VoteSuccess");
-          }
-        }/>
+          }}
+        />
         <Snackbar
           visible={visible}
           onDismiss={onDismissSnackBar}
           duration="3000"
         >
           Vote failed. Please try again.
-      </Snackbar>
-      </View >
-    )
+        </Snackbar>
+      </ScrollView>
+    // </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+    flexGrow: 1, // important for scrollview
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+  },
+  questionContainer: {
+    marginVertical: 10,
+  },
 });
