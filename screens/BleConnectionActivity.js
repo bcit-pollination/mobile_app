@@ -94,6 +94,7 @@ const App = ({ route, navigation }) => {
 
 
     const startScan = () => {
+        retrieveConnected()
         if (!isScanning) {
             BleManager.scan(['13333333-3333-3333-3333-333333333337'], 3, true).then(() => {
                 console.log('Scanning...');
@@ -320,7 +321,7 @@ const App = ({ route, navigation }) => {
                                 }).catch((error) => {
                                     console.log('Notification error', error);
                                 });
-                            }, 10);
+                            }, 350);
                         });
 
 
