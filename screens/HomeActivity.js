@@ -15,6 +15,10 @@ import AppModal from "../components/AppModal";
 import { abs } from "react-native-reanimated";
 
 const HomeActivity = () => {
+  const VOTING_STORAGE = 'voting_token';
+  let org_ids = [];
+  let elections = [];
+
   //BLE connected?
   const [showBleConnection, setShowBleConnection] = useState(false);
 
@@ -24,15 +28,47 @@ const HomeActivity = () => {
     return USER_TOKEN;
   };
 
-  let org_ids = [];
-  let elections = [];
+  const onValueChange = async (item, selectedValue) => {
+    try {
+      console.log("selected value: " + selectedValue);
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
 
+  // Gets user's voting token
+  const getVotingToken = (user_token) => {
+    fetch("http://pollination.live/api/user/voting_token", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${user_token}`,
+      },
+    })
+      .then((response) => {
+        console.log(response.status);
+        if (response.status === 200) return response.json();
+        else throw new Error("status != 200 in getting voting token");
+      })
+      .then((responseData) => {
+        // responseData contains voting_token
+        console.log("checking type: " + typeof(responseData.voting_token[0]));
+        onValueChange(VOTING_STORAGE, responseData.voting_token[0]);
+      })
+      .catch((error) => {
+        console.log("Error");
+        console.error(error);
+      });
+  };
+
+  // fill in array of org_ids
   const getOrgIds = (org_list) => {
     org_ids = org_list.map((org) => {
       return org.org_id;
     });
   };
 
+  // get all elections in elections array
   const getElections = (orgs, token) => {
     for (let i = 0; i < orgs.length; i++) {
       console.log("orgs[i]: " + parseInt(orgs[i]));
@@ -45,22 +81,22 @@ const HomeActivity = () => {
           },
         }
       )
-        .then((response) => {
-          console.log(response.status);
-          if (response.status === 200) return response.json();
-          else throw new Error("status != 200");
-        })
-        .then((responseData) => {
-          // responseData contains jwt_token
-          console.log(responseData.elections);
-          for (let j = 0; j < responseData.elections.length; j++) {
-            // cheesed
-            const len = elections.length;
-            elections[len] = responseData.elections[j];
-            console.log("cur elections");
-            console.log(elections[len]);
-          }
-        });
+      .then((response) => {
+        console.log(response.status);
+        if (response.status === 200) return response.json();
+        else throw new Error("status != 200");
+      })
+      .then((responseData) => {
+        // responseData contains elections
+        console.log(responseData.elections);
+        for (let j = 0; j < responseData.elections.length; j++) {
+          // cheesed
+          const len = elections.length;
+          elections[len] = responseData.elections[j];
+          console.log("cur elections");
+          console.log(elections[len]);
+        }
+      });
     }
   };
 
@@ -72,12 +108,12 @@ const HomeActivity = () => {
       },
     })
       .then((response) => {
-        console.log(response.status);
+        console.log("response status: " + response.status);
         if (response.status === 200) return response.json();
         else throw new Error("status != 200");
       })
       .then((responseData) => {
-        // responseData contains jwt_token
+        // responseData contains orgs list
         console.log(responseData.orgs);
         getOrgIds(responseData.orgs);
         return org_ids;
@@ -91,8 +127,8 @@ const HomeActivity = () => {
       });
   };
 
+  //getting user token
   getUserToken().then((res) => {
-    console.log("token: " + res);
     getOrg(res);
   });
 
