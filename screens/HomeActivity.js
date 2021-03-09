@@ -13,6 +13,7 @@ import GlobalStyles from "../constants/GlobalStyles";
 import BluetoothFailModal from "../components/old/BluetoothFailModal";
 import AppModal from "../components/AppModal";
 import { abs } from "react-native-reanimated";
+import { resolve } from "uri-js";
 
 const HomeActivity = () => {
   const VOTING_STORAGE = 'voting_token';
@@ -130,6 +131,7 @@ const HomeActivity = () => {
   //getting user token
   getUserToken().then((res) => {
     getOrg(res);
+    getVotingToken(res);
   });
 
   const navigation = useNavigation();
