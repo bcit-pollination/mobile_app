@@ -90,6 +90,9 @@ const App = ({ route, navigation }) => {
     // The Voting Token needs to be added
     const [voting_token, setVotingToken] = useState(null);
 
+    // loading question
+    const [loading_questions, set_loading_questions] = useState(false)
+
 
 
 
@@ -257,6 +260,7 @@ const App = ({ route, navigation }) => {
                         // changed readMulti to characteristicUUID
                         BleManager.startNotification(peripheral.id, service, characteristicUUID).then(() => {
 
+                            set_loading_questions(true)
                             console.log('Started notification on ' + peripheral.id);
                             console.log('characteristicUUID' + characteristicUUID)
 
@@ -270,6 +274,7 @@ const App = ({ route, navigation }) => {
                                 readMultiVote
                             )
                                 .then((readData) => {
+
                                     // get the length of the json data sent from the first read.
                                     let json_string_len = parseInt(String.fromCharCode.apply(null, readData))
                                     let json_read_len = 0
@@ -398,6 +403,7 @@ const App = ({ route, navigation }) => {
                         <View style={{ margin: 10 }}>
                             <Text>Scan for "Pollination" </Text>
                             <Text>Connect by tapping the device ID</Text>
+
                             <Button
                                 title={'Scan Bluetooth (' + (isScanning ? 'on' : 'off') + ')'}
                                 onPress={() => startScan()}
@@ -442,21 +448,26 @@ const App = ({ route, navigation }) => {
                     }}
                 />} */}
 
+
                 {/*Got the voting token and then proceed to vote */}
-                {(connected_peripheral && question_json) && <Button title='Proceed to the vote!' onPress={() => {
-                    console.log('---------Proceed to the next screen---------------')
-                    console.log(ELECTION_TYPES[electionType])
-                    console.log(electionType)
+                {(loading_questions && !question_json) && <Text style={{ color: 'red' }}>Loading question(s)....</Text>}
 
-                    //pass those json into the new component
-                    navigation.navigate(ELECTION_TYPES[electionType],
-                        {
-                            connected_peripheral: connected_peripheral, // the ID of the connected peripheral is needed to do write() operations
-                            question_json: question_json, //the question to be rendered is passed into the next component
-                            voting_token: voting_token   //voting token is also passed into the next component
-                        });
+                {/*Got the voting token and then proceed to vote */}
+                {(connected_peripheral && question_json)
+                    && <Button title='Proceed to the vote!' onPress={() => {
+                        console.log('---------Proceed to the next screen---------------')
+                        console.log(ELECTION_TYPES[electionType])
+                        console.log(electionType)
 
-                }} />}
+                        //pass those json into the new component
+                        navigation.navigate(ELECTION_TYPES[electionType],
+                            {
+                                connected_peripheral: connected_peripheral, // the ID of the connected peripheral is needed to do write() operations
+                                question_json: question_json, //the question to be rendered is passed into the next component
+                                voting_token: voting_token   //voting token is also passed into the next component
+                            });
+
+                    }} />}
 
 
             </SafeAreaView>
