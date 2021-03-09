@@ -90,6 +90,8 @@ const App = ({ route, navigation }) => {
     // The Voting Token needs to be added
     const [voting_token, setVotingToken] = useState(null);
 
+    // loading question
+    const [loading_questions, set_loading_questions] = useState(false)
 
 
 
@@ -258,6 +260,7 @@ const App = ({ route, navigation }) => {
                         // changed readMulti to characteristicUUID
                         BleManager.startNotification(peripheral.id, service, characteristicUUID).then(() => {
 
+                            set_loading_questions(true)
                             console.log('Started notification on ' + peripheral.id);
                             console.log('characteristicUUID' + characteristicUUID)
 
@@ -447,8 +450,7 @@ const App = ({ route, navigation }) => {
 
 
                 {/*Got the voting token and then proceed to vote */}
-                {(connected_peripheral && !question_json)
-                    && <Text style={{ color: 'red' }}>Loading question(s)....</Text>}
+                {(loading_questions && !question_json) && <Text style={{ color: 'red' }}>Loading question(s)....</Text>}
 
                 {/*Got the voting token and then proceed to vote */}
                 {(connected_peripheral && question_json)

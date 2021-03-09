@@ -9,6 +9,12 @@ import BleManager from "react-native-ble-manager";
 import AppButton from "../components/AppButton";
 import QuestionCheckboxes from "../components/QuestionCheckboxes";
 
+import {
+  // getVotingToken,
+  // onValueChange,
+  getVotingTokenFromStorage
+} from '../utils/apiFunctions'
+
 // formatter
 import { stringToBytes } from "convert-string";
 
@@ -128,10 +134,16 @@ export default function MultiChoiceVoteActivity({
     let p = new Promise(async (resolve, reject) => {
       // await setCheckedItems(choices)
 
+      let voting_token = getVotingTokenFromStorage()
+      console.log('%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%')
+      console.log(voting_token)
+
+
       submit_obj = {
         choices: choices_global,
         voting_token,
-        time_stamp: Date.now()
+        time_stamp: Date.now(),
+        voting_token: voting_token
       }
 
       resolve(submit_obj)
@@ -203,11 +215,13 @@ export default function MultiChoiceVoteActivity({
 
             //
             setTimeout(() => {
+
               BleManager.write(
                 connected_peripheral,
                 service,
                 voteCharacteristic,
                 stringToBytes(text_to_send_buffer)
+
               ).then(() => {
                 console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
                 this.alert("message sent!");
