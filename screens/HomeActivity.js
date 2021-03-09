@@ -24,9 +24,60 @@ const HomeActivity = () => {
     return USER_TOKEN
   }
 
+  let org_ids = [];
+  let elections = [];
+
+  const getOrgIds = (org_list) => {
+    org_ids = org_list.map((org) =>{
+      return org.org_id;
+    })
+  }
+
+  const getElections = (orgs, token) => {
+    fetch('http://pollination.live/api/org/elections/list?org_id=5', {
+      method: 'GET',
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    }).then((response) => {
+      console.log(response.status);
+      if(response.status === 200)
+        return response.json();
+      else throw new Error('status != 200');
+    }).then((responseData) => {
+      // responseData contains jwt_token
+      console.log(responseData.elections);
+    })
+  }
+
+  const getOrg = (user_token) =>{
+    fetch('http://pollination.live/api/org/list', {
+      method: 'GET',
+      headers: {
+        "Authorization": `Bearer ${user_token}`
+      }
+    }).then((response) => {
+      console.log(response.status);
+      if(response.status === 200)
+        return response.json();
+      else throw new Error('status != 200');
+    }).then((responseData) => {
+      // responseData contains jwt_token
+      console.log(responseData.orgs);
+      getOrgIds(responseData.orgs);
+      return org_ids;
+    }).then((orgs) => {
+      return getElections(orgs, user_token);
+    }).catch((error) => {
+      console.log("Error");
+      console.error(error);
+    });
+  }
+
   getUserToken().then((res)=>{
     console.log("token: " + res);
-  })
+    getOrg(res);
+  });
   
   const navigation = useNavigation();
 
