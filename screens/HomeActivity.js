@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Portal, Provider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AntDesign } from "@expo/vector-icons";
 
@@ -19,73 +19,87 @@ const HomeActivity = () => {
   const [showBleConnection, setShowBleConnection] = useState(false);
 
   // Gets user's jwt_token from AsyncStorage
-  const getUserToken = async() => {
-    let USER_TOKEN = await AsyncStorage.getItem('jwt_token')
-    return USER_TOKEN
-  }
+  const getUserToken = async () => {
+    let USER_TOKEN = await AsyncStorage.getItem("jwt_token");
+    return USER_TOKEN;
+  };
 
   let org_ids = [];
   let elections = [];
 
   const getOrgIds = (org_list) => {
-    org_ids = org_list.map((org) =>{
+    org_ids = org_list.map((org) => {
       return org.org_id;
-    })
-  }
+    });
+  };
 
   const getElections = (orgs, token) => {
-    fetch('http://pollination.live/api/org/elections/list?org_id=5', {
-      method: 'GET',
+    for (let i = 0; i < orgs.length; i++) {
+      console.log("orgs[i]: " + parseInt(orgs[i]));
+      fetch(
+        `http://pollination.live/api/org/elections/list?org_id=${orgs[i]}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+        .then((response) => {
+          console.log(response.status);
+          if (response.status === 200) return response.json();
+          else throw new Error("status != 200");
+        })
+        .then((responseData) => {
+          // responseData contains jwt_token
+          console.log(responseData.elections);
+          for (let j = 0; j < responseData.elections.length; j++) {
+            // cheesed
+            const len = elections.length;
+            elections[len] = responseData.elections[i];
+            console.log("cur elections");
+            console.log(elections[len]);
+          }
+        });
+    }
+  };
+
+  const getOrg = (user_token) => {
+    fetch("http://pollination.live/api/org/list", {
+      method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    }).then((response) => {
-      console.log(response.status);
-      if(response.status === 200)
-        return response.json();
-      else throw new Error('status != 200');
-    }).then((responseData) => {
-      // responseData contains jwt_token
-      console.log(responseData.elections);
+        Authorization: `Bearer ${user_token}`,
+      },
     })
-  }
+      .then((response) => {
+        console.log(response.status);
+        if (response.status === 200) return response.json();
+        else throw new Error("status != 200");
+      })
+      .then((responseData) => {
+        // responseData contains jwt_token
+        console.log(responseData.orgs);
+        getOrgIds(responseData.orgs);
+        return org_ids;
+      })
+      .then((orgs) => {
+        return getElections(orgs, user_token);
+      })
+      .catch((error) => {
+        console.log("Error");
+        console.error(error);
+      });
+  };
 
-  const getOrg = (user_token) =>{
-    fetch('http://pollination.live/api/org/list', {
-      method: 'GET',
-      headers: {
-        "Authorization": `Bearer ${user_token}`
-      }
-    }).then((response) => {
-      console.log(response.status);
-      if(response.status === 200)
-        return response.json();
-      else throw new Error('status != 200');
-    }).then((responseData) => {
-      // responseData contains jwt_token
-      console.log(responseData.orgs);
-      getOrgIds(responseData.orgs);
-      return org_ids;
-    }).then((orgs) => {
-      return getElections(orgs, user_token);
-    }).catch((error) => {
-      console.log("Error");
-      console.error(error);
-    });
-  }
-
-  getUserToken().then((res)=>{
+  getUserToken().then((res) => {
     console.log("token: " + res);
     getOrg(res);
   });
-  
+
   const navigation = useNavigation();
 
   // modal is not shown at first
   const [showElectionDetails, setShowElectionDetails] = useState(false);
-
-
-
 
   const [showTip, setShowTip] = useState(false);
 
@@ -97,7 +111,7 @@ const HomeActivity = () => {
   //   setShowElectionDetails(!showElectionDetails);
   // };
 
-  const showBleSettings = () => setShowBleConnection(true)
+  const showBleSettings = () => setShowBleConnection(true);
 
   const showDetailsModal = () => setShowElectionDetails(true);
   const hideDetailsModal = () => setShowElectionDetails(false);
@@ -114,7 +128,7 @@ const HomeActivity = () => {
 
   const onTipPress = () => {
     showTipModal();
-  }
+  };
 
   // TODO: dynamically load info to the modal from database
   return (
@@ -142,26 +156,40 @@ const HomeActivity = () => {
           <ElectionItem
             title="Single Choice Vote"
             //parameter is passed in for later redirection, after bluetooth is connected!
-            onPress={() => navigation.navigate("BleConnection", { electionType: 'Single Choice Vote' })}
+            onPress={() =>
+              navigation.navigate("BleConnection", {
+                electionType: "Single Choice Vote",
+              })
+            }
             onLongPress={showDetailsModal}
           />
           <ElectionItem
             title="Multiple Choice Vote"
             onLongPress={showDetailsModal}
-            onPress={() => navigation.navigate("BleConnection", { electionType: 'Multiple Choice Vote' })}
+            onPress={() =>
+              navigation.navigate("BleConnection", {
+                electionType: "Multiple Choice Vote",
+              })
+            }
           />
-          <ElectionItem title="Yes/No Vote" onLongPress={showDetailsModal}
-            onPress={() => navigation.navigate("BleConnection", { electionType: 'Yes No Vote' })} />
+          <ElectionItem
+            title="Yes/No Vote"
+            onLongPress={showDetailsModal}
+            onPress={() =>
+              navigation.navigate("BleConnection", {
+                electionType: "Yes No Vote",
+              })
+            }
+          />
         </View>
       </View>
-
     </Provider>
   );
 };
 
 const styles = StyleSheet.create({
   tipContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },
