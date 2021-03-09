@@ -60,12 +60,13 @@ const RegisterActivity = ({ navigation }) => {
       })
     }).then((response) => {
       console.log(response.status);
-      return response.json();
+      if(response.status === 200)
+        return response.json();
+      else throw new Error('status != 200');
     }).then((responseData) => {
       // responseData contains jwt_token
       onValueChange(STORAGE_KEY, responseData.jwt_token);
     }).then((resolve) => {
-      console.log("resolve" + resolve);
       redirectToHome();
     }).catch((error) => {
       console.log("Error")
