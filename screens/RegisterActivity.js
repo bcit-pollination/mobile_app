@@ -1,116 +1,148 @@
-import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-    ActionsContainer,
-    Button,
-    FieldsContainer,
-    Fieldset,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Switch
-} from 'react-native-clean-form'
+import AppButton from "../components/AppButton";
+import AppLogo from "../components/AppLogo";
+import TextInput from "../components/TextInput";
 
+import GlobalStyles from "../constants/GlobalStyles";
 
+const RegisterActivity = ({ navigation }) => {
+  const STORAGE_KEY = 'jwt_token';
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [DOB, setDOB] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const onChangeFirstName = (text) => {
+    setFirstName(text);
+  }
+  const onChangeLastName = (text) => {
+    setLastName(text);
+  }
+  const onChangeDOB = (text) => {
+    setDOB(text);
+  }
+  const onChangeEmail = (text) => {
+    setEmail(text);
+  }
+  const onChangePassword = (text) => {
+    setPassword(text);
+  }
 
-// Checks if the date is in the correct format
-function checkDateFormat(date_string) {
-    {
+  const redirectToHome = () => {
+    navigation.navigate("Home");
+  }
 
-        let reg = /(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d/;
-        if (date_string.match(reg)) {
-            return true;
-        }
-        else {
-            alert("Please enter dd/mm/yyyy");
-            return false;
-        }
+  const onValueChange = async (item, selectedValue) => {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
     }
-}
+  }
 
+  const handleSubmit = () => {
+    fetch('http://pollination.live/api/user', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        dob: DOB,
+        email: email,
+        first_name: firstName,
+        last_name: lastName,
+        password: password
+      })
+    }).then((response) => {
+      console.log(response.status);
+      return response.json();
+    }).then((responseData) => {
+      // responseData contains jwt_token
+      onValueChange(STORAGE_KEY, responseData);
+    }).catch((error) => {
+      console.log("Error")
+      console.error(error);
+    });
+    redirectToHome();
+  }
 
+  return (
+    <View
+      style={[
+        GlobalStyles.genericPage,
+        GlobalStyles.yellowBackground,
+        styles.container,
+      ]}
+    >
+      <View style={[GlobalStyles.center, styles.topContainer]}>
+        <AppLogo />
+      </View>
+      <View style={[GlobalStyles.center, styles.textInputContainer]}>
+        <TextInput 
+          label="First Name" 
+          value={firstName} 
+          onChangeText={onChangeFirstName} 
+        />
+        <TextInput 
+          label="Last Name" 
+          value={lastName} 
+          onChangeText={onChangeLastName} 
+        />
+        <TextInput 
+          label="DOB (2021-03-03)" 
+          value={DOB} 
+          onChangeText={onChangeDOB} 
+        />
+        <TextInput 
+          label="Email" 
+          value={email} 
+          onChangeText={onChangeEmail} 
+        />
+        <TextInput 
+          label="Password" 
+          secureTextEntry={true} 
+          value={password} 
+          onChangeText={onChangePassword} 
+        />
+      </View>
+      <View style={[GlobalStyles.center, styles.buttonContainer]}>
+        <AppButton
+          style={[GlobalStyles.whiteBackground, styles.button]}
+          onPress={handleSubmit}
+          text="Register"
+        />
+      </View>
+    </View>
+  );
+};
 
-const onSubmit = (values, dispatch) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log(values.toJS())
-            resolve()
-        }, 1500)
-    })
-}
+const styles = StyleSheet.create({
+  container: {
+    maxHeight: "100%",
+    flex: 1,
+  },
+  topContainer: {
+    flex: 0.5,
+  },
+  textInputContainer: {
+    maxHeight: 120,
+    // flex: 1,
+    // borderWidth: 1,
+    // borderColor: "black",
+  },
+  bottomContainer: {
+    flex: 1,
+  },
+  button: {
+    marginTop: 150,
+    // borderWidth: 1,
+    // borderColor: "red",
+  },
+});
 
-export default class RegisterActivity extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            firstname: '',
-            dateOfBirth: '',
-        }
-    }
-
-    onChangeFirstName(firstname) {
-        // console.log(firstname)
-        this.setState({ firstname });
-        console.log(firstname);
-    }
-
-    onDateOfBirthChange(date_of_birth) {
-        console.log("onDateOfBirthChange")
-        // checkFormat(date_of_birth)
-        this.setState({ date_of_birth });
-        console.log(date_of_birth);
-    }
-
-    // TODO: turn these form groups into components
-    render() {
-        const { handleSubmit, submitting } = this.props
-        return (
-            <Form>
-                <FieldsContainer>
-                    <Fieldset label="Contact details">
-                        <FormGroup>
-                            <Label>First name</Label>
-                            <Input placeholder="John" onChangeText={(firstname) => this.onChangeFirstName(firstname)} value={this.state.firstname} />
-                        </FormGroup>
-
-                        <FormGroup>
-                            <Label>Last name</Label>
-                            <Input placeholder="Doe" onChangeText={this.onLastNameChange} />
-                        </FormGroup>
-
-                        <FormGroup>
-                            <Label>Date of Birth</Label>
-                            <Input placeholder="dd-mm-yyyy" onChangeText={(date_of_birth) => this.onDateOfBirthChange(date_of_birth)} value={this.state.date} />
-                        </FormGroup>
-
-                        <FormGroup>
-                            <Label>Email</Label>
-                            <Input placeholder="esbenspetersen@gmail.com" onChangeText={this.onEmailChange} />
-                        </FormGroup>
-                    </Fieldset>
-                    <Fieldset label="Password" last>
-                        <FormGroup>
-                            <Label>Password</Label>
-                            <Input placeholder="Enter a password" onChangeText={this.onPasswordChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Repeat password</Label>
-                            <Input placeholder="Repeat your password" onChangeText={this.onRepeatPasswordChange} />
-                        </FormGroup>
-                        <FormGroup border={false} >
-                            <Label>Save my password</Label>
-                            <Switch onValueChange={this.toggleSaveMyPassword} />
-                        </FormGroup>
-                    </Fieldset>
-                </FieldsContainer>
-                <ActionsContainer>
-                    <Button icon="md-checkmark" iconPlacement="right" onPress={this.save}>Save</Button>
-                </ActionsContainer>
-            </Form>
-        )
-    }
-}
+export default RegisterActivity;

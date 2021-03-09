@@ -32,8 +32,7 @@ import {
 
 } from 'react-native';
 
-//characteristics uuids:
-import { readSingleVote, readMultiVote, readYesNoVote } from '../constants/BleServiceCharacteristics'
+
 
 
 import {

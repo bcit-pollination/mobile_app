@@ -224,14 +224,14 @@ export default function MultiChoiceVoteActivity({
       return (
         <View key={index} style={styles.questionContainerView}>
           <Text style={styles.title}>
-            Question {curQuestion.question_num}:{" "}
+            Question {curQuestion.question_id}:{" "}
           </Text>
 
-          <Text style={styles.description}>{curQuestion.description} </Text>
+          <Text style={styles.description}>{curQuestion.question_description} </Text>
 
           <View style={styles.checkboxContainer}>
             {/* {renderCheckBoxes(curQuestion.opts, index)} */}
-            <QuestionCheckboxes options={curQuestion.opts}
+            <QuestionCheckboxes options={curQuestion.options}
               fetchChoiceFunction={fetchChoiceFunction} />
           </View>
         </View>
