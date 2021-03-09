@@ -27,18 +27,9 @@ const QuestionCheckboxes = ({ options, fetchChoiceFunction }) => {
   // };
 
   const handleChange = (index) => {
-    // const curCheckedItem = checkedItems[index];
-    // console.log("curCheckedItem:");
-    // console.log(curCheckedItem);
+
     console.log("pressed");
     console.log("index " + parseInt(index));
-
-    // let temp = checkedItems.map((curItem) => {
-    //   if (index === curItem) {
-    //     return { ...product, isChecked: !product.isChecked };
-    //   }
-    //   return product;
-    // });
 
     let items = [...checkedItems];
 
@@ -115,7 +106,7 @@ const QuestionCheckboxes = ({ options, fetchChoiceFunction }) => {
           }}
           // onPress={handleChange(localQuestions[questionIndex][index])}
           color="#000"
-          label={curOption.description}
+          label={curOption.option_description}
         />
       );
     });

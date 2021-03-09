@@ -10,8 +10,8 @@ import GlobalStyles from "../constants/GlobalStyles";
 
 const SignInActivity = ({ navigation }) => {
   const STORAGE_KEY = 'jwt_token';
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@test.com");
+  const [password, setPassword] = useState("testtest");
 
   const onChangeEmail = (text) => {
     setEmail(text);
@@ -45,7 +45,7 @@ const SignInActivity = ({ navigation }) => {
       })
     }).then((response) => {
       console.log(response.status);
-      if(response.status === 200)
+      if (response.status === 200)
         return response.json();
       else throw new Error('status != 200');
     }).then((responseData) => {
@@ -57,7 +57,7 @@ const SignInActivity = ({ navigation }) => {
       console.log("Error");
       console.error(error);
     });
-    
+
   }
 
   return (
@@ -72,16 +72,16 @@ const SignInActivity = ({ navigation }) => {
         <AppLogo />
       </View>
       <View style={[GlobalStyles.center, styles.textInputContainer]}>
-        <TextInput 
-          label="Email" 
-          value={email} 
-          onChangeText={onChangeEmail} 
+        <TextInput
+          label="Email"
+          value={email}
+          onChangeText={onChangeEmail}
         />
-        <TextInput 
-          label="Password" 
-          secureTextEntry={true} 
-          value={password} 
-          onChangeText={onChangePassword} 
+        <TextInput
+          label="Password"
+          secureTextEntry={true}
+          value={password}
+          onChangeText={onChangePassword}
         />
       </View>
       <View style={[GlobalStyles.center, styles.buttonContainer]}>

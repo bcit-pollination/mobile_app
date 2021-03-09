@@ -38,8 +38,9 @@ export default function MultiChoiceVoteActivity({
 
   const [checkedItems, setCheckedItems] = useState(null);
 
-  let obj = {}
 
+  let choices = {}
+  voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
 
   const fetchChoiceFunction = async (choices) => {
     let p = new Promise(async (resolve, reject) => {
@@ -52,15 +53,19 @@ export default function MultiChoiceVoteActivity({
       resolve(test_json_obj)
       // resolve(submit_obj)
     })
-    p.then(r => {
+    p.then(test_json_obj => {
 
       // get all the choices
-      let choices = test_json_obj.choices;
+      choices = test_json_obj.choices;
       let choice_array = []
+
+      console.log('--------- choices ------------')
+      console.log(choices)
+      console.log('--------- choices ------------')
 
       for (let item of choices) {
         // if the filed is checked
-        if (item.isChecked) {
+        if (item.isChecked == true) {
           // push that to the array
           choice_array.push({
             question_id: item.question_id,
@@ -69,6 +74,13 @@ export default function MultiChoiceVoteActivity({
           })
 
         }
+        choices = choice_array;
+        console.log('choice_array')
+        console.log(choice_array)
+
+        console.log('choices')
+        console.log(choices)
+
       }
 
 
@@ -93,27 +105,27 @@ export default function MultiChoiceVoteActivity({
 
   }
 
-  voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
 
-  let choices = [
-    {
-      "option_id": 1,
-      "option_description": "Sandwich",
-      "_id": "6046757f2801bc7728000005",
-      "isChecked": true
-    },
-    {
-      "option_num": 2,
-      "option_description": "Pizza",
-      "_id": "6046757f2801bc7728000004",
-      "isChecked": true
-    },
-    {
-      "option_num": 3,
-      "option_description": "SuShi",
-      "_id": "6046757f2801bc7728000003",
-      "isChecked": true
-    }]
+
+  // let choices = [
+  //   {
+  //     "option_id": 1,
+  //     "option_description": "Sandwich",
+  //     "_id": "6046757f2801bc7728000005",
+  //     "isChecked": true
+  //   },
+  //   {
+  //     "option_num": 2,
+  //     "option_description": "Pizza",
+  //     "_id": "6046757f2801bc7728000004",
+  //     "isChecked": true
+  //   },
+  //   {
+  //     "option_num": 3,
+  //     "option_description": "SuShi",
+  //     "_id": "6046757f2801bc7728000003",
+  //     "isChecked": true
+  //   }]
 
   const handleSubmit = () => {
 
@@ -125,9 +137,6 @@ export default function MultiChoiceVoteActivity({
         voting_token,
         time_stamp: Date.now()
       }
-
-
-
 
       resolve(submit_obj)
     })
