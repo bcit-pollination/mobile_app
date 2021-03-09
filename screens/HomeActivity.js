@@ -20,8 +20,13 @@ const HomeActivity = () => {
 
   // Gets user's jwt_token from AsyncStorage
   const getUserToken = async() => {
-    let USER_TOKEN = await AsyncStorage.getItem('jwt_token');
+    let USER_TOKEN = await AsyncStorage.getItem('jwt_token')
+    return USER_TOKEN
   }
+
+  getUserToken().then((res)=>{
+    console.log("token: " + res);
+  })
   
   const navigation = useNavigation();
 

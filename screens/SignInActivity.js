@@ -48,12 +48,14 @@ const SignInActivity = ({ navigation }) => {
       return response.json();
     }).then((responseData) => {
       // responseData contains jwt_token
-      onValueChange(STORAGE_KEY, responseData);
+      onValueChange(STORAGE_KEY, responseData.jwt_token);
+    }).then((resolve) => {
+      redirectToHome();
     }).catch((error) => {
       console.log("Error");
       console.error(error);
     });
-    redirectToHome();
+    
   }
 
   return (
