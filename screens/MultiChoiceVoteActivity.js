@@ -39,31 +39,26 @@ export default function MultiChoiceVoteActivity({
   const [checkedItems, setCheckedItems] = useState(null);
 
 
-  let choices = {}
+  let choices_global = {}
   voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
 
   const fetchChoiceFunction = async (choices) => {
-    let p = new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // await setCheckedItems(choices)
       console.log('checkedItems in MultiChoice')
       console.log(choices)
 
 
-      // TODO: change it back to `submit_obj`
-      resolve(test_json_obj)
-      // resolve(submit_obj)
-    })
-    p.then(test_json_obj => {
-
       // get all the choices
-      choices = test_json_obj.choices;
+      choices_global = choices;
+
       let choice_array = []
 
       console.log('--------- choices ------------')
-      console.log(choices)
+      console.log(choices_global)
       console.log('--------- choices ------------')
 
-      for (let item of choices) {
+      for (let item of choices_global) {
         // if the filed is checked
         if (item.isChecked == true) {
           // push that to the array
@@ -72,18 +67,19 @@ export default function MultiChoiceVoteActivity({
             option_id: item.option_id,
             order_position: 0,
           })
-
         }
-        choices = choice_array;
-        console.log('choice_array')
-        console.log(choice_array)
-
-        console.log('choices')
-        console.log(choices)
-
       }
 
+      choices_global = choice_array;
+      console.log('choice_array')
+      console.log(choice_array)
 
+      console.log('=========choices_global==============')
+      console.log(choices_global)
+
+      // TODO: change it back to `submit_obj`
+      // resolve(test_json_obj)
+      resolve(choices_global)
     })
 
   }
@@ -133,7 +129,7 @@ export default function MultiChoiceVoteActivity({
       // await setCheckedItems(choices)
 
       submit_obj = {
-        choices: choices,
+        choices: choices_global,
         voting_token,
         time_stamp: Date.now()
       }

@@ -320,7 +320,7 @@ const App = ({ route, navigation }) => {
                                 }).catch((error) => {
                                     console.log('Notification error', error);
                                 });
-                            }, 50);
+                            }, 10);
                         });
 
 
