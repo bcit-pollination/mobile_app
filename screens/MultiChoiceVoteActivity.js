@@ -48,20 +48,26 @@ export default function MultiChoiceVoteActivity({
       console.log(choices)
 
 
-
-      resolve(submit_obj)
+      // TODO: change it back to `submit_obj`
+      resolve(test_json_obj)
+      // resolve(submit_obj)
     })
     p.then(r => {
 
+      // get all the choices
       let choices = test_json_obj.choices;
       let choice_array = []
+
       for (let item of choices) {
+        // if the filed is checked
         if (item.isChecked) {
+          // push that to the array
           choice_array.push({
             question_id: item.question_id,
             option_id: item.option_id,
             order_position: 0,
           })
+
         }
       }
 
@@ -76,16 +82,9 @@ export default function MultiChoiceVoteActivity({
 
   const [bleConnected, setBleConnected] = React.useState(false);
 
-  const [checked, setChecked] = React.useState({
-    choice1: 'Pizza',
-    choice2: 'Coffee',
-  });
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
-
-    // Call this if vote has failed
-    // onFailure();
   };
 
 
@@ -127,7 +126,7 @@ export default function MultiChoiceVoteActivity({
         time_stamp: Date.now()
       }
 
-      choices
+
 
 
       resolve(submit_obj)
@@ -166,6 +165,7 @@ export default function MultiChoiceVoteActivity({
       BleManager.retrieveServices(connected_peripheral).then(
         (peripheralInfo) => {
           console.log("peripheralInfo", peripheralInfo.services);
+          console.log('');
           console.log("---------- text to send--------");
           console.log(`string: ${JSON.stringify(text_to_send)}`);
           console.log("---------- text to send --------");
@@ -233,23 +233,6 @@ export default function MultiChoiceVoteActivity({
               });
             }, 500);
 
-            // .catch((err) => {
-            //   console.log('failed to send')
-            //   console.log(err)
-            //   this.alert("failed to send");
-            // });
-
-            // if (text_to_send_buffer.length <= 20) {
-            //   text_to_send_buffer = text_to_send_buffer.slice(splice_index, -1)
-            //   BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
-            //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
-            //     this.alert("message sent!");
-            //   }).catch((err) => {
-            //     console.log('failed to send')
-            //     console.log(err)
-            //     this.alert("failed to send");
-            //   });
-            // }
           });
         }
       );

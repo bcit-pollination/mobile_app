@@ -320,7 +320,7 @@ const App = ({ route, navigation }) => {
                                 }).catch((error) => {
                                     console.log('Notification error', error);
                                 });
-                            }, 350);
+                            }, 50);
                         });
 
 
@@ -456,7 +456,6 @@ const App = ({ route, navigation }) => {
                                                     console.log('failed to send')
                                                     console.log(err)
                                                     this.alert("failed to send");
-
                                                 });
                                         }, 500);
                                     })
