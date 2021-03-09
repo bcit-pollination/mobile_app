@@ -56,7 +56,7 @@ const HomeActivity = () => {
           for (let j = 0; j < responseData.elections.length; j++) {
             // cheesed
             const len = elections.length;
-            elections[len] = responseData.elections[i];
+            elections[len] = responseData.elections[j];
             console.log("cur elections");
             console.log(elections[len]);
           }
