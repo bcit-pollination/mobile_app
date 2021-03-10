@@ -102,10 +102,10 @@ const HomeActivity = () => {
           title={curElection.election_description}
           //parameter is passed in for later redirection, after bluetooth is connected!
           onPress={() =>
-            // navigation.navigate("BleConnection", {
-            //   electionType: "Single Choice Vote",
-            // })
-            console.log("pressed")
+            navigation.navigate("BleConnection", {
+              electionType: "Single Choice Vote",
+            })
+            // console.log("pressed")
           }
           onLongPress={showDetailsModal}
         />
@@ -141,7 +141,6 @@ const HomeActivity = () => {
   }, []);
  
 
-  // TODO: dynamically load info to the modal from database
   return (
     <Provider>
       <View style={[GlobalStyles.genericPage, styles.container]}>
