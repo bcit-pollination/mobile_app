@@ -15,6 +15,11 @@ import {
   getVotingTokenFromStorage
 } from '../utils/apiFunctions'
 
+import {
+
+
+} from '../utils/dateProcess'
+
 // formatter
 import { stringToBytes } from "convert-string";
 
@@ -47,6 +52,7 @@ export default function MultiChoiceVoteActivity({
 
   let choices_global = {}
   voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
+
 
   const fetchChoiceFunction = async (choices) => {
     return new Promise(async (resolve, reject) => {
