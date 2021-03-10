@@ -14,7 +14,7 @@ const getVotingToken = (user_token) => {
         },
     })
         .then((response) => {
-            console.log(response.status);
+            // console.log(response.status);
             if (response.status === 200) return response.json();
             else throw new Error("status != 200 in getting voting token");
         })
@@ -29,12 +29,12 @@ const getVotingToken = (user_token) => {
         });
 };
 
-// Gets user's jwt_token from AsyncStorage
+// Gets user's voting_token from AsyncStorage
 const getVotingTokenFromStorage = async () => {
-    let VOTING_TOKEN = await AsyncStorage.getItem(VOTING_STORAGE);
-    console.log('VOTING_TOKEN')
-    console.log(VOTING_TOKEN)
-    return VOTING_TOKEN;
+    let VOTING_TOKEN = await AsyncStorage.getItem('voting_token');
+    console.log('%%%%%%%%%%%%%VOTING_TOKEN%%%%%%%%%%%%%%')
+    console.log(VOTING_TOKEN.toString())
+    return VOTING_TOKEN.toString();
 };
 
 

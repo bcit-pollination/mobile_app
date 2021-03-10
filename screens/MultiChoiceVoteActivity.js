@@ -129,12 +129,12 @@ export default function MultiChoiceVoteActivity({
   //     "isChecked": true
   //   }]
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
 
     let p = new Promise(async (resolve, reject) => {
       // await setCheckedItems(choices)
 
-      let voting_token = getVotingTokenFromStorage()
+      let voting_token = await getVotingTokenFromStorage()
       console.log('%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%')
       console.log(voting_token)
 
