@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Portal, Provider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -18,41 +18,37 @@ import { resolve } from "uri-js";
 // util functions
 import {
   getVotingToken,
-  getOrgIds,
-  getElections,
-  getOrg,
+  // getOrgIds,
+  // getElections,
+  // getOrg,
   getUserToken,
   onValueChange,
   getVotingTokenFromStorage,
 } from "../utils/apiFunctions";
+import { ScrollView } from "react-native-gesture-handler";
 
 const HomeActivity = () => {
-  const VOTING_STORAGE = "voting_token";
-  let org_ids = [];
-  let elections = [];
-
   // boolean to activate dynamic render of elections
   const [render, setRender] = useState(false);
+
+  // array that contains the actual election objects
+  // const [elections, setElections] = useState([]);
+
+  // array that contains the components to be rendered
+  const [electionComponents, setElectionComponents] = useState([]);
+
+  // adds an election object to the elections array
+  // const addElection = (newElection) => {
+  //   setElections((oldState) => [...oldState, newElection]);
+  // };
 
   //BLE connected?
   const [showBleConnection, setShowBleConnection] = useState(false);
 
-  //getting user token
-  getUserToken()
-    .then((res) => {
-      console.log("----------------getUserToken-----------------");
-      getOrg(res);
-      getVotingToken(res);
+  // console.log("----------------getUserToken-----------------");
+  console.log("in HomeActivity");
 
-      let a = getVotingTokenFromStorage();
-      console.log("getVotingTokenFromStorage:");
-      console.log(a);
-    })
-    .then((res) => {
-      console.log("setRender to true");
-      console.log("should render elections now");
-      setRender();
-    });
+  //getting user token
 
   const navigation = useNavigation();
 
@@ -88,16 +84,18 @@ const HomeActivity = () => {
     showTipModal();
   };
 
-  const renderElections = (elections) => {
+  const getElectionsArr = async () => {
+    let ELECTIONS_ARR = await AsyncStorage.getItem("elections_arr");
+    return ELECTIONS_ARR;
+  };
+
+  const convertElections = (elections) => {
     let arr = [];
 
+    console.log("elections within renderElections()");
+    console.log(elections);
+
     arr = elections.map((curElection, index) => {
-      console.log("Election Details:");
-      console.log("election_description: " + curElection.election_description);
-      console.log("end_time: " + curElection.end_time);
-      console.log("anonymous: ");
-      console.log(curElection.anonymous);
-      console.log("org_id: " + parseInt(curElection.org_id));
       return (
         <ElectionItem
           key={index}
@@ -114,8 +112,34 @@ const HomeActivity = () => {
       );
     });
 
+    console.log("setting election component");
+    console.log(arr);
+    if (arr.length > 0) {
+      console.log("arr.length > 0; setElectionComponents()");
+      setElectionComponents(arr);
+    } else {
+      console.log("arr.length <= 0");
+    }
+
     return arr;
   };
+
+  const getData = () => {
+    getElectionsArr().then((res) => {
+      console.log("res from getElectionsArr()");
+      console.log(res);
+      convertElections(JSON.parse(res));
+      // setElectionComponents(JSON.parse(res));
+    });
+  }
+
+  useEffect(() => {
+    getData();
+    // const interval = setTimeout(() => {
+    //   getData();
+    // }, 2000);
+  }, []);
+ 
 
   // TODO: dynamically load info to the modal from database
   return (
@@ -140,11 +164,7 @@ const HomeActivity = () => {
           <Text style={styles.headingText}>Active Elections</Text>
         </View>
         <View style={styles.electionsListContainer}>
-          {useEffect(() => {
-            if (render) {
-              renderElections(elections);
-            }
-          }, [render])}
+          {electionComponents}
           {/* <ElectionItem
             title="Multiple Choice Vote"
             onLongPress={showDetailsModal}
@@ -170,6 +190,9 @@ const HomeActivity = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    // flexGrow: 1,
+  },
   tipContainer: {
     position: "absolute",
     top: 10,
