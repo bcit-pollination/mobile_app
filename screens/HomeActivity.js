@@ -26,6 +26,14 @@ import {
   getVotingTokenFromStorage,
 } from "../utils/apiFunctions";
 
+// Three types of elections
+const ELECTION_TYPES = {
+  'Single Choice Vote': 'SingleChoiceVote',
+  'Multiple Choice Vote': 'MultiChoiceVote',
+  'Yes/No Vote': 'YesNoVote'
+}
+
+
 const HomeActivity = () => {
   // boolean to activate dynamic render of elections
   const [render, setRender] = useState(false);
@@ -102,7 +110,8 @@ const HomeActivity = () => {
           //parameter is passed in for later redirection, after bluetooth is connected!
           onPress={() =>
             navigation.navigate("BleConnection", {
-              electionType: "Single Choice Vote",
+              // electionType: "Single Choice Vote",
+              electionType: "Multiple Choice Vote",
             })
             // console.log("pressed")
           }
@@ -138,7 +147,7 @@ const HomeActivity = () => {
     //   getData();
     // }, 2000);
   }, []);
- 
+
 
   return (
     <Provider>

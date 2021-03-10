@@ -173,9 +173,10 @@ const App = ({ route, navigation }) => {
             if (peripheral.connected) {
                 // if the stuff is connected
                 // BleManager.disconnect(peripheral.id);
-                BleManager.retrieveServices(peripheral.id).then((peripheralInfo) => {
-                    console.log('peripheralInfo', peripheralInfo.services);
-                })
+
+                // BleManager.retrieveServices(peripheral.id).then((peripheralInfo) => {
+                //     console.log('peripheralInfo', peripheralInfo.services);
+                // })
 
             }
             //  else {
@@ -334,7 +335,7 @@ const App = ({ route, navigation }) => {
 
 
 
-                }, 50);
+                }, 150);
             }).catch((error) => {
                 console.log('Connection error', error);
             });
