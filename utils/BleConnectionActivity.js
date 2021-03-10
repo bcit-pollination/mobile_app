@@ -411,8 +411,8 @@ const App = ({ route, navigation }) => {
                         </View>
 
                         {/* <View style={{ margin: 10 }}>
-                             <Button title="Retrieve connected peripherals" onPress={() => retrieveConnected()} />
-                         </View> */}
+                            <Button title="Retrieve connected peripherals" onPress={() => retrieveConnected()} />
+                        </View> */}
 
                         {(list.length == 0) &&
                             <View style={{ flex: 1, margin: 20 }}>
@@ -440,13 +440,13 @@ const App = ({ route, navigation }) => {
 
                 {/* Connected Peripheral -> set text to send */}
                 {/* {connected_peripheral && < TextInput
-                     style={[styles.uuidInput]}
-                     value={voting_token}
-                     placeholder="Enter the voting UUID here"
-                     onChangeText={(text) => {
-                         setVotingToken(text)
-                     }}
-                 />} */}
+                    style={[styles.uuidInput]}
+                    value={voting_token}
+                    placeholder="Enter the voting UUID here"
+                    onChangeText={(text) => {
+                        setVotingToken(text)
+                    }}
+                />} */}
 
 
                 {/*Got the voting token and then proceed to vote */}
@@ -529,18 +529,18 @@ const styles = StyleSheet.create({
 export default App;
 
 
- // if (Platform.OS === 'android' && Platform.Version >= 23) {
- //     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
- //         if (result) {
- //             console.log("Permission is OK");
- //         } else {
- //             PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
- //                 if (result) {
- //                     console.log("User accept");
- //                 } else {
- //                     console.log("User refuse");
- //                 }
- //             });
- //         }
- //     });
- // }
+// if (Platform.OS === 'android' && Platform.Version >= 23) {
+//     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
+//         if (result) {
+//             console.log("Permission is OK");
+//         } else {
+//             PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
+//                 if (result) {
+//                     console.log("User accept");
+//                 } else {
+//                     console.log("User refuse");
+//                 }
+//             });
+//         }
+//     });
+// }

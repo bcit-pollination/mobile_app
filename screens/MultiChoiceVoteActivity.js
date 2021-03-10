@@ -9,57 +9,29 @@ import BleManager from "react-native-ble-manager";
 import AppButton from "../components/AppButton";
 import QuestionCheckboxes from "../components/QuestionCheckboxes";
 
+import {
+  // getVotingToken,
+  // onValueChange,
+  getVotingTokenFromStorage
+} from '../utils/apiFunctions'
+
 // formatter
 import { stringToBytes } from "convert-string";
 
-// const test_json_obj = [
-//   {
-//     question_num: 1,
-//     description: "Quel est votre plat préféré ?",
-//     selection_limit: 1,
-//     opts: [
-//       {
-//         option_num: 1,
-//         description: "Sandwich",
-//         count: 0,
-//       },
-//       {
-//         option_num: 2,
-//         description: "Pizza",
-//         count: 0,
-//       },
-//       {
-//         option_num: 3,
-//         description: "SuShi",
-//         count: 0,
-//       },
-//     ],
-//   },
-//   {
-//     question_num: 2,
-//     description: "Quel genre de boisson détestes-tu le plus ?",
-//     selection_limit: 1,
-//     opts: [
-//       {
-//         option_num: 1,
-//         description: "Long Island Iced Tea",
-//         count: 0,
-//       },
-//       {
-//         option_num: 2,
-//         description: "Matcha",
-//         count: 0,
-//       },
-//       {
-//         option_num: 3,
-//         description: "Coffee",
-//         count: 0,
-//       },
-//     ],
-//   },
-// ];
+let test_json_obj = {
+  "choices": [{
+    "option_id": 1,
+    "option_description": "Sandwich",
+    "_id": "6046757f2801bc7728000005", "isChecked": true
+  },
+  { "option_num": 2, "option_description": "Pizza", "_id": "6046757f2801bc7728000004", "isChecked": true },
+  { "option_num": 3, "option_description": "SuShi", "_id": "6046757f2801bc7728000003", "isChecked": true }],
+  "voting_token": "14efcd7a-ce61-41d3-83f8-d58f440054fc",
+  "time_stamp": 1615275694130
+}
 
 export default function MultiChoiceVoteActivity({
+  voting_token,
   route,
   navigation,
   // questions,
@@ -72,15 +44,49 @@ export default function MultiChoiceVoteActivity({
 
   const [checkedItems, setCheckedItems] = useState(null);
 
-  let obj = {}
+
+  let choices_global = {}
+  voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
+
   const fetchChoiceFunction = async (choices) => {
-    let p = new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // await setCheckedItems(choices)
       console.log('checkedItems in MultiChoice')
       console.log(choices)
-      resolve(choices)
+
+
+      // get all the choices
+      choices_global = choices;
+
+      let choice_array = []
+
+      console.log('--------- choices ------------')
+      console.log(choices_global)
+      console.log('--------- choices ------------')
+
+      for (let item of choices_global) {
+        // if the filed is checked
+        if (item.isChecked == true) {
+          // push that to the array
+          choice_array.push({
+            question_id: item.question_id,
+            option_id: item.option_id,
+            order_position: 0,
+          })
+        }
+      }
+
+      choices_global = choice_array;
+      console.log('choice_array')
+      console.log(choice_array)
+
+      console.log('=========choices_global==============')
+      console.log(choices_global)
+
+      // TODO: change it back to `submit_obj`
+      // resolve(test_json_obj)
+      resolve(choices_global)
     })
-    p.then(r => { obj = r })
 
   }
 
@@ -90,23 +96,73 @@ export default function MultiChoiceVoteActivity({
 
   const [bleConnected, setBleConnected] = React.useState(false);
 
-  const [checked, setChecked] = React.useState({
-    choice1: 'Pizza',
-    choice2: 'Coffee',
-  });
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
-
-    // Call this if vote has failed
-    // onFailure();
   };
 
-  const handleSubmit = () => {
-    console.log("Submit Button Pressed! ");
-    console.log("THE OBJ IS: ");
-    console.log(obj)
-    bleWriteMultiChoice(checked);
+
+  //
+  let submit_obj = {
+
+  }
+
+
+
+  // let choices = [
+  //   {
+  //     "option_id": 1,
+  //     "option_description": "Sandwich",
+  //     "_id": "6046757f2801bc7728000005",
+  //     "isChecked": true
+  //   },
+  //   {
+  //     "option_num": 2,
+  //     "option_description": "Pizza",
+  //     "_id": "6046757f2801bc7728000004",
+  //     "isChecked": true
+  //   },
+  //   {
+  //     "option_num": 3,
+  //     "option_description": "SuShi",
+  //     "_id": "6046757f2801bc7728000003",
+  //     "isChecked": true
+  //   }]
+
+  const handleSubmit = async () => {
+
+    let p = new Promise(async (resolve, reject) => {
+      // await setCheckedItems(choices)
+
+      let voting_token = await getVotingTokenFromStorage()
+      console.log('%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%')
+      console.log(voting_token)
+
+
+      submit_obj = {
+        choices: choices_global,
+        voting_token,
+        time_stamp: Date.now(),
+        voting_token: voting_token
+      }
+
+      resolve(submit_obj)
+    })
+
+    p.then((submit_obj) => {
+      console.log('sending {submit_obj} to the BLE server ')
+      console.log(submit_obj)
+
+      bleWriteMultiChoice(submit_obj);
+    })
+
+
+    // console.log("Submit Button Pressed! ");
+    // console.log("THE OBJ IS: ");
+    // console.log(obj)
+
+    // bleWriteMultiChoice(checked);
+
     // Call this if vote has failed
     // onFailure();
   };
@@ -121,10 +177,12 @@ export default function MultiChoiceVoteActivity({
 
   // writing for single choice
   const bleWriteMultiChoice = (text_to_send) => {
+
     BleManager.connect(connected_peripheral).then((res) => {
       BleManager.retrieveServices(connected_peripheral).then(
         (peripheralInfo) => {
           console.log("peripheralInfo", peripheralInfo.services);
+          console.log('');
           console.log("---------- text to send--------");
           console.log(`string: ${JSON.stringify(text_to_send)}`);
           console.log("---------- text to send --------");
@@ -141,12 +199,10 @@ export default function MultiChoiceVoteActivity({
             voteCharacteristic
           ).then(() => {
             // (1223)
-            let text_to_send2 = JSON.stringify(obj);
+            let text_to_send2 = JSON.stringify(text_to_send);
 
             console.log("text_to_send.length()" + text_to_send2.length);
-            let text_to_send_buffer = `${text_to_send2.length} ${JSON.stringify(
-              obj
-            )}`;
+            let text_to_send_buffer = `${text_to_send2.length} ${text_to_send2}`;
 
             let remaining_msg = text_to_send_buffer;
 
@@ -159,11 +215,13 @@ export default function MultiChoiceVoteActivity({
 
             //
             setTimeout(() => {
+
               BleManager.write(
                 connected_peripheral,
                 service,
                 voteCharacteristic,
                 stringToBytes(text_to_send_buffer)
+
               ).then(() => {
                 console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
                 this.alert("message sent!");
@@ -194,23 +252,6 @@ export default function MultiChoiceVoteActivity({
               });
             }, 500);
 
-            // .catch((err) => {
-            //   console.log('failed to send')
-            //   console.log(err)
-            //   this.alert("failed to send");
-            // });
-
-            // if (text_to_send_buffer.length <= 20) {
-            //   text_to_send_buffer = text_to_send_buffer.slice(splice_index, -1)
-            //   BleManager.write(connected_peripheral, service, voteCharacteristic, stringToBytes(text_to_send_buffer)).then(() => {
-            //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
-            //     this.alert("message sent!");
-            //   }).catch((err) => {
-            //     console.log('failed to send')
-            //     console.log(err)
-            //     this.alert("failed to send");
-            //   });
-            // }
           });
         }
       );
