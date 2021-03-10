@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { ScrollView, StyleSheet, View, Text, Pressable } from "react-native";
 import { Portal, Provider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,7 +25,6 @@ import {
   onValueChange,
   getVotingTokenFromStorage,
 } from "../utils/apiFunctions";
-import { ScrollView } from "react-native-gesture-handler";
 
 const HomeActivity = () => {
   // boolean to activate dynamic render of elections
@@ -143,21 +142,17 @@ const HomeActivity = () => {
 
   return (
     <Provider>
-      <View style={[GlobalStyles.genericPage, styles.container]}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Pressable style={styles.tipContainer} onPress={onTipPress}>
           <AntDesign name="question" size={24} color="black" />
         </Pressable>
         <Portal>
-          {/* <DetailsModal info="this is modal" visible={show} show={show} setShow={setShow} /> */}
           <AppModal
             show={showElectionDetails}
             hideModal={hideDetailsModal}
             text={sampleElectionDetails}
           />
           <AppModal show={showTip} hideModal={hideTipModal} text={sampleTip} />
-          {/* <DetailsModal show={showElectionDetails} hideModal={hideDetailsModal} /> */}
-          {/* for testing purposes */}
-          {/* <BluetoothFailModal show={show} hideModal={hideModal} /> */}
         </Portal>
         <View style={[styles.headingContainer, GlobalStyles.center]}>
           <Text style={styles.headingText}>Active Elections</Text>
@@ -183,14 +178,17 @@ const HomeActivity = () => {
             }
           /> */}
         </View>
-      </View>
+      </ScrollView>
     </Provider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // flexGrow: 1,
+    // flex: 1,
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   tipContainer: {
     position: "absolute",
@@ -198,14 +196,14 @@ const styles = StyleSheet.create({
     right: 10,
   },
   headingContainer: {
-    flex: 1,
+    // flex: 1,
   },
   headingText: {
     fontSize: 24,
     fontWeight: "bold",
   },
   electionsListContainer: {
-    flex: 3,
+    // flex: 3,
     paddingVertical: 10,
     width: "70%",
     maxWidth: "70%",
