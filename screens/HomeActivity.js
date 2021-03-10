@@ -18,6 +18,9 @@ const HomeActivity = () => {
   //BLE connected?
   const [showBleConnection, setShowBleConnection] = useState(false);
 
+  // boolean to activate dynamic render of elections
+  const [render, setRender] = useState(false);
+
   // Gets user's jwt_token from AsyncStorage
   const getUserToken = async () => {
     let USER_TOKEN = await AsyncStorage.getItem("jwt_token");
@@ -60,6 +63,7 @@ const HomeActivity = () => {
             console.log("cur elections");
             console.log(elections[len]);
           }
+          setRender(true);
         });
     }
   };
@@ -130,6 +134,35 @@ const HomeActivity = () => {
     showTipModal();
   };
 
+  const renderElections = (elections) => {
+    let arr = [];
+
+    arr = elections.map((curElection, index) => {
+      console.log("Election Details:");
+      console.log("election_description: " + curElection.election_description);
+      console.log("end_time: " + curElection.end_time);
+      console.log("anonymous: ");
+      console.log(curElection.anonymous);
+      console.log("org_id: " + parseInt(curElection.org_id));
+      return (
+        <ElectionItem
+          key={index}
+          title={curElection.election_description}
+          //parameter is passed in for later redirection, after bluetooth is connected!
+          onPress={() =>
+            // navigation.navigate("BleConnection", {
+            //   electionType: "Single Choice Vote",
+            // })
+            console.log("pressed")
+          }
+          onLongPress={showDetailsModal}
+        />
+      );
+    });
+
+    return arr;
+  };
+
   // TODO: dynamically load info to the modal from database
   return (
     <Provider>
@@ -153,17 +186,12 @@ const HomeActivity = () => {
           <Text style={styles.headingText}>Active Elections</Text>
         </View>
         <View style={styles.electionsListContainer}>
-          <ElectionItem
-            title="Single Choice Vote"
-            //parameter is passed in for later redirection, after bluetooth is connected!
-            onPress={() =>
-              navigation.navigate("BleConnection", {
-                electionType: "Single Choice Vote",
-              })
+          {useEffect(() => {
+            if (render) {
+              renderElections(elections);
             }
-            onLongPress={showDetailsModal}
-          />
-          <ElectionItem
+          }, [render])}
+          {/* <ElectionItem
             title="Multiple Choice Vote"
             onLongPress={showDetailsModal}
             onPress={() =>
@@ -180,7 +208,7 @@ const HomeActivity = () => {
                 electionType: "Yes No Vote",
               })
             }
-          />
+          /> */}
         </View>
       </View>
     </Provider>
