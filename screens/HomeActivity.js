@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View, Text, Pressable } from "react-native";
-import { Portal, Provider } from "react-native-paper";
+import { Portal, Provider, Snackbar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -64,6 +64,9 @@ const HomeActivity = () => {
 
   const [showTip, setShowTip] = useState(false);
 
+  // State of Snackbar when clicking on an election that hasn't started
+  const [visible, setVisible] = React.useState(false);
+
   // const changeShowDetailsModal = () => {
   //   setShowElectionDetails(!showElectionDetails);
   // };
@@ -102,19 +105,32 @@ const HomeActivity = () => {
     console.log("elections within renderElections()");
     console.log(elections);
 
-    arr = elections.map((curElection, index) => {
+    // Filter only elections that have not ended.
+    arr = elections.filter((election) => {
+      let electionDate = new Date(election.end_time);
+      let currentDate = new Date();
+      return electionDate > currentDate;
+    }).map((curElection, index) => {
       return (
         <ElectionItem
           key={index}
           title={curElection.election_description}
           //parameter is passed in for later redirection, after bluetooth is connected!
-          onPress={() =>
-            navigation.navigate("BleConnection", {
-              // electionType: "Single Choice Vote",
-              electionType: "Multiple Choice Vote",
-            })
+          onPress={() => {
+            let electionDate = new Date(curElection.end_time);
+            let currentDate = new Date();
+            // Prevent navigation for elections that have not currently started
+            if (electionDate > currentDate) {
+              console.log(electionDate);
+              onFailure();
+            } else {
+              navigation.navigate("BleConnection", {
+                // electionType: "Single Choice Vote",
+                electionType: "Multiple Choice Vote",
+              })
+            }
             // console.log("pressed")
-          }
+          }}
           onLongPress={showDetailsModal}
         />
       );
@@ -148,6 +164,15 @@ const HomeActivity = () => {
     // }, 2000);
   }, []);
 
+  // Called when clicking on election that hasn't started
+  const onFailure = () => {
+    setVisible(!visible);
+  }
+
+  // Toggles Snackbar state
+  const onDismissSnackBar = () => {
+    setVisible(false);
+  }
 
   return (
     <Provider>
@@ -187,6 +212,9 @@ const HomeActivity = () => {
             }
           /> */}
         </View>
+        <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+          This election is not currently active.
+        </Snackbar>
       </ScrollView>
     </Provider>
   );
