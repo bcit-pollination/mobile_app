@@ -16,7 +16,7 @@ import {
 } from '../utils/apiFunctions'
 
 import {
-
+  get_current_date_formatted
 
 } from '../utils/dateProcess'
 
@@ -148,7 +148,7 @@ export default function MultiChoiceVoteActivity({
       submit_obj = {
         choices: choices_global,
         voting_token,
-        time_stamp: Date.now(),
+        time_stamp: get_current_date_formatted,
         voting_token: voting_token
       }
 

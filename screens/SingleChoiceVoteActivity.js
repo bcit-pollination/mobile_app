@@ -16,6 +16,10 @@ import AppButton from "../components/AppButton";
 
 // formatter
 import { stringToBytes } from "convert-string";
+import {
+  get_current_date_formatted
+
+} from '../utils/dateProcess'
 
 // const items = [
 //   {
@@ -190,10 +194,20 @@ const SingleChoiceVoteActivity = ({ question, route, navigation }) => {
     console.log(choice);
   };
 
+  let submit_obj = {
+  }
+
   // submit via BLE
   const handleSubmit = () => {
     console.log(singleChoiceSelected);
     bleWriteSingleChoice(singleChoiceSelected);
+
+    submit_obj = {
+      choices: choices_global,
+      voting_token,
+      time_stamp: get_current_date_formatted,
+      voting_token: voting_token
+    }
   };
 
   const onFailure = () => {
