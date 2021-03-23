@@ -117,7 +117,7 @@ const HomeActivity = () => {
           title={curElection.election_description}
           //parameter is passed in for later redirection, after bluetooth is connected!
           onPress={() => {
-            let electionDate = new Date(curElection.end_time);
+            let electionDate = new Date(curElection.start_time);
             let currentDate = new Date();
             // Prevent navigation for elections that have not currently started
             if (electionDate > currentDate) {

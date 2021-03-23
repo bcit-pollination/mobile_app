@@ -30,6 +30,13 @@ export default function LoginActivity({ navigation }) {
           text="Register"
         />
       </View>
+      <View style={styles.register}>
+        <AppButton
+          style={GlobalStyles.whiteBackground}
+          onPress={() => navigation.navigate("MultiChoiceVote")}
+          text="test"
+        />
+      </View>
     </View>
   );
 }

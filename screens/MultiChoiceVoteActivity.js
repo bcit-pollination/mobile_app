@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Snackbar, Checkbox } from "react-native-paper";
@@ -8,6 +8,7 @@ import BleManager from "react-native-ble-manager";
 
 import AppButton from "../components/AppButton";
 import QuestionCheckboxes from "../components/QuestionCheckboxes";
+import RadioButton from "../components/RadioButton";
 
 import {
   // getVotingToken,
@@ -35,6 +36,28 @@ let test_json_obj = {
   "time_stamp": 1615275694130
 }
 
+// var multi_question_test = [{
+//   question_id: 1,
+//   question_description: "Quel est votre plat préféré ?",
+//   min_selection_count: 1,
+//   max_selection_count: 5,
+//   ordered_choices: false,
+//   'options': [
+//     {
+//       option_id: 1,
+//       option_description: "Sandwich",
+//     },
+//     {
+//       option_id: 2,
+//       option_description: "Pizza",
+//     },
+//     {
+//       option_id: 3,
+//       option_description: "SuShi",
+//     }
+//   ]
+// }];
+
 export default function MultiChoiceVoteActivity({
   voting_token,
   route,
@@ -49,6 +72,11 @@ export default function MultiChoiceVoteActivity({
 
   const [checkedItems, setCheckedItems] = useState(null);
 
+  const [question_type, setQuestionType] = useState(null);
+
+  useEffect(() => {
+    question_json[0].max_selection_count == 1 ? setQuestionType('single') : setQuestionType('multi')
+  }, [question_json])
 
   let choices_global = {}
   voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
@@ -266,7 +294,7 @@ export default function MultiChoiceVoteActivity({
 
   const renderQuestions = (questions) => {
     let arr = [];
-
+    
     arr = questions.map((curQuestion, index) => {
       return (
         <View key={index} style={styles.questionContainerView}>
@@ -278,8 +306,15 @@ export default function MultiChoiceVoteActivity({
 
           <View style={styles.checkboxContainer}>
             {/* {renderCheckBoxes(curQuestion.opts, index)} */}
-            <QuestionCheckboxes options={curQuestion.options}
-              fetchChoiceFunction={fetchChoiceFunction} />
+            {question_type === 'single' && <RadioButton
+              options={curQuestion.options}
+              onPressAction={fetchChoiceFunction}
+              textColor="black"
+              buttonColor="rgb(0,0,100)"
+            />}
+            {question_type === 'multi' && <QuestionCheckboxes 
+              options={curQuestion.options}
+              fetchChoiceFunction={fetchChoiceFunction} />}
           </View>
         </View>
       );
@@ -292,6 +327,7 @@ export default function MultiChoiceVoteActivity({
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
         {renderQuestions(question_json)}
+        {/* {renderQuestions(multi_question_test)} */}
 
         {/* onSubmit should increment count in DB after validating choices */}
         <AppButton

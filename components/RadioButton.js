@@ -86,6 +86,7 @@ const RadioButton = ({
     console.log(checkedItems);
 
     setCheckedItems(items);
+    onPressAction(items);
   };
 
   const renderSelection = (index) => {
@@ -123,7 +124,7 @@ const RadioButton = ({
               {renderSelection(index)}
             </View>
             {/* Renders the option text */}
-            <Text style={[styles.radioText]}>{curOption.description}</Text>
+            <Text style={[styles.radioText]}>{curOption.option_description}</Text>
           </View>
         </Pressable>
       );
