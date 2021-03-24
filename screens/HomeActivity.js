@@ -125,7 +125,7 @@ const HomeActivity = () => {
               onFailure();
             } else {
               navigation.navigate("BleConnection", {
-                // electionType: "Single Choice Vote",
+                // electionType: "Single Choice Vote.",
                 electionType: "Multiple Choice Vote",
               })
             }
