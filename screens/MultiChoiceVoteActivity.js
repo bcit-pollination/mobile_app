@@ -13,28 +13,38 @@ import RadioButton from "../components/RadioButton";
 import {
   // getVotingToken,
   // onValueChange,
-  getVotingTokenFromStorage
-} from '../utils/apiFunctions'
+  getVotingTokenFromStorage,
+} from "../utils/apiFunctions";
 
-import {
-  get_current_date_formatted
-
-} from '../utils/dateProcess'
+import { get_current_date_formatted } from "../utils/dateProcess";
 
 // formatter
 import { stringToBytes } from "convert-string";
 
 let test_json_obj = {
-  "choices": [{
-    "option_id": 1,
-    "option_description": "Sandwich",
-    "_id": "6046757f2801bc7728000005", "isChecked": true
-  },
-  { "option_num": 2, "option_description": "Pizza", "_id": "6046757f2801bc7728000004", "isChecked": true },
-  { "option_num": 3, "option_description": "SuShi", "_id": "6046757f2801bc7728000003", "isChecked": true }],
-  "voting_token": "14efcd7a-ce61-41d3-83f8-d58f440054fc",
-  "time_stamp": 1615275694130
-}
+  choices: [
+    {
+      option_id: 1,
+      option_description: "Sandwich",
+      _id: "6046757f2801bc7728000005",
+      isChecked: true,
+    },
+    {
+      option_num: 2,
+      option_description: "Pizza",
+      _id: "6046757f2801bc7728000004",
+      isChecked: true,
+    },
+    {
+      option_num: 3,
+      option_description: "SuShi",
+      _id: "6046757f2801bc7728000003",
+      isChecked: true,
+    },
+  ],
+  voting_token: "14efcd7a-ce61-41d3-83f8-d58f440054fc",
+  time_stamp: 1615275694130,
+};
 
 // var multi_question_test = [{
 //   question_id: 1,
@@ -67,7 +77,7 @@ export default function MultiChoiceVoteActivity({
   // This is needed for the write functions
   const { connected_peripheral, question_json } = route.params;
   // const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
-  console.log(connected_peripheral)
+  console.log(connected_peripheral);
   // const navigation = useNavigation();
 
   const [checkedItems, setCheckedItems] = useState(null);
@@ -75,28 +85,28 @@ export default function MultiChoiceVoteActivity({
   const [question_type, setQuestionType] = useState(null);
 
   useEffect(() => {
-    question_json[0].max_selection_count == 1 ? setQuestionType('single') : setQuestionType('multi')
-  }, [question_json])
+    question_json[0].max_selection_count == 1
+      ? setQuestionType("single")
+      : setQuestionType("multi");
+  }, [question_json]);
 
-  let choices_global = {}
-  voting_token = '14efcd7a-ce61-41d3-83f8-d58f440054fc'
-
+  let choices_global = {};
+  voting_token = "14efcd7a-ce61-41d3-83f8-d58f440054fc";
 
   const fetchChoiceFunction = async (choices) => {
     return new Promise(async (resolve, reject) => {
       // await setCheckedItems(choices)
-      console.log('checkedItems in MultiChoice')
-      console.log(choices)
-
+      console.log("checkedItems in MultiChoice");
+      console.log(choices);
 
       // get all the choices
       choices_global = choices;
 
-      let choice_array = []
+      let choice_array = [];
 
-      console.log('--------- choices ------------')
-      console.log(choices_global)
-      console.log('--------- choices ------------')
+      console.log("--------- choices ------------");
+      console.log(choices_global);
+      console.log("--------- choices ------------");
 
       for (let item of choices_global) {
         // if the filed is checked
@@ -106,42 +116,33 @@ export default function MultiChoiceVoteActivity({
             question_id: item.question_id,
             option_id: item.option_id,
             order_position: 0,
-          })
+          });
         }
       }
 
       choices_global = choice_array;
-      console.log('choice_array')
-      console.log(choice_array)
+      console.log("choice_array");
+      console.log(choice_array);
 
-      console.log('=========choices_global==============')
-      console.log(choices_global)
+      console.log("=========choices_global==============");
+      console.log(choices_global);
 
       // TODO: change it back to `submit_obj`
       // resolve(test_json_obj)
-      resolve(choices_global)
-    })
-
-  }
+      resolve(choices_global);
+    });
+  };
 
   const [visible, setVisible] = React.useState(false);
 
-
-
   const [bleConnected, setBleConnected] = React.useState(false);
-
 
   const handleChoice = () => {
     console.log("Submit Button Pressed! ");
   };
 
-
   //
-  let submit_obj = {
-
-  }
-
-
+  let submit_obj = {};
 
   // let choices = [
   //   {
@@ -164,32 +165,31 @@ export default function MultiChoiceVoteActivity({
   //   }]
 
   const handleSubmit = async () => {
-
     let p = new Promise(async (resolve, reject) => {
       // await setCheckedItems(choices)
 
-      let voting_token = await getVotingTokenFromStorage()
-      console.log('%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%')
-      console.log(voting_token)
-
+      let voting_token = await getVotingTokenFromStorage();
+      console.log(
+        "%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%"
+      );
+      console.log(voting_token);
 
       submit_obj = {
         choices: choices_global,
         voting_token,
-        time_stamp: get_current_date_formatted,
-        voting_token: voting_token
-      }
+        time_stamp: get_current_date_formatted(),
+        voting_token: voting_token,
+      };
 
-      resolve(submit_obj)
-    })
+      resolve(submit_obj);
+    });
 
     p.then((submit_obj) => {
-      console.log('sending {submit_obj} to the BLE server ')
-      console.log(submit_obj)
+      console.log("sending {submit_obj} to the BLE server ");
+      console.log(submit_obj);
 
       bleWriteMultiChoice(submit_obj);
-    })
-
+    });
 
     // console.log("Submit Button Pressed! ");
     // console.log("THE OBJ IS: ");
@@ -211,12 +211,11 @@ export default function MultiChoiceVoteActivity({
 
   // writing for single choice
   const bleWriteMultiChoice = (text_to_send) => {
-
     BleManager.connect(connected_peripheral).then((res) => {
       BleManager.retrieveServices(connected_peripheral).then(
         (peripheralInfo) => {
           console.log("peripheralInfo", peripheralInfo.services);
-          console.log('');
+          console.log("");
           console.log("---------- text to send--------");
           console.log(`string: ${JSON.stringify(text_to_send)}`);
           console.log("---------- text to send --------");
@@ -249,13 +248,11 @@ export default function MultiChoiceVoteActivity({
 
             //
             setTimeout(() => {
-
               BleManager.write(
                 connected_peripheral,
                 service,
                 voteCharacteristic,
                 stringToBytes(text_to_send_buffer)
-
               ).then(() => {
                 console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
                 this.alert("message sent!");
@@ -285,7 +282,6 @@ export default function MultiChoiceVoteActivity({
                 }
               });
             }, 500);
-
           });
         }
       );
@@ -294,27 +290,32 @@ export default function MultiChoiceVoteActivity({
 
   const renderQuestions = (questions) => {
     let arr = [];
-    
+
     arr = questions.map((curQuestion, index) => {
       return (
         <View key={index} style={styles.questionContainerView}>
-          <Text style={styles.title}>
-            Question {curQuestion.question_id}:{" "}
-          </Text>
+          <Text style={styles.title}>Question {curQuestion.question_id}: </Text>
 
-          <Text style={styles.description}>{curQuestion.question_description} </Text>
+          <Text style={styles.description}>
+            {curQuestion.question_description}{" "}
+          </Text>
 
           <View style={styles.checkboxContainer}>
             {/* {renderCheckBoxes(curQuestion.opts, index)} */}
-            {question_type === 'single' && <RadioButton
-              options={curQuestion.options}
-              onPressAction={fetchChoiceFunction}
-              textColor="black"
-              buttonColor="rgb(0,0,100)"
-            />}
-            {question_type === 'multi' && <QuestionCheckboxes 
-              options={curQuestion.options}
-              fetchChoiceFunction={fetchChoiceFunction} />}
+            {question_type === "single" && (
+              <RadioButton
+                options={curQuestion.options}
+                onPressAction={fetchChoiceFunction}
+                textColor="black"
+                buttonColor="rgb(0,0,100)"
+              />
+            )}
+            {question_type === "multi" && (
+              <QuestionCheckboxes
+                options={curQuestion.options}
+                fetchChoiceFunction={fetchChoiceFunction}
+              />
+            )}
           </View>
         </View>
       );
@@ -345,7 +346,7 @@ export default function MultiChoiceVoteActivity({
           duration="3000"
         >
           Vote failed. Please try again.
-      </Snackbar>
+        </Snackbar>
       </View>
     </ScrollView>
   );
@@ -356,7 +357,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-
   },
   questionContainerView: {
     justifyContent: "center",
@@ -364,18 +364,17 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: 'solid'
     margin: 2,
-    marginBottom: 15
-
+    marginBottom: 15,
   },
   title: {
     margin: 15,
-    color: 'red',
+    color: "red",
     fontSize: 20,
     // backgroundColor: 'yellow'
   },
   description: {
     margin: 15,
-    color: 'black',
+    color: "black",
     fontSize: 20,
     // backgroundColor: 'rgb(242, 214, 75)'
   },
