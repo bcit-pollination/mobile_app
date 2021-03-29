@@ -120,7 +120,7 @@ export default function MultiChoiceVoteActivity({
         }
       }
 
-      choices_global = choice_array;
+      // choices_global = choice_array;
       console.log("choice_array");
       console.log(choice_array);
 
@@ -246,42 +246,50 @@ export default function MultiChoiceVoteActivity({
 
             //While it still have some data to send:
 
-            //
-            setTimeout(() => {
-              BleManager.write(
-                connected_peripheral,
-                service,
-                voteCharacteristic,
-                stringToBytes(text_to_send_buffer)
-              ).then(() => {
-                console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
-                this.alert("message sent!");
+            BleManager.write(
+              connected_peripheral,
+              service,
+              voteCharacteristic,
+              stringToBytes(text_to_send2),
+              text_to_send2.length
+            ).then(() => {
+              console.log("done!");
+            });
+            // setTimeout(() => {
+            //   BleManager.write(
+            //     connected_peripheral,
+            //     service,
+            //     voteCharacteristic,
+            //     stringToBytes(text_to_send_buffer)
+            //   ).then(() => {
+            //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+            //     this.alert("message sent!");
 
-                while (remaining_msg.length - 20 >= 20) {
-                  slice_index += 20;
-                  to_send_buffer = text_to_send_buffer.slice(
-                    slice_index,
-                    slice_index + 20
-                  );
+            //     while (remaining_msg.length - 20 >= 20) {
+            //       slice_index += 20;
+            //       to_send_buffer = text_to_send_buffer.slice(
+            //         slice_index,
+            //         slice_index + 20
+            //       );
 
-                  remaining_msg = remaining_msg.slice(slice_index, -1);
+            //       remaining_msg = remaining_msg.slice(slice_index, -1);
 
-                  console.log("text_to_send_buffer: " + to_send_buffer);
+            //       console.log("text_to_send_buffer: " + to_send_buffer);
 
-                  console.log("splice_index: " + slice_index);
+            //       console.log("splice_index: " + slice_index);
 
-                  BleManager.write(
-                    connected_peripheral,
-                    service,
-                    voteCharacteristic,
-                    stringToBytes(to_send_buffer)
-                  ).then(() => {
-                    console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
-                    // this.alert("message sent!");
-                  });
-                }
-              });
-            }, 500);
+            //       BleManager.write(
+            //         connected_peripheral,
+            //         service,
+            //         voteCharacteristic,
+            //         stringToBytes(to_send_buffer)
+            //       ).then(() => {
+            //         console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
+            //         // this.alert("message sent!");
+            //       });
+            //     }
+            //   });
+            // }, 500);
           });
         }
       );
