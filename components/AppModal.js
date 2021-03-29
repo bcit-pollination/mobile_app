@@ -12,7 +12,7 @@ const AppModal = ({ show, hideModal, text, buttonText, isClosed }) => {
   // renders the text warning that states the election has yet to start
   const renderClosedWarning = () => {
     // if election is closed 
-    if (isClosed) return "This election has yet to start."
+    if (isClosed) return <Text>This election has yet to start.</Text>
 
     return;
   }
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   viewContainer: {
     backgroundColor: "white",
     margin: "auto",
-    width: "50%",
+    width: "75%",
     padding: 10,
   },
   buttonContainer: {},

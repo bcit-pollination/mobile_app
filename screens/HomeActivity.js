@@ -67,6 +67,12 @@ const HomeActivity = () => {
   // State of Snackbar when clicking on an election that hasn't started
   const [visible, setVisible] = React.useState(false);
 
+  // reflects whether or not an election has yet to start
+  const [isClosed, setIsClosed] = useState(false);
+
+  // holds the election description for modal to use
+  const [electionDetails, setElectionDetails] = useState("");
+
   // const changeShowDetailsModal = () => {
   //   setShowElectionDetails(!showElectionDetails);
   // };
@@ -82,8 +88,6 @@ const HomeActivity = () => {
   const showTipModal = () => setShowTip(true);
   const hideTipModal = () => setShowTip(false);
 
-  // reflects whether or not an election has yet to start
-  const [isClosed, setIsClosed] = useState(false);
 
   const sampleElectionDetails =
     "Election Details: \nJanuary 20 - March 15\nLower Mainland";
@@ -120,7 +124,16 @@ const HomeActivity = () => {
             let electionDate = new Date(curElection.start_time);
             let currentDate = new Date();
 
-            // TODO: dynamically render the modal text with election description
+            // get the election details
+            const elecDescription = curElection.election_description;
+            const elecStartTime = `Start Time: ${curElection.start_time}`;
+            const elecEndTime = `End Time: ${curElection.end_time}`;
+            const electionDetails = elecDescription + "\n" + elecStartTime + "\n" + elecEndTime;
+
+            // TODO: parse date and use proper format for start and end time
+
+
+            setElectionDetails(electionDetails);
 
             // Prevent navigation for elections that have not currently started
             if (electionDate > currentDate) {
@@ -192,7 +205,7 @@ const HomeActivity = () => {
           <AppModal
             show={showElectionDetails}
             hideModal={hideDetailsModal}
-            text={sampleElectionDetails}
+            text={electionDetails}
             isClosed={isClosed}
           />
           {/* <AppModal show={showTip} hideModal={hideTipModal} text={sampleTip} /> */}
