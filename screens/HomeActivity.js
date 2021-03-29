@@ -82,8 +82,8 @@ const HomeActivity = () => {
   const showTipModal = () => setShowTip(true);
   const hideTipModal = () => setShowTip(false);
 
-  // TODO: add a '?' icon and place it in a corner with an onPress
-  // that details how to show election information (onLongPress)
+  // reflects whether or not an election has yet to start
+  const [isClosed, setIsClosed] = useState(false);
 
   const sampleElectionDetails =
     "Election Details: \nJanuary 20 - March 15\nLower Mainland";
@@ -119,19 +119,27 @@ const HomeActivity = () => {
           onPress={() => {
             let electionDate = new Date(curElection.start_time);
             let currentDate = new Date();
+
+            // TODO: dynamically render the modal text with election description
+
             // Prevent navigation for elections that have not currently started
             if (electionDate > currentDate) {
               console.log(electionDate);
               onFailure();
+              // close navigation button in modal
+              setIsClosed(true);
             } else {
-              navigation.navigate("BleConnection", {
-                // electionType: "Single Choice Vote.",
-                electionType: "Multiple Choice Vote",
-              })
+              // open navigation button in modal
+              setIsClosed(false);
+              // navigation.navigate("BleConnection", {
+              //   // electionType: "Single Choice Vote.",
+              //   electionType: "Multiple Choice Vote",
+              // })
             }
+            showDetailsModal();
             // console.log("pressed")
           }}
-          onLongPress={showDetailsModal}
+          // onLongPress={showDetailsModal}
         />
       );
     });
@@ -177,16 +185,17 @@ const HomeActivity = () => {
   return (
     <Provider>
       <ScrollView contentContainerStyle={styles.container}>
-        <Pressable style={styles.tipContainer} onPress={onTipPress}>
+        {/* <Pressable style={styles.tipContainer} onPress={onTipPress}>
           <AntDesign name="question" size={24} color="black" />
-        </Pressable>
+        </Pressable> */}
         <Portal>
           <AppModal
             show={showElectionDetails}
             hideModal={hideDetailsModal}
             text={sampleElectionDetails}
+            isClosed={isClosed}
           />
-          <AppModal show={showTip} hideModal={hideTipModal} text={sampleTip} />
+          {/* <AppModal show={showTip} hideModal={hideTipModal} text={sampleTip} /> */}
         </Portal>
         <View style={[styles.headingContainer, GlobalStyles.center]}>
           <Text style={styles.headingText}>Active Elections</Text>
