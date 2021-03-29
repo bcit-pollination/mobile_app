@@ -57,8 +57,8 @@ const SignInActivity = ({ navigation }) => {
       })
       .then((responseData) => {
         // responseData contains voting_token
-        console.log("checking type: " + typeof responseData.voting_token[0]);
-        onValueChange(VOTING_STORAGE, responseData.voting_token[0]);
+        console.log("checking type: " + typeof responseData.voting_token);
+        onValueChange(VOTING_STORAGE, responseData.voting_token);
       })
       .catch((error) => {
         console.log("Error");
