@@ -10,8 +10,8 @@ import GlobalStyles from "../constants/GlobalStyles";
 
 const SignInActivity = ({ navigation }) => {
   const STORAGE_KEY = "jwt_token";
-  const [email, setEmail] = useState("test@test.com");
-  const [password, setPassword] = useState("testtest");
+  const [email, setEmail] = useState("judaozhong@gmail.com");
+  const [password, setPassword] = useState("adminadmin");
 
   const VOTING_STORAGE = "voting_token";
   const ELECTIONS_KEY = "elections_arr";
@@ -44,7 +44,7 @@ const SignInActivity = ({ navigation }) => {
 
   // Gets user's voting token
   const getVotingToken = (user_token) => {
-    fetch("http://pollination.live/api/user/voting_token", {
+    fetch("https://pollination.live/api/user/voting_token", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${user_token}`,
@@ -86,12 +86,15 @@ const SignInActivity = ({ navigation }) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         console.log("orgs[i]: " + parseInt(orgs));
-        fetch(`http://pollination.live/api/org/elections/list?org_id=${orgs}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        fetch(
+          `https://pollination.live/api/org/elections/list?org_id=${orgs}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
           .then((response) => {
             console.log(response.status);
             if (response.status === 200) return response.json();
@@ -116,7 +119,7 @@ const SignInActivity = ({ navigation }) => {
   };
 
   const getOrg = (user_token) => {
-    fetch("http://pollination.live/api/org/list", {
+    fetch("https://pollination.live/api/org/list", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${user_token}`,
@@ -156,7 +159,7 @@ const SignInActivity = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    fetch("http://pollination.live/api/user/login", {
+    fetch("https://pollination.live/api/user/login", {
       method: "POST",
       headers: {
         Accept: "application/json",

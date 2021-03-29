@@ -86,6 +86,7 @@ const App = ({ route, navigation }) => {
       BleManager.scan(["13333333-3333-3333-3333-333333333337"], 3, true)
         .then(() => {
           console.log("Scanning...");
+          console.log(connected_peripheral);
           setIsScanning(true);
         })
         .catch((err) => {
@@ -373,15 +374,16 @@ const App = ({ route, navigation }) => {
     return () => {
       // clean up: make the connected to be null
       // the next time when the user visits here, it becomes null, and needs to reconnect.
-      set_to_connected(null);
+      // set_to_connected(null);
       console.log("unmount");
-
+      console.log(connected_peripheral);
+      BleManager.disconnect(connected_peripheral);
       // bleManagerEmitter.removeEventListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
       // bleManagerEmitter.removeEventListener('BleManagerStopScan', handleStopScan);
       // bleManagerEmitter.removeEventListener('BleManagerDisconnectPeripheral', handleDisconnectedPeripheral);
       // bleManagerEmitter.removeEventListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic);
     };
-  }, []);
+  }, [connected_peripheral]);
 
   const renderItem = (item) => {
     const color = item.connected ? "yellow" : "#fff";

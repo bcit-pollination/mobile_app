@@ -173,11 +173,11 @@ export default function MultiChoiceVoteActivity({
         "%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%"
       );
       console.log(voting_token);
-
+      let time_stamp = get_current_date_formatted();
       submit_obj = {
         choices: choices_global,
         voting_token,
-        time_stamp: get_current_date_formatted(),
+        time_stamp: time_stamp,
         voting_token: voting_token,
       };
 
