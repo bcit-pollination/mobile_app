@@ -1,405 +1,394 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Dimensions, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Snackbar, Checkbox } from "react-native-paper";
+import React, {useEffect, useState} from "react";
+import {ScrollView, StyleSheet, View} from "react-native";
+import {Snackbar} from "react-native-paper";
 
 //Bluetooth Connection
 import BleManager from "react-native-ble-manager";
 
 import AppButton from "../components/AppButton";
-import QuestionCheckboxes from "../components/QuestionCheckboxes";
-import RadioButton from "../components/RadioButton";
 
-import {
-  // getVotingToken,
-  // onValueChange,
-  getVotingTokenFromStorage,
-} from "../utils/apiFunctions";
+import {getVotingTokenFromStorage,} from "../utils/apiFunctions";
 
-import { get_current_date_formatted } from "../utils/dateProcess";
+import {get_current_date_formatted} from "../utils/dateProcess";
 
 // formatter
-import { stringToBytes } from "convert-string";
+import {stringToBytes} from "convert-string";
+import Question from "../components/Question";
+import {QuestionTypes} from "../components/QuestionTypes";
 
-let test_json_obj = {
-  choices: [
-    {
-      option_id: 1,
-      option_description: "Sandwich",
-      _id: "6046757f2801bc7728000005",
-      isChecked: true,
-    },
-    {
-      option_num: 2,
-      option_description: "Pizza",
-      _id: "6046757f2801bc7728000004",
-      isChecked: true,
-    },
-    {
-      option_num: 3,
-      option_description: "SuShi",
-      _id: "6046757f2801bc7728000003",
-      isChecked: true,
-    },
-  ],
-  voting_token: "14efcd7a-ce61-41d3-83f8-d58f440054fc",
-  time_stamp: 1615275694130,
-};
+function handleSingleChoiceState(question_id, option_id, ballotState, setBallotState) {
+    let newState = {};
 
-// var multi_question_test = [{
-//   question_id: 1,
-//   question_description: "Quel est votre plat préféré ?",
-//   min_selection_count: 1,
-//   max_selection_count: 5,
-//   ordered_choices: false,
-//   'options': [
-//     {
-//       option_id: 1,
-//       option_description: "Sandwich",
-//     },
-//     {
-//       option_id: 2,
-//       option_description: "Pizza",
-//     },
-//     {
-//       option_id: 3,
-//       option_description: "SuShi",
-//     }
-//   ]
-// }];
+    for (let id in ballotState[question_id]) {
+        if (id !== option_id) {
+            newState[option_id] = 0;
+        } else {
+            newState[option_id] = -1;
+        }
+    }
+    const newBallotState = {question_id: newState, ...ballotState};
+    setBallotState(newBallotState);
+}
+
+function handleMultipleChoiceState(question_id, option_id, ballotState, setBallotState) {
+    let newState = {option_id: 0, ...ballotState[question_id]}
+    if (ballotState[question_id][option_id] === 0) {
+        newState[option_id] = -1;
+    }
+    const newBallotState = {question_id: newState, ...ballotState};
+    setBallotState(newBallotState);
+}
+
+function handleOrderedState(question_id, option_id, ballotState, setBallotState) {
+    return null;
+}
+
+/**
+ *
+ * @param questions
+ * @return {Object<number, Object<number, number>>}
+ */
+function getInitialState(questions) {
+    const ballotState = {};
+    questions.forEach(question=>{
+        question.options.forEach(option => {
+            ballotState[question.question_id][option.option_id] = 0;
+        });
+    });
+    return ballotState;
+}
+
+function getGetGetHandleTap(ballotState, setBallotState) {
+    return (question_id, type) => option_id => order => {
+        switch (type) {
+            case QuestionTypes.MULTIPLE_CHOICE:
+                handleMultipleChoiceState(question_id, option_id, ballotState, setBallotState);
+                break;
+            case QuestionTypes.SINGLE_CHOICE:
+                handleSingleChoiceState(question_id, option_id, ballotState, setBallotState);
+                break;
+        }
+        handleOrderedState(question_id, option_id, ballotState, setBallotState);
+    };
+}
+
+function Choice(question_id, option_id, order_position) {
+    this.question_id = question_id;
+    this.option_id = option_id;
+    this.order_position = order_position;
+}
+
+/**
+ *
+ * @param {Object<number, Object<number, number>>} ballotState
+ */
+function mapStateToChoices(ballotState) {
+    let choices = [];
+    for (let qid in ballotState) {
+        for (let oid in ballotState[qid]) {
+            const selection = ballotState[qid][oid];
+            if (selection === 0) {
+                continue;
+            }
+            if (selection === -1) {
+                choices.push(new Choice(qid, oid, 0))
+                continue;
+            }
+            choices.push(new Choice(qid, oid, selection));
+        }
+    }
+
+    return choices;
+}
 
 export default function MultiChoiceVoteActivity({
-  voting_token,
-  route,
-  navigation,
-  // questions,
-}) {
-  // This is needed for the write functions
-  const { connected_peripheral, question_json } = route.params;
-  // const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
-  console.log(connected_peripheral);
-  // const navigation = useNavigation();
+                                                    voting_token,
+                                                    route,
+                                                    navigation,
+                                                    // questions,
+                                                }) {
+    // This is needed for the write functions
+    const {connected_peripheral, question_json} = route.params;
 
-  const [checkedItems, setCheckedItems] = useState(null);
+    const [ballotState, setBallotState] = useState(getInitialState(question_json));
 
-  const [question_type, setQuestionType] = useState(null);
+    const getGetHandleTap = getGetGetHandleTap(ballotState, setBallotState);
 
-  useEffect(() => {
-    question_json[0].max_selection_count == 1
-      ? setQuestionType("single")
-      : setQuestionType("multi");
-  }, [question_json]);
 
-  let choices_global = {};
-  voting_token = "14efcd7a-ce61-41d3-83f8-d58f440054fc";
 
-  const fetchChoiceFunction = async (choices) => {
-    return new Promise(async (resolve, reject) => {
-      // await setCheckedItems(choices)
-      console.log("checkedItems in MultiChoice");
-      console.log(choices);
+    // const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
+    console.log(connected_peripheral);
+    // const navigation = useNavigation();
 
-      // get all the choices
-      choices_global = choices;
+    const [checkedItems, setCheckedItems] = useState(null);
 
-      let choice_array = [];
+    const [question_type, setQuestionType] = useState(null);
 
-      console.log("--------- choices ------------");
-      console.log(choices_global);
-      console.log("--------- choices ------------");
+    useEffect(() => {
+        question_json[0].max_selection_count === 1
+            ? setQuestionType("single")
+            : setQuestionType("multi");
+    }, [question_json]);
 
-      for (let item of choices_global) {
-        // if the filed is checked
-        if (item.isChecked == true) {
-          // push that to the array
-          choice_array.push({
-            question_id: item.question_id,
-            option_id: item.option_id,
-            order_position: 0,
-          });
-        }
-      }
+    let choices_global = {};
+    voting_token = "14efcd7a-ce61-41d3-83f8-d58f440054fc";
 
-      // choices_global = choice_array;
-      console.log("choice_array");
-      console.log(choice_array);
+    const fetchChoiceFunction = async (choices) => {
+        return new Promise(async (resolve, reject) => {
+            // await setCheckedItems(choices)
+            console.log("checkedItems in MultiChoice");
+            console.log(choices);
 
-      console.log("=========choices_global==============");
-      console.log(choices_global);
+            // get all the choices
+            choices_global = choices;
 
-      // TODO: change it back to `submit_obj`
-      // resolve(test_json_obj)
-      resolve(choices_global);
-    });
-  };
+            let choice_array = [];
 
-  const [visible, setVisible] = React.useState(false);
+            console.log("--------- choices ------------");
+            console.log(choices_global);
+            console.log("--------- choices ------------");
 
-  const [bleConnected, setBleConnected] = React.useState(false);
+            for (let item of choices_global) {
+                // if the filed is checked
+                if (item.isChecked === true) {
+                    // push that to the array
+                    choice_array.push({
+                        question_id: item.question_id,
+                        option_id: item.option_id,
+                        order_position: 0,
+                    });
+                }
+            }
 
-  const handleChoice = () => {
-    console.log("Submit Button Pressed! ");
-  };
+            // choices_global = choice_array;
+            console.log("choice_array");
+            console.log(choice_array);
 
-  //
-  let submit_obj = {};
+            console.log("=========choices_global==============");
+            console.log(choices_global);
 
-  // let choices = [
-  //   {
-  //     "option_id": 1,
-  //     "option_description": "Sandwich",
-  //     "_id": "6046757f2801bc7728000005",
-  //     "isChecked": true
-  //   },
-  //   {
-  //     "option_num": 2,
-  //     "option_description": "Pizza",
-  //     "_id": "6046757f2801bc7728000004",
-  //     "isChecked": true
-  //   },
-  //   {
-  //     "option_num": 3,
-  //     "option_description": "SuShi",
-  //     "_id": "6046757f2801bc7728000003",
-  //     "isChecked": true
-  //   }]
+            // TODO: change it back to `submit_obj`
+            // resolve(test_json_obj)
+            resolve(choices_global);
+        });
+    };
 
-  const handleSubmit = async () => {
-    let p = new Promise(async (resolve, reject) => {
-      // await setCheckedItems(choices)
+    const [visible, setVisible] = React.useState(false);
 
-      let voting_token = await getVotingTokenFromStorage();
-      console.log(
-        "%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%"
-      );
-      console.log(voting_token);
-      let time_stamp = get_current_date_formatted();
-      submit_obj = {
-        choices: choices_global,
-        voting_token,
-        time_stamp: time_stamp,
-        voting_token: voting_token,
-      };
+    const [bleConnected, setBleConnected] = React.useState(false);
 
-      resolve(submit_obj);
-    });
+    const handleChoice = () => {
+        console.log("Submit Button Pressed! ");
+    };
 
-    p.then((submit_obj) => {
-      console.log("sending {submit_obj} to the BLE server ");
-      console.log(submit_obj);
+    //
+    let submit_obj = {};
 
-      bleWriteMultiChoice(submit_obj);
-    });
 
-    // console.log("Submit Button Pressed! ");
-    // console.log("THE OBJ IS: ");
-    // console.log(obj)
 
-    // bleWriteMultiChoice(checked);
+    const handleSubmit = async () => {
+        let p = new Promise(async (resolve, reject) => {
+            // await setCheckedItems(choices)
 
-    // Call this if vote has failed
-    // onFailure();
-  };
+            const choices = mapStateToChoices(ballotState);
 
-  const onFailure = () => {
-    setVisible(!visible);
-  };
+            let voting_token = await getVotingTokenFromStorage();
+            console.log(
+                "%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%"
+            );
+            console.log(voting_token);
+            let time_stamp = get_current_date_formatted();
+            submit_obj = {
+                choices: choices,
+                time_stamp: time_stamp,
+                voting_token: voting_token,
+            };
 
-  const onDismissSnackBar = () => {
-    setVisible(false);
-  };
+            resolve(submit_obj);
+        });
 
-  // writing for single choice
-  const bleWriteMultiChoice = (text_to_send) => {
-    BleManager.connect(connected_peripheral).then((res) => {
-      BleManager.retrieveServices(connected_peripheral).then(
-        (peripheralInfo) => {
-          console.log("peripheralInfo", peripheralInfo.services);
-          console.log("");
-          console.log("---------- text to send--------");
-          console.log(`string: ${JSON.stringify(text_to_send)}`);
-          console.log("---------- text to send --------");
+        p.then((submit_obj) => {
+            console.log("sending {submit_obj} to the BLE server ");
+            console.log(submit_obj);
 
-          // service uuid for: Writing vote-info to rPi
-          var service = "13333333-3333-3333-3333-333333333337";
+            bleWriteMultiChoice(submit_obj);
+        });
 
-          // character uuid for: doing single votes
-          var voteCharacteristic = "13333333-3333-3333-3333-333333330009";
+        // console.log("Submit Button Pressed! ");
+        // console.log("THE OBJ IS: ");
+        // console.log(obj)
 
-          BleManager.startNotification(
-            connected_peripheral,
-            service,
-            voteCharacteristic
-          ).then(() => {
-            // (1223)
-            let text_to_send2 = JSON.stringify(text_to_send);
+        // bleWriteMultiChoice(checked);
 
-            console.log("text_to_send.length()" + text_to_send2.length);
-            let text_to_send_buffer = `${text_to_send2.length} ${text_to_send2}`;
+        // Call this if vote has failed
+        // onFailure();
+    };
 
-            let remaining_msg = text_to_send_buffer;
+    const onFailure = () => {
+        setVisible(!visible);
+    };
 
-            // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
-            let slice_index = 0;
+    const onDismissSnackBar = () => {
+        setVisible(false);
+    };
 
-            console.log(text_to_send_buffer);
+    // writing for single choice
+    const bleWriteMultiChoice = (text_to_send) => {
+        BleManager.connect(connected_peripheral).then((res) => {
+            BleManager.retrieveServices(connected_peripheral).then(
+                (peripheralInfo) => {
+                    console.log("peripheralInfo", peripheralInfo.services);
+                    console.log("");
+                    console.log("---------- text to send--------");
+                    console.log(`string: ${JSON.stringify(text_to_send)}`);
+                    console.log("---------- text to send --------");
 
-            //While it still have some data to send:
+                    // service uuid for: Writing vote-info to rPi
+                    var service = "13333333-3333-3333-3333-333333333337";
 
-            BleManager.write(
-              connected_peripheral,
-              service,
-              voteCharacteristic,
-              stringToBytes(text_to_send2),
-              text_to_send2.length
-            ).then(() => {
-              console.log("done!");
-            });
-            // setTimeout(() => {
-            //   BleManager.write(
-            //     connected_peripheral,
-            //     service,
-            //     voteCharacteristic,
-            //     stringToBytes(text_to_send_buffer)
-            //   ).then(() => {
-            //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
-            //     this.alert("message sent!");
+                    // character uuid for: doing single votes
+                    var voteCharacteristic = "13333333-3333-3333-3333-333333330009";
 
-            //     while (remaining_msg.length - 20 >= 20) {
-            //       slice_index += 20;
-            //       to_send_buffer = text_to_send_buffer.slice(
-            //         slice_index,
-            //         slice_index + 20
-            //       );
+                    BleManager.startNotification(
+                        connected_peripheral,
+                        service,
+                        voteCharacteristic
+                    ).then(() => {
+                        // (1223)
+                        let text_to_send2 = JSON.stringify(text_to_send);
 
-            //       remaining_msg = remaining_msg.slice(slice_index, -1);
+                        console.log("text_to_send.length()" + text_to_send2.length);
+                        let text_to_send_buffer = `${text_to_send2.length} ${text_to_send2}`;
 
-            //       console.log("text_to_send_buffer: " + to_send_buffer);
+                        let remaining_msg = text_to_send_buffer;
 
-            //       console.log("splice_index: " + slice_index);
+                        // "Hello folks, lets test if this one works, this is just a long string!!!! Sending from Mobile to the rPi"
+                        let slice_index = 0;
 
-            //       BleManager.write(
-            //         connected_peripheral,
-            //         service,
-            //         voteCharacteristic,
-            //         stringToBytes(to_send_buffer)
-            //       ).then(() => {
-            //         console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
-            //         // this.alert("message sent!");
-            //       });
-            //     }
-            //   });
-            // }, 500);
-          });
-        }
-      );
-    });
-  };
+                        console.log(text_to_send_buffer);
 
-  const renderQuestions = (questions) => {
-    let arr = [];
+                        //While it still have some data to send:
 
-    arr = questions.map((curQuestion, index) => {
-      return (
-        <View key={index} style={styles.questionContainerView}>
-          <Text style={styles.title}>Question {curQuestion.question_id}: </Text>
+                        BleManager.write(
+                            connected_peripheral,
+                            service,
+                            voteCharacteristic,
+                            stringToBytes(text_to_send2),
+                            text_to_send2.length
+                        ).then(() => {
+                            console.log("done!");
+                        });
+                        // setTimeout(() => {
+                        //   BleManager.write(
+                        //     connected_peripheral,
+                        //     service,
+                        //     voteCharacteristic,
+                        //     stringToBytes(text_to_send_buffer)
+                        //   ).then(() => {
+                        //     console.log(`msg sent ${stringToBytes(text_to_send_buffer)}`);
+                        //     this.alert("message sent!");
 
-          <Text style={styles.description}>
-            {curQuestion.question_description}{" "}
-          </Text>
+                        //     while (remaining_msg.length - 20 >= 20) {
+                        //       slice_index += 20;
+                        //       to_send_buffer = text_to_send_buffer.slice(
+                        //         slice_index,
+                        //         slice_index + 20
+                        //       );
 
-          <View style={styles.checkboxContainer}>
-            {/* {renderCheckBoxes(curQuestion.opts, index)} */}
-            {question_type === "single" && (
-              <RadioButton
-                options={curQuestion.options}
-                onPressAction={fetchChoiceFunction}
-                textColor="black"
-                buttonColor="rgb(0,0,100)"
-              />
-            )}
-            {question_type === "multi" && (
-              <QuestionCheckboxes
-                options={curQuestion.options}
-                fetchChoiceFunction={fetchChoiceFunction}
-              />
-            )}
-          </View>
-        </View>
-      );
-    });
+                        //       remaining_msg = remaining_msg.slice(slice_index, -1);
 
-    return arr;
-  };
+                        //       console.log("text_to_send_buffer: " + to_send_buffer);
 
-  return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        {renderQuestions(question_json)}
-        {/* {renderQuestions(multi_question_test)} */}
+                        //       console.log("splice_index: " + slice_index);
 
-        {/* onSubmit should increment count in DB after validating choices */}
-        <AppButton
-          style={styles.buttonStyle}
-          text="Submit"
-          onPress={() => {
-            handleSubmit();
-            navigation.navigate("VoteSuccess");
-          }}
-        />
-        <Snackbar
-          style={styles.snackBar}
-          visible={visible}
-          onDismiss={onDismissSnackBar}
-          duration="3000"
-        >
-          Vote failed. Please try again.
-        </Snackbar>
-      </View>
-    </ScrollView>
-  );
+                        //       BleManager.write(
+                        //         connected_peripheral,
+                        //         service,
+                        //         voteCharacteristic,
+                        //         stringToBytes(to_send_buffer)
+                        //       ).then(() => {
+                        //         console.log(`msg sent ${stringToBytes(to_send_buffer)}`);
+                        //         // this.alert("message sent!");
+                        //       });
+                        //     }
+                        //   });
+                        // }, 500);
+                    });
+                }
+            );
+        });
+    };
+
+
+    return (
+        <ScrollView style={styles.scrollView}>
+            <View style={styles.container}>
+                {question_json.map(question => <Question question={question} getGetHandleTap={getGetHandleTap}
+                                                         ballotState={ballotState}/>)}
+                {/* {renderQuestions(multi_question_test)} */}
+
+                {/* onSubmit should increment count in DB after validating choices */}
+                <AppButton
+                    style={styles.buttonStyle}
+                    text="Submit"
+                    onPress={() => {
+                        handleSubmit();
+                        navigation.navigate("VoteSuccess");
+                    }}
+                />
+                <Snackbar
+                    style={styles.snackBar}
+                    visible={visible}
+                    onDismiss={onDismissSnackBar}
+                    duration="3000"
+                >
+                    Vote failed. Please try again.
+                </Snackbar>
+            </View>
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  questionContainerView: {
-    justifyContent: "center",
-    alignItems: "center",
-    // borderWidth: 1,
-    // borderStyle: 'solid'
-    margin: 2,
-    marginBottom: 15,
-  },
-  title: {
-    margin: 15,
-    color: "red",
-    fontSize: 20,
-    // backgroundColor: 'yellow'
-  },
-  description: {
-    margin: 15,
-    color: "black",
-    fontSize: 20,
-    // backgroundColor: 'rgb(242, 214, 75)'
-  },
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    questionContainerView: {
+        justifyContent: "center",
+        alignItems: "center",
+        // borderWidth: 1,
+        // borderStyle: 'solid'
+        margin: 2,
+        marginBottom: 15,
+    },
+    title: {
+        margin: 15,
+        color: "red",
+        fontSize: 20,
+        // backgroundColor: 'yellow'
+    },
+    description: {
+        margin: 15,
+        color: "black",
+        fontSize: 20,
+        // backgroundColor: 'rgb(242, 214, 75)'
+    },
 
-  item: {
-    borderRadius: 20,
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    margin: 10,
-  },
-  checkboxContainer: {
-    width: 250,
-  },
-  buttonStyle: {
-    margin: 10,
-  },
-  snackBar: {
-    alignSelf: "flex-end",
-  },
+    item: {
+        borderRadius: 20,
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        margin: 10,
+    },
+    checkboxContainer: {
+        width: 250,
+    },
+    buttonStyle: {
+        margin: 10,
+    },
+    snackBar: {
+        alignSelf: "flex-end",
+    },
 });
