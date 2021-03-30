@@ -31,7 +31,7 @@ const QuestionCheckboxes = ({ options, fetchChoiceFunction }) => {
     console.log("pressed");
     console.log("index " + parseInt(index));
 
-    let items = [...checkedItems];
+    let items = checkedItems;
 
     // console.log(items[index]);
 
@@ -44,7 +44,7 @@ const QuestionCheckboxes = ({ options, fetchChoiceFunction }) => {
     // console.log("item");
     // console.log(item);
 
-    let item = { ...items[index] };
+    let item = items[index];
     console.log(item.isChecked);
 
     item.isChecked = !item.isChecked;
@@ -76,7 +76,7 @@ const QuestionCheckboxes = ({ options, fetchChoiceFunction }) => {
     // console.log(checkedItems);
 
     setCheckedItems(items);
-    fetchChoiceFunction(items)
+    fetchChoiceFunction(items);
 
     // only uncomment for event prop
     // console.log("event target:");

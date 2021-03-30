@@ -84,6 +84,8 @@ export default function MultiChoiceVoteActivity({
 
   const [question_type, setQuestionType] = useState(null);
 
+  const [submission_object, setObjectToSubmit] = useState([]);
+
   useEffect(() => {
     question_json[0].max_selection_count == 1
       ? setQuestionType("single")
@@ -93,44 +95,47 @@ export default function MultiChoiceVoteActivity({
   let choices_global = {};
   voting_token = "14efcd7a-ce61-41d3-83f8-d58f440054fc";
 
-  const fetchChoiceFunction = async (choices) => {
-    return new Promise(async (resolve, reject) => {
-      // await setCheckedItems(choices)
-      console.log("checkedItems in MultiChoice");
-      console.log(choices);
+  const notifyChoice = (choices) => {
+    // await setCheckedItems(choices)
+    console.log("checkedItems in MultiChoice");
+    console.log(choices);
 
-      // get all the choices
-      choices_global = choices;
+    // // get all the choices
+    // choices_global = choices;
 
-      let choice_array = [];
+    let choice_array = [];
 
-      console.log("--------- choices ------------");
-      console.log(choices_global);
-      console.log("--------- choices ------------");
+    console.log("--------- choices ------------");
+    console.log(choices_global);
+    console.log(choices)
+    console.log("--------- choices ------------");
 
-      for (let item of choices_global) {
-        // if the filed is checked
-        if (item.isChecked == true) {
-          // push that to the array
-          choice_array.push({
-            question_id: item.question_id,
-            option_id: item.option_id,
-            order_position: 0,
-          });
-        }
+    for (let item of choices) {
+      // if the filed is checked
+      if (item.isChecked == true) {
+        // push that to the array
+        choice_array.push({
+          question_id: item.question_id,
+          option_id: item.option_id,
+          order_position: 0,
+        });
       }
+    }
 
-      // choices_global = choice_array;
-      console.log("choice_array");
-      console.log(choice_array);
+    choices_global = choice_array;
 
-      console.log("=========choices_global==============");
-      console.log(choices_global);
+    setObjectToSubmit(choice_array)
 
-      // TODO: change it back to `submit_obj`
-      // resolve(test_json_obj)
-      resolve(choices_global);
-    });
+    console.log("choice_array");
+    console.log(choice_array);
+
+    console.log("=========choices_global==============");
+    console.log(choices_global);
+
+    // TODO: change it back to `submit_obj`
+    // resolve(test_json_obj)
+
+
   };
 
   const [visible, setVisible] = React.useState(false);
@@ -188,7 +193,7 @@ export default function MultiChoiceVoteActivity({
       console.log("sending {submit_obj} to the BLE server ");
       console.log(submit_obj);
 
-      bleWriteMultiChoice(submit_obj);
+      bleWriteMultiChoice(submission_object);
     });
 
     // console.log("Submit Button Pressed! ");
@@ -313,7 +318,7 @@ export default function MultiChoiceVoteActivity({
             {question_type === "single" && (
               <RadioButton
                 options={curQuestion.options}
-                onPressAction={fetchChoiceFunction}
+                onPressAction={notifyChoice}
                 textColor="black"
                 buttonColor="rgb(0,0,100)"
               />
@@ -321,7 +326,7 @@ export default function MultiChoiceVoteActivity({
             {question_type === "multi" && (
               <QuestionCheckboxes
                 options={curQuestion.options}
-                fetchChoiceFunction={fetchChoiceFunction}
+                fetchChoiceFunction={notifyChoice}
               />
             )}
           </View>
