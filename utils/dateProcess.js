@@ -26,16 +26,16 @@ export const get_current_date_formatted = () => {
   formatted_date += add_zero_prefix(month);
   formatted_date += "-";
   formatted_date += add_zero_prefix(day);
-  formatted_date += " ";
+  formatted_date += "T";
   formatted_date += add_zero_prefix(hours);
   formatted_date += ":";
   formatted_date += add_zero_prefix(minutes);
   formatted_date += ":";
   formatted_date += add_zero_prefix(secs);
-  formatted_date += ".0000";
-  formatted_date += " ";
+  // formatted_date += ".0000";
+  // formatted_date += " ";
   formatted_date += utc_offset_is_positive ? "+" : "-";
-  formatted_date += add_zero_prefix(utc_offset_hours);
+  formatted_date += add_zero_prefix(Math.abs(utc_offset_hours));
   formatted_date += ":";
   formatted_date += add_zero_prefix(utc_offset_minutes);
 

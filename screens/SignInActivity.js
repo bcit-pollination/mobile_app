@@ -10,7 +10,7 @@ import GlobalStyles from "../constants/GlobalStyles";
 
 const SignInActivity = ({ navigation }) => {
   const STORAGE_KEY = "jwt_token";
-  const [email, setEmail] = useState("judaozhong@gmail.com");
+  const [email, setEmail] = useState("test@pollination.test");
   const [password, setPassword] = useState("adminadmin");
 
   const VOTING_STORAGE = "voting_token";

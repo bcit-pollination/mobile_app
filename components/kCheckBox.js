@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet} from "react-native";
-import {Checkbox} from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Checkbox } from "react-native-paper";
 
 function KCheckBox(props) {
     const option = props.poption;
@@ -10,7 +10,7 @@ function KCheckBox(props) {
 
     return (
         <Checkbox.Item
-            key={index}
+            key={option.option_id}
             style={styles.item}
             status={selected ? "checked" : "unchecked"}
             onPress={handleTap}

@@ -1,12 +1,12 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import RadioButton from "./RadioButton";
 
 
 function KRadioButton(props) {
     const option = props.poption;
-    const textColor= "black";
-    const buttonColor= "rgb(0,0,100)"
+    const textColor = "black";
+    const buttonColor = "rgb(0,0,100)"
     const question_id = props.question_id;
     const handleTap = props.getHandleTap(option.option_id)(0);
     const selected = props.ballotState[question_id][option.option_id] === -1;
@@ -15,17 +15,17 @@ function KRadioButton(props) {
         singleButtonContainer: {
             borderColor: buttonColor,
             // boxShadow: "2px 2px 1px #333",
-            borderRadius:  50,
+            borderRadius: 50,
         },
         radioText: {
             color: textColor
         },
         radioCircle: {
-            borderRadius:  50,
+            borderRadius: 50,
             borderColor: buttonColor
         },
         selectedRb: {
-            borderRadius:  50,
+            borderRadius: 50,
             backgroundColor: buttonColor
         },
     });
@@ -43,7 +43,7 @@ function KRadioButton(props) {
             >
                 <View style={[styles.radioCircle, customStyles.radioCircle]}>
                     {/* renders the visual aspect of radio selection */}
-                    <View style={ selected ? [styles.selectedRb, customStyles.selectedRb] : [styles.notSelectedRb]} />
+                    <View style={selected ? [styles.selectedRb, customStyles.selectedRb] : [styles.notSelectedRb]} />
                 </View>
                 {/* Renders the option text */}
                 <Text style={[styles.radioText]}>{option.option_description}</Text>

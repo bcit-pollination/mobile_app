@@ -1,10 +1,10 @@
-import {StyleSheet, Text, View} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import RadioButton from "./RadioButton";
 import QuestionCheckboxes from "./QuestionCheckboxes";
 import React from 'react'
 import KRadioButton from "./KRadioButton";
 import KCheckBox from "./kCheckBox";
-import {QuestionTypes} from "./QuestionTypes";
+import { QuestionTypes } from "./QuestionTypes";
 
 const styles = StyleSheet.create({
     groupContainer: {
@@ -47,10 +47,10 @@ function getQuestionOptionComp(questionType) {
         case QuestionTypes.MULTIPLE_CHOICE:
             return KCheckBox;
     }
-    return <></>;
+    return () => <></>;
 }
 
-function Question(props) {
+export default function Question(props) {
     const question = props.question;
 
     const type = getQuestionType(question);
@@ -59,21 +59,22 @@ function Question(props) {
 
     const getHandleTap = props.getGetHandleTap(question.question_id, type);
 
-    return <View key={index} style={styles.questionContainerView}>
-        <Text style={styles.title}>Question {question.question_id}: </Text>
+    return (
+        <View key={question.question_id} style={styles.questionContainerView}>
+            <Text style={styles.title}>Question {question.question_id}: </Text>
 
-        <Text style={styles.description}>
-            {question.question_description}{" "}
-        </Text>
+            <Text style={styles.description}>
+                {question.question_description}{" "}
+            </Text>
 
-        <View style={styles.checkboxContainer}>
-            <View style={QuestionOptionComp === KRadioButton ? [styles.groupContainter] : null}>
-                {question.options.map((option) => <QuestionOptionComp poption={option} getHandleTap={getHandleTap}
-                    question_id={question.question_id} ballotState={props.ballotState}
-                />)}
+            <View style={styles.checkboxContainer}>
+                <View style={QuestionOptionComp === KRadioButton ? [styles.groupContainter] : null}>
+                    {question.options.map((option) => <QuestionOptionComp key={option.option_id} poption={option} getHandleTap={getHandleTap}
+                        question_id={question.question_id} ballotState={props.ballotState}
+                    />)}
+                </View>
             </View>
-        </View>
-    </View>;
+        </View>);
 }
 
-export default Question;
+//  Question;
