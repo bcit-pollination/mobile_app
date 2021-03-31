@@ -16,124 +16,8 @@ import { stringToBytes } from "convert-string";
 import Question from "../components/Question";
 import { QuestionTypes } from "../components/QuestionTypes";
 
-function cloneObj(oldObj) {
-  const obj = {};
-
-  for (let qid in oldObj) {
-    for (let pid in oldObj[qid]) {
-      if (!(qid in obj)) {
-        obj[qid] = {};
-      }
-      obj[qid][pid] = oldObj[qid][pid];
-
-
-    }
-  }
-  return obj;
-}
-
-
-function handleSingleChoiceState(question_id, option_id, ballotState, setBallotState) {
-  let newState = cloneObj(ballotState);
-
-  for (let id in ballotState[question_id]) {
-    if (id == option_id) {
-      newState[question_id][id] = -1;
-    } else {
-      newState[question_id][id] = 0;
-    }
-  }
-
-  setBallotState(newState);
-}
-
-function handleMultipleChoiceState(question_id, option_id, ballotState, setBallotState) {
-
-
-  let newState = cloneObj(ballotState);
-  newState[question_id][option_id] = 0;
-
-  if (ballotState[question_id][option_id] === 0) {
-    newState[question_id][option_id] = -1;
-  }
-
-  setBallotState(newState);
-
-}
-
-function handleOrderedState(question_id, option_id, ballotState, setBallotState) {
-  return null;
-}
-
-/**
- *
- * @param questions
- * @return {Object<number, Object<number, number>>}
- */
-function getInitialState(questions) {
-  const ballotState = {};
-  questions.forEach(question => {
-    question.options.forEach(option => {
-      if (!(question.question_id in ballotState)) {
-        ballotState[question.question_id] = {};
-      }
-
-      ballotState[question.question_id][option.option_id] = 0;
-
-
-    });
-  });
-
-
-  return ballotState;
-}
-
-function getGetGetHandleTap(ballotState, setBallotState) {
-  return (question_id, type) => option_id => order => () => {
-
-    switch (type) {
-      case QuestionTypes.MULTIPLE_CHOICE:
-        handleMultipleChoiceState(question_id, option_id, ballotState, setBallotState);
-        break;
-      case QuestionTypes.SINGLE_CHOICE:
-        handleSingleChoiceState(question_id, option_id, ballotState, setBallotState);
-        break;
-      case QuestionTypes.ORDERED:
-        handleOrderedState(question_id, option_id, ballotState, setBallotState);
-        break;
-    }
-
-  };
-}
-
-function Choice(question_id, option_id, order_position) {
-  this.question_id = question_id;
-  this.option_id = option_id;
-  this.order_position = order_position;
-}
-
-/**
- *
- * @param {Object<number, Object<number, number>>} ballotState
- */
-function mapStateToChoices(ballotState) {
-  let choices = [];
-  for (let qid in ballotState) {
-    for (let oid in ballotState[qid]) {
-      const selection = ballotState[qid][oid];
-      if (selection === 0) {
-        continue;
-      }
-      if (selection === -1) {
-        choices.push(new Choice(parseInt(qid), parseInt(oid), 0))
-        continue;
-      }
-      choices.push(new Choice(parseInt(qid), parseInt(oid), selection));
-    }
-  }
-
-  return choices;
-}
+const MAX_SELECTION_ERROR = "You are trying to exceed the maximum selection count.";
+const VOTE_SUBMIT_FAILED = "Vote failed. Please try again.";
 
 export default function MultiChoiceVoteActivity({
   voting_token,
@@ -143,12 +27,14 @@ export default function MultiChoiceVoteActivity({
 }) {
   // This is needed for the write functions
   const { connected_peripheral, question_json } = route.params;
+  const[count, setCount] = useState({});
+  const[minCount, setMinCount] = useState(setInitialMinCount(question_json));
+  const[minAchieved, setMinAchieved] = useState(false);
+  const[snackbarText, setSnackbarText] = useState('');
 
   const [ballotState, setBallotState] = useState(getInitialState(question_json));
 
   const getGetHandleTap = getGetGetHandleTap(ballotState, setBallotState);
-
-
 
   // const { connected_peripheral } = "13333333-3333-3333-3333-333333333337";
   console.log(connected_peripheral);
@@ -258,6 +144,7 @@ export default function MultiChoiceVoteActivity({
     // bleWriteMultiChoice(checked);
 
     // Call this if vote has failed
+    // setSnackbarText(VOTE_SUBMIT_FAILED);
     // onFailure();
   };
 
@@ -268,6 +155,185 @@ export default function MultiChoiceVoteActivity({
   const onDismissSnackBar = () => {
     setVisible(false);
   };
+
+  function cloneObj(oldObj) {
+    const obj = {};
+  
+    for (let qid in oldObj) {
+      for (let pid in oldObj[qid]) {
+        if (!(qid in obj)) {
+          obj[qid] = {};
+        }
+        obj[qid][pid] = oldObj[qid][pid];
+      }
+    }
+    return obj;
+  }
+  
+  
+  function handleSingleChoiceState(question_id, option_id, ballotState, setBallotState) {
+    let newState = cloneObj(ballotState);
+  
+    for (let id in ballotState[question_id]) {
+      if (id == option_id) {
+        newState[question_id][id] = -1;
+        let tmp = count;
+        tmp[question_id] = 1;
+        setCount(tmp);
+        updateMinCount(question_id, 1);
+      } else {
+        newState[question_id][id] = 0;
+      }
+    }
+  
+    setBallotState(newState);
+  }
+  
+  function handleMultipleChoiceState(question_id, option_id, ballotState, setBallotState) {
+    if (!count[question_id]) {
+      let tmp = count;
+      tmp[question_id] = 0;
+      setCount(tmp);
+    }
+  
+    let newState = cloneObj(ballotState);
+    newState[question_id][option_id] = 0;
+  
+    if (ballotState[question_id][option_id] === 0) {
+      question_json.forEach(question => {
+        if (question.question_id === question_id) {
+          if (count[question_id] === question.max_selection_count) {
+            setSnackbarText(MAX_SELECTION_ERROR);
+            onFailure();
+          } else {
+            newState[question_id][option_id] = -1;
+            let tmp = count;
+            tmp[question_id]++;
+            setCount(tmp);
+            updateMinCount(question_id, question.min_selection_count);
+            console.log(count);
+          }
+        }
+      });
+    } else if (ballotState[question_id][option_id] === -1) {
+      question_json.forEach(question => {
+        if (question.question_id === question_id) {
+          newState[question_id][option_id] = 0;
+          let tmp = count;
+          tmp[question_id]--;
+          setCount(tmp);
+          updateMinCount(question_id, question.min_selection_count);
+          console.log(count);
+        }
+      });
+
+    }
+    setBallotState(newState);
+  
+  }
+  
+  function handleOrderedState(question_id, option_id, ballotState, setBallotState) {
+    let newState = cloneObj(ballotState);
+  
+    setBallotState(newState);
+  }
+
+  function updateMinAchieved() {
+    let minCheck = true;
+    for (let count in minCount) {
+      if (!minCount[count]) {
+        minCheck = false;
+        break;
+      }
+    }
+    console.log(`Min Check: ${minCheck}`)
+    setMinAchieved(minCheck);
+  }
+
+  function updateMinCount(question_id, minSelectionCount) {
+    let tmpCount = minCount;
+    if (count[question_id] >= minSelectionCount) {
+      tmpCount[question_id] = true;
+    } else {
+      tmpCount[question_id] = false;
+    }
+    setMinCount(tmpCount);
+    console.log(`Min Count: ${minCount}`);
+    updateMinAchieved();
+  }
+
+  function setInitialMinCount(questions) {
+    const tmpState = {};
+    questions.forEach(question => {
+      tmpState[question.question_id] = false;
+    });
+    return tmpState;
+  }
+  
+  /**
+   *
+   * @param questions
+   * @return {Object<number, Object<number, number>>}
+   */
+  function getInitialState(questions) {
+    const ballotState = {};
+    questions.forEach(question => {
+      question.options.forEach(option => {
+        if (!(question.question_id in ballotState)) {
+          ballotState[question.question_id] = {};
+        }
+        ballotState[question.question_id][option.option_id] = 0;
+      });
+    });
+    return ballotState;
+  }
+  
+  function getGetGetHandleTap(ballotState, setBallotState) {
+    return (question_id, type) => option_id => order => () => {
+  
+      switch (type) {
+        case QuestionTypes.MULTIPLE_CHOICE:
+          handleMultipleChoiceState(question_id, option_id, ballotState, setBallotState);
+          break;
+        case QuestionTypes.SINGLE_CHOICE:
+          handleSingleChoiceState(question_id, option_id, ballotState, setBallotState);
+          break;
+        case QuestionTypes.ORDERED:
+          handleOrderedState(question_id, option_id, ballotState, setBallotState);
+          break;
+      }
+  
+    };
+  }
+  
+  function Choice(question_id, option_id, order_position) {
+    this.question_id = question_id;
+    this.option_id = option_id;
+    this.order_position = order_position;
+  }
+  
+  /**
+   *
+   * @param {Object<number, Object<number, number>>} ballotState
+   */
+  function mapStateToChoices(ballotState) {
+    let choices = [];
+    for (let qid in ballotState) {
+      for (let oid in ballotState[qid]) {
+        const selection = ballotState[qid][oid];
+        if (selection === 0) {
+          continue;
+        }
+        if (selection === -1) {
+          choices.push(new Choice(parseInt(qid), parseInt(oid), 0))
+          continue;
+        }
+        choices.push(new Choice(parseInt(qid), parseInt(oid), selection));
+      }
+    }
+  
+    return choices;
+  }
 
   // writing for single choice
   const bleWriteMultiChoice = (text_to_send) => {
@@ -370,17 +436,17 @@ export default function MultiChoiceVoteActivity({
           text="Submit"
           onPress={() => {
             handleSubmit();
-            navigation.navigate("VoteSuccess");
+            navigation.navigate("VoteSuccess")
           }}
+          minAchieved={minAchieved}
         />
         <Snackbar
           style={styles.snackBar}
           visible={visible}
           onDismiss={onDismissSnackBar}
-          duration="3000"
         >
-          Vote failed. Please try again.
-                </Snackbar>
+          {snackbarText}
+        </Snackbar>
       </View>
     </ScrollView>
   );
