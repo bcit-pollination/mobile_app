@@ -39,6 +39,7 @@ const SignInActivity = ({ navigation }) => {
 
   const getUserToken = async () => {
     let USER_TOKEN = await AsyncStorage.getItem("jwt_token");
+    console.log(USER_TOKEN);
     return USER_TOKEN;
   };
 
@@ -57,7 +58,6 @@ const SignInActivity = ({ navigation }) => {
       })
       .then((responseData) => {
         // responseData contains voting_token
-        console.log("checking type: " + typeof responseData.voting_token);
         onValueChange(VOTING_STORAGE, responseData.voting_token);
       })
       .catch((error) => {
@@ -69,8 +69,6 @@ const SignInActivity = ({ navigation }) => {
   // Gets user's voting_token from AsyncStorage
   const getVotingTokenFromStorage = async () => {
     let VOTING_TOKEN = await AsyncStorage.getItem("voting_token");
-    console.log("%%%%%%%%%%%%%VOTING_TOKEN%%%%%%%%%%%%%%");
-    console.log(VOTING_TOKEN.toString());
     return VOTING_TOKEN.toString();
   };
 
@@ -102,13 +100,10 @@ const SignInActivity = ({ navigation }) => {
           })
           .then((responseData) => {
             // responseData contains elections
-            console.log(responseData.elections);
             for (let j = 0; j < responseData.elections.length; j++) {
               // cheesed
               const len = elections.length;
               elections[len] = responseData.elections[j];
-              console.log("cur elections");
-              console.log(elections[len]);
             }
           })
           .then((res) => {
@@ -183,17 +178,14 @@ const SignInActivity = ({ navigation }) => {
         return getUserToken();
       })
       .then((res) => {
-        console.log("----------------getVotingToken-----------------");
         getVotingToken(res);
 
         let a = getVotingTokenFromStorage();
         console.log("getVotingTokenFromStorage:");
-        console.log(a);
 
         return res;
       })
       .then((res) => {
-        console.log("----------------getOrg-----------------");
         getOrg(res);
         return res;
       })

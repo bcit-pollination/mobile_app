@@ -100,17 +100,22 @@ const RegisterActivity = ({ navigation }) => {
           label="DOB (2021-03-03)" 
           value={DOB} 
           onChangeText={onChangeDOB} 
+          pattern={'([0-9]{4}[-](0[1-9]|1[0-2])[-]([0-2]{1}[0-9]{1}|3[0-1]{1})|([0-2]{1}[0-9]{1}|3[0-1]{1})[-](0[1-9]|1[0-2])[-][0-9]{4})'}
         />
         <TextInput 
           label="Email" 
           value={email} 
           onChangeText={onChangeEmail} 
+          pattern={'/\S+@\S+/'}
         />
         <TextInput 
           label="Password" 
           secureTextEntry={true} 
           value={password} 
-          onChangeText={onChangePassword} 
+          onChangeText={onChangePassword}
+          pattern={[
+            '^.{8,}$'
+          ]} 
         />
       </View>
       <View style={[GlobalStyles.center, styles.buttonContainer]}>

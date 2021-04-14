@@ -53,7 +53,6 @@ const HomeActivity = () => {
   const [showBleConnection, setShowBleConnection] = useState(false);
 
   // console.log("----------------getUserToken-----------------");
-  console.log("in HomeActivity");
 
   //getting user token
 
@@ -106,9 +105,6 @@ const HomeActivity = () => {
   const convertElections = (elections) => {
     let arr = [];
 
-    console.log("elections within renderElections()");
-    console.log(elections);
-
     // Filter only elections that have not ended.
     arr = elections.filter((election) => {
       let electionDate = new Date(election.end_time);
@@ -137,7 +133,6 @@ const HomeActivity = () => {
 
             // Prevent navigation for elections that have not currently started
             if (electionDate > currentDate) {
-              console.log(electionDate);
               onFailure();
               // close navigation button in modal
               setIsClosed(true);
@@ -157,8 +152,6 @@ const HomeActivity = () => {
       );
     });
 
-    console.log("setting election component");
-    console.log(arr);
     if (arr.length > 0) {
       console.log("arr.length > 0; setElectionComponents()");
       setElectionComponents(arr);
@@ -172,7 +165,6 @@ const HomeActivity = () => {
   const getData = () => {
     getElectionsArr().then((res) => {
       console.log("res from getElectionsArr()");
-      console.log(res);
       convertElections(JSON.parse(res));
       // setElectionComponents(JSON.parse(res));
     });

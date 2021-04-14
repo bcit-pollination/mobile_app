@@ -32,8 +32,6 @@ const getVotingToken = (user_token) => {
 // Gets user's voting_token from AsyncStorage
 const getVotingTokenFromStorage = async () => {
   let VOTING_TOKEN = await AsyncStorage.getItem("voting_token");
-  console.log("%%%%%%%%%%%%%VOTING_TOKEN%%%%%%%%%%%%%%");
-  console.log(VOTING_TOKEN.toString());
   return VOTING_TOKEN.toString();
 };
 

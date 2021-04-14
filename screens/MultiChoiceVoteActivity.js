@@ -113,10 +113,6 @@ export default function MultiChoiceVoteActivity({
       const choices = mapStateToChoices(ballotState);
 
       let voting_token = await getVotingTokenFromStorage();
-      console.log(
-        "%%%%%%%%%%%%%%%%%%% let voting_token = getVotingTokenFromStorage()%%%%%%%%%%%%%%%%%%"
-      );
-      console.log(voting_token);
       let time_stamp = get_current_date_formatted();
       submit_obj = {
         choices: choices,
